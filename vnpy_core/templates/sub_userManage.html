@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="keywords" content="关键字,关键字,关键字"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="expires" content="0"/>
+  <meta name="description" content="页面描述不超过150个字符"/>
+  <meta name="Author" content="页面作者"/>
+  <meta name="renderer" content="webkit"/>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <link rel="shortcut icon" href="../static/images/favicon.ico" type="image/x-icon" >
+  <link rel="stylesheet" type="text/css" href="../static/layui/dist/css/layui.css"/>
+  <link rel="stylesheet" href="../static/stylesheets/gx_main.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/iconfont/iconfont.css">
+  <!--[if lt IE 9]>
+  <script src="../static/html5shiv/dist/html5shiv.min.js"></script>
+  <script src="../static/respond/dest/respond.min.js"></script>
+  <![endif]-->
+  <script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../static/layui/dist/layui.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
+  <!--mine-->
+  <script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="frame">
+
+<table class="layui-table" id="userManage" style="margin: 0;"></table>
+<div class="tableTool text_right">
+  <button class="layui-btn layui-btn-darkBlue" data-type="add">添&nbsp;&nbsp;加</button>
+  <button class="layui-btn layui-btn-darkBlue" data-type="del">删&nbsp;&nbsp;除</button>
+</div>
+<script type="text/javascript">
+  layui.use('table', function(){
+    var table = layui.table,$ = layui.jquery,layer = layui.layer;
+    //展示已知数据
+    table.render({
+      elem: '#userManage'
+      ,data: [{"id": "10001","name": "杜甫","familyname": "老杜1","pwd":"123456798"
+      }, {"id": "10001","name": "杜甫","familyname": "老杜2","pwd":"123456798"
+      }, {"id": "10002","name": "杜甫","familyname": "老杜3","pwd":"123456798"
+      }, {"id": "10003","name": "杜甫","familyname": "老杜4","pwd":"123456798"
+      }, {"id": "10004","name": "杜甫","familyname": "老杜5","pwd":"123456798"
+      }, {"id": "10005","name": "杜甫","familyname": "老杜6","pwd":"123456798"
+      }, {"id": "10006","name": "杜甫","familyname": "老杜7","pwd":"123456798"
+      }, {"id": "10007","name": "杜甫","familyname": "老杜8","pwd":"123456798"
+      }]
+      ,cols: [[ //标题栏
+        {checkbox: true, LAY_CHECKED: false} //默认不全选
+        ,{field: 'id', title: 'ID', width: 401, sort: true}
+        ,{field: 'name', title: '名字', width: 401}
+        ,{field: 'familyname', title: '昵称', width: 402}
+        ,{field: 'pwd', title: '密码', width: 402}
+      ]]
+      ,skin: 'row' //表格风格
+      ,even: true
+      ,page: true //是否显示分页
+      ,id:'userManage'
+      ,limits: [5, 7, 10]
+      ,limit: 5 //每页默认显示的数量
+    });
+    //表格操作按钮
+    $('.tableTool .layui-btn').on('click', function(){
+      var checkStatus = table.checkStatus('userManage'),data = checkStatus.data;
+      var state = $(this).data('type');
+      if(state == 'del'){
+        console.log(data)
+        if(data.length == 0){
+          layer.alert('至少选择一行需要删除的数据!');
+        }else{
+          layer.alert('把选中的数据提交给后台');
+        }
+      }else if(state == 'add'){
+        layer.open({
+          type: 2               //此处以iframe举例
+          ,skin: 'gx_layer'
+          ,title: '<span class="iconfont icon-gx_yonghu"></span>添加'
+          ,area: ['455px', '360px']
+          ,shade: .7
+          ,shadeClose:true      //点击遮罩层取消模态框
+          ,maxmin: true
+          ,content: 'frame_addUser.html'
+          ,btn: ['保存', '取消'] //只是为了演示
+          ,yes: function(index,layero){
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            body.find("#frame_addUser_sub").trigger("click");
+          }
+          ,btn2: function(){
+            layer.closeAll();
+          }
+        });
+      }else{}
+      //把选中的数据提交给后台;
+//      layer.alert(JSON.stringify(data));
+    });
+  });
+</script>
+</body>
+</html>

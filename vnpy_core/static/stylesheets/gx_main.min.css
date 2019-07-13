@@ -1,0 +1,138 @@
+﻿/*body background-color*/
+body{background: #fff;}
+.gx_index{background-image: url("../images/bg.jpg");background-size: cover;}
+
+/*color*/
+.text_white{color:#fff;}
+.text_green{color: #436e00;}
+.text_grey{color: #8D8D8D;}
+.text_blue{color: #009FFF;}
+.bg_lightBlue{background-color: #78C5F6;}
+
+/*text*/
+.text_indent2{text-indent: 2em;}
+.text_center{text-align: center;}
+.text_right{text-align: right;}
+
+/*login*/
+#login{background-image: url("../images/bg.jpg");background-size: cover;}
+#loginBox{width: 526px;height: 480px;position: absolute;top: 50%;left: 50%;margin-left: -263px;margin-top: -240px;}
+#loginLogo{padding: 10px 0;}
+#loginForm{width: 360px;height: 400px;padding: 20px;margin: 0 auto;}
+.login_form_row{border-radius: 5px;background-color: rgba(255,255,255,.3);}
+.login_form_row label{color: #fff;width: 20px !important;font-size: 18px;font-weight: 900;}
+.login_form_row input{color: #fff;width: 310px;background-color: rgba(255,255,255,0);border: 0;}
+#login_sub{width: 100%;color:#000;color:#fff;background-color: #58D30D;}
+#login_sub:hover{color:#555;}
+
+/*change layui header*/
+.layui-layout-admin .layui-header{background-color: #2A385F;border-bottom: 2px solid #15A4FA;margin-bottom: 20px;box-shadow: 0 10px 10px #2385CF;}
+.layui-layout-admin .layui-logo{width:430px;}
+.layui-logo>div{float: left;}
+.gx_headerLogo{width: 100px;height: 60px;background: #141B2E;text-align: center;}
+.gx_headerLogoText{width: 330px;height: 60px;text-align: right;}
+#gx_headerList a{line-height: 20px;text-align: center;padding-top: 10px;padding-bottom: 10px;}
+#gx_headerList a .iconfont{font-size: 20px;color: #10E600;}
+#gx_headerList a .active{color: #FF3600;}
+
+/*change layui nav*/
+.layui-layout-admin .layui-side{top: 82px;}
+.layui-layout-admin .layui-side:before{content:"";position: absolute;top:0;left:0;width: 5px;height:100%;background-color: #316ACC;}
+.layui-bg-lightBlue{color:#fff;background-color:#63BAF2;}
+.layui-nav{background-color: #63BAF2;}
+.layui-nav .layui-nav-item a{color:#fff;opacity: 1;}
+.layui-nav-tree .layui-nav-item a{height: 55px;line-height: 55px;border-left: 5px solid #316ACC;}
+.layui-nav-tree .layui-nav-item a:hover{background-color: #5187ED;}
+.layui-nav-tree .layui-nav-item a:hover .iconfont{background-color: #FFAB00;}
+.layui-nav-tree .layui-nav-item a .iconfont{font-size:20px;padding:8px;font-weight:lighter;border-radius: 100%;background-color: #5384D9;}
+.layui-nav-itemed>a{color:#fff;background-color: #5187ED;border-left:5px solid #284DC7 !important;}
+.layui-nav-itemed>a>.iconfont{background-color: #FFAB00 !important;}
+.layui-nav-tree .layui-nav-child a{text-indent: 40px;color:rgba(255,255,255,1);}
+.layui-nav-itemed .layui-nav-child{background-color:#63BAF2 !important;}
+.layui-nav-tree .layui-nav-bar{background-color: #284DC7;}
+.layui-nav-tree .layui-this, .layui-nav-tree .layui-this>a, .layui-nav-tree .layui-this>a:hover, .layui-nav-tree .layui-nav-child dd.layui-this, .layui-nav-tree .layui-nav-child dd.layui-this a{
+  background-color: #63BAF2;}
+.gx_navTitle{font-size:18px;font-weight:900;height:55px;line-height:55px;text-indent:35px;color:#4fc4fe;background: #164C87;border-left: 5px solid #59C1FC;position: relative;z-index: 1;}
+.gx_navTitle>a{color:#fff;}
+.gx_navTitle>a:hover{color:#fff;cursor:pointer;}
+.gb_navText{position: relative;top: -3px;left: 10px;font-size:16px;}
+
+/*change layui body*/
+.layui-layout-admin .layui-body{top: 82px;left: 220px;bottom:0;background-color: #fff;overflow: hidden;}
+
+/*change layui form*/
+.layui-form-label{width:90px !important;}
+
+/*change layui table*/
+.layui-table{}
+.layui-table .center tr th,.layui-table .center tr td{text-align: center;position:relative;}
+.layui-table th.center,.layui-table td.center{text-align: center;}
+.layui-table th.lightBlue,.layui-table td.lightBlue{color:#fff;background-color: #78C5F6;}
+.layui-table thead.lightBlue tr{color:#fff;background-color: #78C5F6;}
+.layui-table thead.lightBlue tr th{font-size:14px;}
+.layui-table tbody.grey{background-color: #eee;}
+
+.layui-table tbody.hoverWhite tr:hover{background-color:#fff !important;}
+
+.layui-table .iconfont{font-size: 16px;padding-right: 5px;}
+.layui-table .icon-gx_jiLu{color: #00810C;}
+.layui-table .icon-gx_quShi{color: #009FFF;}
+
+/*change layui btn*/
+.layui-btn-darkBlue{background-color: #5187ED;}
+.layui-btn-lightGreen{background-color: #46B702;}
+
+/*change layui tab*/
+.layui-tab-title li:first-child{margin-left:10px;}
+
+/*change laydate*/
+
+
+/*change layer*/
+body .gx_layer .layui-layer-title{padding:0 80px 0 0 !important;color:#fff !important;background-color: #15A4FA!important;}
+body .gx_layer .layui-layer-title .iconfont{display: inline-block;height: 42px;width:42px;line-height: 40px;text-align: center;color:#8A8D97;background:#141B2E;margin-right: 10px;}
+body .gx_layer .layui-layer-setwin .layui-layer-min cite{background-color: #fff !important;}
+body .gx_layer .layui-layer-btn a{color:#fff;background:#46B702;border-color: #46B702;}
+body .gx_layer .layui-layer-setwin .layui-layer-min:hover cite{background-color: #B9E4FE !important;}
+
+.frame_p{font-size: 16px;}
+
+.layui-tab-content{padding: 0}
+
+/*change highcharts logo hidden*/
+.highcharts-credits{display: none !important;}
+
+/*sub_*page*/
+.frame{padding: 20px;}
+
+/*sub_equipStatus.html*/
+#memoryPercent,#cpuPercent,#diskPercent{margin:15px;border: 1px solid #D0D0D0;opacity: 1;position: relative;
+  box-shadow: 0 0 1px #888888;}
+.connectStatusBox{height:200px;text-align: center;}
+.connectStatusBox>P{COLOR:#8D8D8D;height: 50px;line-height: 50px;}
+.connectStatusBox>span{font-size: 100px!important;line-height: 150px!important;padding: 0!important;}
+.connectStatusBox>span.cutOff{color: #FF3600}/*断开*/
+.connectStatusBox>span.notConnect{color: #B1B1B1;}/*未连接*/
+.connectStatusBox>span.inCommunication{}/*通信中*/
+.connectStatusBox>span.connect{color: #10E600;}/*连接*/
+
+/*sub_equipConfig.html*/
+#equipConfig table tbody tr td:nth-child(odd){text-align: center;background: #97EBF1;}
+
+/*sub_protocolConfig*/
+.protocolConfig{}
+.protocolConfig .listColor{}
+.protocolConfig .addBtn{cursor: pointer;position:absolute;top:0;right:10px;margin:0;padding:0;height:40px;line-height:40px;}
+.protocolConfig .addBtn span:nth-child(1){color: #00810C;}
+.protocolConfig .addBtn span:nth-child(2){color: #444c63;}
+.protocolConfig .addBtn:hover{opacity: .7;}
+.protocolConfig .removeBtn{cursor: pointer;}
+.protocolConfig .removeBtn span:nth-child(1){color: #FF3000;}
+.protocolConfig .removeBtn span:nth-child(2){color: #444c63;}
+.protocolConfig .removeBtn:hover{opacity: .7;}
+.scrollBox>table{margin-top:0;}
+.scrollBox label{margin-left:5px;margin-right:5px;}
+
+
+
+
