@@ -1,6 +1,7 @@
 import json
 
 import logging
+import pickle
 
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import DatabaseError
@@ -30,6 +31,7 @@ def vnpy_core_views(request):
     return HttpResponse(json.dumps(msg))
 
 
+
 @csrf_exempt
 def api_key_views(request):
     """
@@ -38,7 +40,13 @@ def api_key_views(request):
     :return: 
     """
     if "POST" == request.method:
-        body = json.loads(request.body)
+        # 把 body 里的数据取出来，转换成json格式
+        data = request.body.decode()
+        body_temp = data.split("&")[2]
+        bodylst = body_temp.split("=")
+        temp = g_view_utils.convert_serialize_object_to_str(bodylst[1])
+        body = json.loads(temp)
+
         exchange = body["exchange"]
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
         api_keys = body["Keys"]
@@ -420,4 +428,13 @@ def sub_changepwd_views(request):
     """
     return render(request, "sub_changepwd.html")
 
+
+def commit_apikey_views(request):
+    """
+    
+    :param request: 
+    :return: 
+    """
+
+    return redirect('/api_key/')
 

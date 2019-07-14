@@ -370,38 +370,7 @@
 					options_txjk += '<option value="'+msg[i][0]+'">'+msg[i][1]+'</option>';
 				}
 				$("#sub_config_txjk").append(options_txjk);    		   //【发送】通信接口下拉框数据加载
-				$("#sub_config_receive_txjk").append(options_txjk);    //【接收】通信接口下拉框数据加载
-//				for(var i=0;i<cjsb.length;i++){
-//					options_cjsb += '<option value="'+cjsb[i].code_value+'">'+cjsb[i].code+'</option>';
-//				}
-//				$("#sub_config_cjsb").append(options_cjsb);	   			//【发送】采集设备下拉框数据加载
-//				$("#sub_config_receive_cjsb").append(options_cjsb);	    //【接收】采集设备下拉框数据加载
-//				for(var i=0;i<sjjyfs.length;i++){
-//					options_sjjyfs += '<option value="'+sjjyfs[i].code_value+'">'+sjjyfs[i].code+'</option>';
-//				}
-//				$("#sub_config_sjjyfs").append(options_sjjyfs);			//【发送】数据校验方式下拉框数据加载
-//				$("#sub_config_receive_sjjyfs").append(options_sjjyfs);	//【接收】数据校验方式下拉框数据加载
-//				for(var i=0;i<lx.length;i++){
-//					options_lx += '<option value="'+lx[i].code_value+'">'+lx[i].code+'</option>';
-//				}
-//				$("#sub_config_receive_lx").append(options_lx);	        //【接收】类型下拉框数据加载
-//				for(var i=0;i<bwcdms.length;i++){
-//					options_bwcdms += '<option value="'+bwcdms[i].code_value+'">'+bwcdms[i].code+'</option>';
-//				}
-//				$("#sub_config_receive_bwcdms").append(options_bwcdms);	    //【接收】报文长度模式下拉框数据加载
-				//【发送】根据返回数据加载默认选中和默认值
-//				for(var i=0;i<send.length;i++){
-//					$.each(send[i], function(j) {					
-//						$("#form_protocolConfig [name="+j+"]").val(send[i][j]);
-//					});
-//				}
-//				//【接收】根据返回数据加载默认选中和默认值
-//				for(var i=0;i<receive.length;i++){
-//					$.each(receive[i], function(j) {					
-//						$("#form_protocolConfig_receive [name="+j+"]").val(receive[i][j]);
-//					});
-//				}
-				//加载下拉菜单后初始化  
+				$("#sub_config_receive_txjk").append(options_txjk);
 				form.render("select");
 			});
 			

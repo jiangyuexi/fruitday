@@ -76,11 +76,6 @@
 				{
 					//用户名文本框获得焦点
 					$("input[name=UserName]").focus();
-					//按键登录
-//				  $("#login_sub").click(function(){
-//						login();
-//					});
-
 				 });
 
 				
@@ -114,36 +109,6 @@
 					});
 				});
 				
-				//按键登录
-				/*$("#login_sub").click(function(){
-					var name = $("input[name=UserName]").val(),pwd = $("input[name=PassWord]").val();
-					var fileName = "login.html";
-
-					var json = {"UserName":name,"PassWord":pwd,"FileName":fileName};
-				
-//					eval('var val='+json); 
-
-					$.ajax({
-						url:"index/",
-						type:"post",
-						data:json,
-						dataType:"json",
-						async:true,
-						success:function(data){
-							console.log("成功：");
-							console.dir(data);
-							
-		//					location.href = val.success;
-						},
-						error:function(err){
-							console.dir(err);
-							//用户名文本框获得焦点
-//							$("input[name=UserName]").focus();
-		//					layer.alert(val.error);
-						},
-					});
-				});*/
-				
 
 				//登录方法
 				function login()
@@ -157,14 +122,7 @@
 					$.post("index/",json,function(data)
 					{
 						console.log(data);
-//						eval('var val='+data); ;
-//						if(val.error)
-//						{
-//							layer.alert(val.error);
-//						}else if(val.success)
-//						{
-//							location.href = val.success;
-//						}
+
 					});
 				}
 

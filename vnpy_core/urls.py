@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^login/sub_changepwd.html$', sub_changepwd_views),
     url(r'^login/sub_index.html$', sub_index_views),
 
+    # url(r'^account_info/commit_apikey/$', commit_apikey_views),
 
     url(r'^login/sub_protocolConfig$', sub_protocolConfig_views),
     url(r'^logout/$',logout_views),
@@ -38,6 +39,7 @@ urlpatterns = [
     url(r'^cancel_order/$', cancel_order_views),
     url(r'^fetch_orders/$', fetch_orders_views),
     url(r'^fetch_open_orders/$', fetch_open_orders_views),
+
 
 
 

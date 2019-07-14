@@ -49,3 +49,19 @@ class View_utils(object):
         elif "ZB" == str_exchange:
             return ccxt.zb
 
+    def convert_serialize_object_to_str(self, serialize_object: str):
+        """
+        serialize object  转换成 json 字符串
+        :param serialize_object:  str 格式的 serialize object
+        :return: str 格式的 json字符串
+        """
+        serialize_object = serialize_object.replace("+", " ")
+        serialize_object = serialize_object.replace("%7B", chr(0x7B))
+        serialize_object = serialize_object.replace("%7D", chr(0x7D))
+        serialize_object = serialize_object.replace("%22", chr(0x22))
+        serialize_object = serialize_object.replace("%3A", chr(0x3A))
+        serialize_object = serialize_object.replace("%2C", chr(0x2C))
+        serialize_object = serialize_object.replace("%5B", chr(0x5B))
+        serialize_object = serialize_object.replace("%5D", chr(0x5D))
+        return serialize_object
+
