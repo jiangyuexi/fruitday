@@ -310,6 +310,16 @@ def sub_index_views(request):
     return render(request, "sub_index.html")
 
 
+def account_info_views(request):
+    """
+    
+    :param request: 
+    :return: 
+    """
+    if request.method == "GET":
+        return render(request, "account_info.html")
+
+
 @csrf_exempt
 def sub_protocolConfig_views(request):
     """

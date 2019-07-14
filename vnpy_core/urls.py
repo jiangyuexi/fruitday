@@ -16,7 +16,7 @@ urlpatterns = [
     url(r'^login/$', login_views),
     url(r'^login/index/$', login_views),
     url(r'^login/check_user/$', check_user_views),
-
+    url(r'^login/account_info.html', account_info_views),
     url(r'^login/sub_protocolConfig.html$', sub_protocolConfig_views),
     url(r'^login/sub_equipInfo.html$', sub_equipInfo_views),
     url(r'^login/sub_equipStatus.html$', sub_equipStatus_views),
