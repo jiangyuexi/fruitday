@@ -54,15 +54,15 @@ def api_key_views(request):
 
         for api_key in api_keys:
             # 建立一个对象
-            if api_key["账户"] not in g_gateways:
+            if api_key["user_name"] not in g_gateways:
                 setting = api_key
                 gateway = g_view_utils.create_gateway_obj(exchange=exchange, setting=setting)
-                g_gateways[api_key["账户"]] = gateway
+                g_gateways[api_key["user_name"]] = gateway
 
     else:
         pass
 
-    msg = {"账户": [k for k in g_gateways.keys()]}
+    msg = {"user_name": [k for k in g_gateways.keys()]}
 
     return HttpResponse(json.dumps(msg))
 
@@ -254,6 +254,7 @@ def check_user_views(request):
             return JsonResponse({"msg": "not_exsit"})
 
 
+@csrf_exempt
 def login_views(request):
     """
 
