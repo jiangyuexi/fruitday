@@ -53,15 +53,13 @@
 					<td>
 						<select id="sub_config_user_ids" name="parameter_user_ids" lay-filter="sub_config_user_ids" lay-verify="required"></select>
 					</td>
-					<td>接口名称</td>
-					<td>
-						<select id="sub_config_jkmc" name="parameter_policy_name" lay-filter="sub_config_jkmc" lay-verify="required"></select>
-					</td>
-					<td>端口号</td>
-					<td>
-						<select id="sub_config_dkh" name="parameter_port_type" lay-verify="required"></select>
-					</td>
+
 				</tr>
+                <tr>账户余额</tr>
+                <tr>
+                    <textarea  class="layui-textarea" id="balance_json"
+                    style="width:90%;height:20px" readonly></textarea>
+                </tr>
 				<tr>
 					<td>采集设备</td>
 					<td>
@@ -187,7 +185,13 @@
       ,laydate = layui.laydate
       ,element=layui.element
       ,$=layui.jquery;
-
+      /**
+       *  字符串转换成 json 对象
+       **/
+      function strToJson(str){
+        var json = eval('(' + str + ')');
+        return json;
+      };
         /**
          * 获取cookie 通过 key
          * @param name  key
@@ -217,46 +221,49 @@
             document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
         }
 
-      $(document).on('click','#show_user_ids',function(){
+        $(document).on('click','#show_user_ids',function(){
           var cookieObj=getCookie("user_ids");
+          var options_user_ids = [];
           //把\054转换成对应的','
           cookieObj = cookieObj.replace(/\\054/g, ",");
+          cookieObj = cookieObj.replace(/"/g, "");
           $("#return_account_login_info").val(cookieObj);
+          var obj_user_ids = strToJson(cookieObj);
+          //debugger;
           //填充数据到用户名称下拉框
-            for(var i=0;i<msg.length;i++){
+          for(var i=0;i<obj_user_ids.length;i++){
 
-            options_txjk += '<option value="'+msg[i][0]+'">'+msg[i][1]+'</option>';
-            }
-            $("#sub_config_txjk").append(options_txjk);    		   //【发送】通信接口下拉框数据加载
+            options_user_ids += '<option value="'+i+'">'+obj_user_ids[i]+'</option>';
+          }
+          $("#sub_config_user_ids").append(options_user_ids);   //填充数据到用户名称下拉框
 
-            form.render("select");
-            console.log(cookieObj);
-
-
-      });
-
-
-       //创建一个编辑器
-
-      //监听提交
-      form.on('submit(demo1)', function(data){
-        var text = $("#account_info").val();   //方法1
-        $.ajax({
-            url:"api_key/",
-            type:"post",
-            data:text,
-            async:true,
-            success:function(data){
-                var __data = unescape(data.replace(/\\u/g, '%u'));
-                var __old = $("#return_account_login_info").val();
-                $("#return_account_login_info").val(__old  + __data + "       API 接入成功！！！\n\r");
-             },
-            error:function(e){
-                layer.msg(e);
-            }
+          form.render("select");
+          console.log(cookieObj);
         });
-        return false;
-      });
+        //选择账户
+        form.on('select(sub_config_user_ids)',function(data){
+
+            var user = {};
+            user.exchange = "BITMEX";
+            user.gateway_name = "BITMEX";
+            user.name = data.elem.name;
+            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
+            //debugger;
+            $.ajax({
+                url:"balance/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    $("#balance_json").val(__data);
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+        });
 
     });
 </script>

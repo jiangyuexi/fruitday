@@ -33,7 +33,7 @@ urlpatterns = [
     url(r'^login/sub_protocolConfig$', sub_protocolConfig_views),
     url(r'^logout/$',logout_views),
     url(r'^login/api_key/$',api_key_views),
-    url(r'^balance/$', balance_views),
+    url(r'^login/balance/$', balance_views),
     url(r'^fetch_my_trades/$', fetch_my_trades_views),
     url(r'^create_order/$', create_order_views),
     url(r'^cancel_order/$', cancel_order_views),

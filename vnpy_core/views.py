@@ -81,16 +81,16 @@ def balance_views(request):
         exchange = body["exchange"]
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
         gateway_name = body["gateway_name"]
-        user_name = body["账户"]
+        user_id = body["user_id"]
 
         balances = []
         for k, gateway in g_gateways.items():
             # 现在只支持bitmex， 后面可以在此处扩展
-            if isinstance(gateway, ccxt_class_name) and k == user_name:
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
                 balance = gateway.fetch_balance()
                 balances.append(balance)
 
-        msg = {"账户": user_name, "balances": balances}
+        msg = {"账户": user_id, "balances": balances}
 
         return HttpResponse(json.dumps(msg))
 
