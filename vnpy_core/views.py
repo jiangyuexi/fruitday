@@ -20,6 +20,8 @@ g_gateways = {}
 # 工具类
 g_view_utils = View_utils()
 
+COOKIE_EXPIRES_TIME = 60*60*24*365
+
 @csrf_exempt
 def vnpy_core_views(request):
     if "POST" == request.method:
@@ -42,10 +44,8 @@ def api_key_views(request):
     if "POST" == request.method:
         # 把 body 里的数据取出来，转换成json格式
         data = request.body.decode()
-        body_temp = data.split("&")[2]
-        bodylst = body_temp.split("=")
-        temp = g_view_utils.convert_serialize_object_to_str(bodylst[1])
-        body = json.loads(temp)
+
+        body = json.loads(data)
 
         exchange = body["exchange"]
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
@@ -54,17 +54,19 @@ def api_key_views(request):
 
         for api_key in api_keys:
             # 建立一个对象
-            if api_key["user_name"] not in g_gateways:
+            if api_key["账户"] not in g_gateways:
                 setting = api_key
                 gateway = g_view_utils.create_gateway_obj(exchange=exchange, setting=setting)
-                g_gateways[api_key["user_name"]] = gateway
+                g_gateways[api_key["账户"]] = gateway
 
     else:
         pass
 
-    msg = {"user_name": [k for k in g_gateways.keys()]}
-
-    return HttpResponse(json.dumps(msg))
+    msg = {"账户": [k for k in g_gateways.keys()]}
+    response = HttpResponse(json.dumps(msg))
+    # 返回cookies
+    response.set_cookie("user_ids", msg["账户"], expires=COOKIE_EXPIRES_TIME)
+    return response
 
 
 @csrf_exempt
@@ -288,8 +290,8 @@ def login_views(request):
         if find_user:
             if UserName == find_user[0].user_name and PassWord == find_user[0].user_pass_word:
                 resp = render(request, "index.html")
-                resp.set_cookie("UserName", find_user[0].user_name, 60*60*24*365)
-                resp.set_cookie("PassWord", find_user[0].user_pass_word, 60*60*24*365)
+                resp.set_cookie("UserName", find_user[0].user_name, COOKIE_EXPIRES_TIME)
+                resp.set_cookie("PassWord", find_user[0].user_pass_word, COOKIE_EXPIRES_TIME)
                 return resp
             else:
                 return JsonResponse({"msg": "用户或密码错误！", "dsf":"dsfsd", "dfsdsd":4325435})
@@ -428,6 +430,15 @@ def sub_changepwd_views(request):
     :return:
     """
     return render(request, "sub_changepwd.html")
+
+
+def trade_operation_views(request):
+    """
+    
+    :param request: 
+    :return: 
+    """
+    return  render(request, "trade_operation.html")
 
 
 def commit_apikey_views(request):

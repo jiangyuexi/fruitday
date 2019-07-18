@@ -29,17 +29,22 @@
 
 <form class="layui-form" action="">
 
-  <div class="layui-form-item layui-form-text">
-    <div class="layui-input-block">
-      <textarea placeholder="请输入内容" class="layui-textarea" id="account_info"></textarea>
+    <div class="layui-form-item layui-form-text">
+        <div class="layui-input-block">
+          <textarea  class="layui-textarea layui-input" id="account_info"
+                     style="width:90%;height:400px"></textarea>
+        </div>
     </div>
-  </div>
 
-  <div class="layui-form-item">
+    <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" lay-submit="" lay-filter="demo1">提交账户信息</button>
+      <button class="layui-btn" lay-submit="" lay-filter="demo1">提交账户API信息</button>
     </div>
-  </div>
+    </div>
+    <div class="layui-input-block">
+      <textarea  class="layui-textarea" id="return_account_login_info"
+                 style="width:90%;height:20px" readonly></textarea>
+    </div>
 </form>
 
 <script>
@@ -60,18 +65,10 @@ layui.use(['form', 'layedit', 'laydate'], function(){
         data:text,
         async:true,
         success:function(data){
-            console.log(data);
-            var data = eval("["+data+"]");
-            //console.log(data);
-            return false;
-            if(data[1].return == "success"){
-                layer.msg("提交成功");
-            }else if(data[1].return == "error"){
-                layer.msg("服务器存储失败(请重新提交)");
-            }else{
-                layer.msg("未知错误");
-            }
-        },
+            var __data = unescape(data.replace(/\\u/g, '%u'));
+            var __old = $("#return_account_login_info").val();
+            $("#return_account_login_info").val(__old  + __data + "       API 接入成功！！！\n\r");
+         },
         error:function(e){
             layer.msg(e);
         }

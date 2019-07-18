@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+  <meta http-equiv="keywords" content="关键字,关键字,关键字"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <meta http-equiv="expires" content="0"/>
+  <meta name="description" content="页面描述不超过150个字符"/>
+  <meta name="Author" content="页面作者"/>
+  <meta name="renderer" content="webkit"/>
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+  <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" >
+  <link rel="stylesheet" type="text/css" href="../static/layui/dist/css/layui.css"/>
+  <link rel="stylesheet" href="../static/stylesheets/gx_main.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/iconfont/iconfont.css">
+  <!--[if lt IE 9]>
+  <script src="../static/html5shiv/dist/html5shiv.min.js"></script>
+  <script src="../static/respond/dest/respond.min.js"></script>
+  <![endif]-->
+  <script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="../static/layui/dist/layui.js" type="text/javascript" charset="utf-8"></script>
+  <script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
+  <!--mine-->
+  <script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body class="gx_index">
+
+<form class="layui-form trade_operation" id="form_trade_operation">
+		<input type="hidden" name="FileName" value="trade_operation.html"/>
+		<input type="hidden" name="method" value="send_post"/>
+		<!--【发送】协议配置-->
+		<table class="layui-table">
+			<thead class="lightBlue center">
+				<tr>
+					<th colspan="6">成功接入的账户</th>
+				</tr>
+                <tr>
+                    <textarea  class="layui-textarea" id="return_account_login_info"
+                    style="width:90%;height:20px" readonly></textarea>
+                </tr>
+                <tr>
+                    <button id="show_user_ids" type="button"
+                            class="layui-btn layui-btn-primary layui-btn-radius">显示账户</button>
+
+                </tr>
+			</thead>
+			<tbody class="grey center">
+
+				<tr>
+					<td>账号名称</td>
+					<td>
+						<select id="sub_config_user_ids" name="parameter_user_ids" lay-filter="sub_config_user_ids" lay-verify="required"></select>
+					</td>
+					<td>接口名称</td>
+					<td>
+						<select id="sub_config_jkmc" name="parameter_policy_name" lay-filter="sub_config_jkmc" lay-verify="required"></select>
+					</td>
+					<td>端口号</td>
+					<td>
+						<select id="sub_config_dkh" name="parameter_port_type" lay-verify="required"></select>
+					</td>
+				</tr>
+				<tr>
+					<td>采集设备</td>
+					<td>
+						<select id="sub_config_cjsb" name="parameter_device_name_ID" lay-verify="required"></select>
+					</td>
+					<td>进制选择</td>
+					<td>
+						<select name="jinzhi" lay-verify="required">
+							<option value="16">16进制</option>
+						</select>
+					</td>
+					<td>定时发送</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_timer" lay-verify="required">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!--【发送】发送请求协议格式定义-->
+		<table class="layui-table">
+			<thead class="lightBlue center">
+				<tr>
+					<th colspan="6">发送协议格式定义</th>
+				</tr>
+			</thead>
+			<tbody class="grey center">
+				<tr>
+					<td>报文长度</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_pack_size" lay-verify="required">
+					</td>
+					<td>报文校验方式</td>
+					<td>
+						<select class="layui-input layui-unselect" id="sub_config_sjjyfs" name="parameter_check_type_ID" lay-verify="required"></select>
+					</td>
+					<td>校验报文开始字节</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_check_data_start_pos" lay-verify="required">
+					</td>
+				</tr>
+				<tr>
+					<td>校验报文结束字节</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_check_data_end_pos" lay-verify="required">
+					</td>
+					<td>报文校验值位置</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_data_check_pos" lay-verify="required">
+					</td>
+					<td>报文校验值长度</td>
+					<td>
+						<input type="text" class="layui-input" name="parameter_data_check_length" lay-verify="required">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!--【发送】协议模板-->
+		<table class="layui-table">
+			<thead class="lightBlue center">
+				<tr>
+					<th>协议模板</th>
+				</tr>
+			</thead>
+			<tbody class="grey center">
+				<tr>
+					<td>
+						<span>12</span>
+						<span>55</span>
+						<span>66</span>
+						<span>77</span>
+						<span>99</span>
+						<span>01</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<!--【发送】发送参数-->
+		<div class="scrollBox">
+			<table class="layui-table">
+				<thead class="lightBlue center">
+					<tr>
+						<th>
+							发送参数
+							<p class="addBtn" id="addSendConfig"><span class="iconfont icon-gx_jiaHao"></span><span>添加参数</span></p>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="grey center" id="addSendConfigList">
+					<tr>
+						<td><!--
+							--><label>参数起始字节</label><!--
+							--><div class="layui-input-inline"><!--
+								--><input type="text" class="layui-input" name="parameter_start_pos0" lay-verify="required"><!--
+							--></div><!--
+							--><label>参数长度</label><!--
+							--><div class="layui-input-inline"><!--
+								--><input type="text" class="layui-input" name="parameter_length0" lay-verify="required"><!--
+							--></div><!--
+							--><label>参数内容</label><!--
+							--><div class="layui-input-inline"><!--
+								--><input type="text" class="layui-input" name="parameter_content0" lay-verify="required"><!--
+							--></div><!--
+							--><label class="removeBtn"><span class="iconfont icon-gx_cha"></span><span>删除</span></label><!--
+						--></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<!--【发送】提交按钮-->
+		<div class="text_right">
+			<button class="layui-btn layui-btn-darkBlue" id="sub_protocolConfig" lay-submit="" lay-filter="sub_send">提交</button>
+			<button type="reset" class="layui-btn layui-btn-darkBlue">重置</button>
+		</div>
+	</form>
+
+
+<script>
+
+    layui.use(['form', 'layedit', 'laydate','element','jquery'], function(){
+      var form = layui.form
+      ,layer = layui.layer
+      ,layedit = layui.layedit
+      ,laydate = layui.laydate
+      ,element=layui.element
+      ,$=layui.jquery;
+
+        /**
+         * 获取cookie 通过 key
+         * @param name  key
+         * @returns {null} value
+         */
+        function getCookie(name)
+        {
+            var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+
+            if(arr=document.cookie.match(reg))
+
+                return unescape(arr[2]);
+            else
+                return null;
+        };
+        /**
+         * 设置 cookie
+         * @param name    key
+         * @param value  value
+         * @param time  时间
+         */
+        function setCookie(name,value,time)
+        {
+            var strsec = getsec(time);
+            var exp = new Date();
+            exp.setTime(exp.getTime() + strsec*1);
+            document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
+        }
+
+      $(document).on('click','#show_user_ids',function(){
+          var cookieObj=getCookie("user_ids");
+          //把\054转换成对应的','
+          cookieObj = cookieObj.replace(/\\054/g, ",");
+          $("#return_account_login_info").val(cookieObj);
+          //填充数据到用户名称下拉框
+            for(var i=0;i<msg.length;i++){
+
+            options_txjk += '<option value="'+msg[i][0]+'">'+msg[i][1]+'</option>';
+            }
+            $("#sub_config_txjk").append(options_txjk);    		   //【发送】通信接口下拉框数据加载
+
+            form.render("select");
+            console.log(cookieObj);
+
+
+      });
+
+
+       //创建一个编辑器
+
+      //监听提交
+      form.on('submit(demo1)', function(data){
+        var text = $("#account_info").val();   //方法1
+        $.ajax({
+            url:"api_key/",
+            type:"post",
+            data:text,
+            async:true,
+            success:function(data){
+                var __data = unescape(data.replace(/\\u/g, '%u'));
+                var __old = $("#return_account_login_info").val();
+                $("#return_account_login_info").val(__old  + __data + "       API 接入成功！！！\n\r");
+             },
+            error:function(e){
+                layer.msg(e);
+            }
+        });
+        return false;
+      });
+
+    });
+</script>
+
+</body>
+</html>
