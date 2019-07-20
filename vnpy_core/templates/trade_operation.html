@@ -24,6 +24,10 @@
   <script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
   <!--mine-->
   <script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
+  <!-- ECharts单文件引入 -->
+  <script src="../static/echarts-2.2.7/build/dist/echarts.js"></script>
+{#  <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>#}
+
 </head>
 <body class="gx_index">
 
@@ -78,11 +82,10 @@
 				</tr>
 			</tbody>
 		</table>
-		<table class="layui-table">
+        <table class="layui-table">
             <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
             <div id="main" style="height:400px"></div>
         </table>
-
         <!--【发送】发送请求协议格式定义-->
 		<table class="layui-table">
 			<thead class="lightBlue center">
@@ -180,13 +183,12 @@
 		</div>
 	</form>
 
-<!-- ECharts单文件引入 -->
-<script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+
 <script type="text/javascript">
     // 路径配置
     require.config({
         paths: {
-            echarts: 'http://echarts.baidu.com/build/dist'
+            echarts: '../static/echarts-2.2.7/build/dist'
         }
     });
     // 使用
@@ -200,31 +202,32 @@
             var myChart = ec.init(document.getElementById('main'));
 
             var option = {
-                tooltip: {
-                    show: true
-                },
-                legend: {
-                    data:['销量']
-                },
-                xAxis : [
-                    {
-                        type : 'category',
-                        data : ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-                    }
-                ],
-                yAxis : [
-                    {
-                        type : 'value'
-                    }
-                ],
-                series : [
-                    {
-                        "name":"销量",
-                        "type":"bar",
-                        "data":[5, 20, 40, 10, 10, 20]
-                    }
-                ]
-            };
+                    tooltip: {
+                        show: true
+                    },
+                    legend: {
+                        data:['销量']
+                    },
+                    xAxis : [
+                        {
+                            type : 'category',
+                            data : ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                        }
+                    ],
+                    yAxis : [
+                        {
+                            type : 'value'
+                        }
+                    ],
+                    series : [
+                        {
+                            "name":"销量",
+                            "type":"bar",
+                            "data":[5, 20, 40, 10, 10, 20]
+                        }
+                    ]
+                };
+
 
             // 为echarts对象加载数据
             myChart.setOption(option);
@@ -233,12 +236,13 @@
 </script>
 <script>
 
-    layui.use(['form', 'layedit', 'laydate','element','jquery'], function(){
+    layui.use(['form', 'layedit', 'laydate','element','jquery', 'echarts'], function(){
       var form = layui.form
       ,layer = layui.layer
       ,layedit = layui.layedit
       ,laydate = layui.laydate
       ,element=layui.element
+      ,echarts=layui.echarts
       ,$=layui.jquery;
       /**
        *  字符串转换成 json 对象
@@ -332,7 +336,77 @@
             });
             return false;
         });
-
+        // 基于准备好的dom，初始化echarts实例
+{#		var barChart = echarts.init(document.getElementById("main"));#}
+{#		var option = null;#}
+{#		function Histogram() {#}
+{#		$.ajax({#}
+{#				url : "${ctx}/ReportFormController/getEchartsData.do",#}
+{#				data : {#}
+{#					stockid : stockid,#}
+{#					drugnumber : drugnumber,#}
+{#					batchnumber : batchnumber#}
+{#				},#}
+{#				dataType : 'json',#}
+{#				success : function(data) {#}
+{#					option = {#}
+{#						title : {#}
+{#							text : '柱状图展示'//标题内容#}
+{#						},#}
+{#						tooltip : {},#}
+{#						legend : {#}
+{#							data : [ '库存数量展示' ]#}
+{#						//标签内容#}
+{#						//注意例子格式为数组，后台传过来的需要对应格式处理数据#}
+{#						//data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]#}
+{#						},#}
+{#						xAxis : {#}
+{#							data : data.drugname,#}
+{#							//x轴项目名竖直排列#}
+{#							axisLabel : {#}
+{#								interval : 0,#}
+{#								formatter : function(value) {#}
+{#									return value.split("").join("\n");#}
+{#								}#}
+{#							}#}
+{#						},#}
+{##}
+{#						yAxis : {},#}
+{#						series : [ {#}
+{#							name : '库存剩余库存数',//与标签内容相同#}
+{#							type : 'bar',#}
+{#							//增加数据的单位展示#}
+{#							label : {#}
+{#								normal : {#}
+{#									show : true,#}
+{#									position : 'top',#}
+{#									formatter : '剩余{c}'#}
+{#								}#}
+{#							},#}
+{#							//注意例子格式为数组，后台传过来的需要对应格式处理数据#}
+{#							//data: [5, 20, 36, 10, 10, 20]#}
+{#							data : data.stocknumber#}
+{#						} ,{#}
+{#							name : '药品最低存储量',//与标签内容相同#}
+{#							type : 'bar',#}
+{#							//增加数据的单位展示#}
+{#							label : {#}
+{#								normal : {#}
+{#									show : true,#}
+{#									position : 'top',#}
+{#									formatter : '最低{c}'#}
+{#								}#}
+{#							},#}
+{#							//注意例子格式为数组，后台传过来的需要对应格式处理数据#}
+{#							//data: [5, 20, 36, 10, 10, 20]#}
+{#							data : data.minimumreserve#}
+{#						}	]#}
+{#					};#}
+{#					// 使用刚指定的配置项和数据显示图表。#}
+{#					barChart.setOption(option);#}
+{#				}#}
+{#			});#}
+{#		}#}
     });
 </script>
 
