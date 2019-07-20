@@ -9,6 +9,9 @@
 import ccxt
 
 # 单例类
+import time
+
+
 class View_utils(object):
     """
      views.py 里的基础函数
@@ -64,4 +67,33 @@ class View_utils(object):
         serialize_object = serialize_object.replace("%5B", chr(0x5B))
         serialize_object = serialize_object.replace("%5D", chr(0x5D))
         return serialize_object
+
+    def get_symbols(self,gateway):
+        """
+        获取市场交易对
+        :param gateway: 交易所对象
+        :return: 一个交易所的所有交易对
+        """
+        # 获取市场交易对
+        gateway.load_markets()
+        symbols = gateway.symbols
+        print(gateway.symbols)  # 打印市场交易对
+        return symbols
+
+    def get_history_ohlcv(self, gateway, symbol, since_time):
+        """
+        获取历史ohlcv 数据
+        :param gateway: 交易所对象
+        :param symbol:  交易对
+        :param since_time: 开始时间
+        :return: 返回 list   开高低收 成交量
+        """
+
+        # 请求的candles个数 12小时 的 1min k 个数
+        limit = 24 * 60 / 2
+
+        returns = gateway.fetch_ohlcv(symbol=symbol, timeframe="1m",
+                                      limit=limit, since=since_time)
+        return returns
+
 

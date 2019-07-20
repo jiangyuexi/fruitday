@@ -24,7 +24,6 @@
   <script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
   <!--mine-->
   <script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../static/echarts-4.2.1/dist/echarts.js" type="text/javascript" charset="utf-8"></script>
 
 </head>
 <body class="gx_index">
@@ -62,153 +61,16 @@
                     <textarea  class="layui-textarea" id="balance_json"
                     style="width:90%;height:20px" readonly></textarea>
                 </tr>
-				<tr>
-					<td>采集设备</td>
-					<td>
-						<select id="sub_config_cjsb" name="parameter_device_name_ID" lay-verify="required"></select>
-					</td>
-					<td>进制选择</td>
-					<td>
-						<select name="jinzhi" lay-verify="required">
-							<option value="16">16进制</option>
-						</select>
-					</td>
-					<td>定时发送</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_timer" lay-verify="required">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-        <table class="layui-table">
-            <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
-            <div id="main" style="width: 600px;height:400px;"></div>
-        </table>
 
+			</tbody>
+		</table>
 
-        <!--【发送】发送请求协议格式定义-->
-		<table class="layui-table">
-			<thead class="lightBlue center">
-				<tr>
-					<th colspan="6">发送协议格式定义</th>
-				</tr>
-			</thead>
-			<tbody class="grey center">
-				<tr>
-					<td>报文长度</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_pack_size" lay-verify="required">
-					</td>
-					<td>报文校验方式</td>
-					<td>
-						<select class="layui-input layui-unselect" id="sub_config_sjjyfs" name="parameter_check_type_ID" lay-verify="required"></select>
-					</td>
-					<td>校验报文开始字节</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_check_data_start_pos" lay-verify="required">
-					</td>
-				</tr>
-				<tr>
-					<td>校验报文结束字节</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_check_data_end_pos" lay-verify="required">
-					</td>
-					<td>报文校验值位置</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_data_check_pos" lay-verify="required">
-					</td>
-					<td>报文校验值长度</td>
-					<td>
-						<input type="text" class="layui-input" name="parameter_data_check_length" lay-verify="required">
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<!--【发送】协议模板-->
-		<table class="layui-table">
-			<thead class="lightBlue center">
-				<tr>
-					<th>协议模板</th>
-				</tr>
-			</thead>
-			<tbody class="grey center">
-				<tr>
-					<td>
-						<span>12</span>
-						<span>55</span>
-						<span>66</span>
-						<span>77</span>
-						<span>99</span>
-						<span>01</span>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-		<!--【发送】发送参数-->
-		<div class="scrollBox">
-			<table class="layui-table">
-				<thead class="lightBlue center">
-					<tr>
-						<th>
-							发送参数
-							<p class="addBtn" id="addSendConfig"><span class="iconfont icon-gx_jiaHao"></span><span>添加参数</span></p>
-						</th>
-					</tr>
-				</thead>
-				<tbody class="grey center" id="addSendConfigList">
-					<tr>
-						<td><!--
-							--><label>参数起始字节</label><!--
-							--><div class="layui-input-inline"><!--
-								--><input type="text" class="layui-input" name="parameter_start_pos0" lay-verify="required"><!--
-							--></div><!--
-							--><label>参数长度</label><!--
-							--><div class="layui-input-inline"><!--
-								--><input type="text" class="layui-input" name="parameter_length0" lay-verify="required"><!--
-							--></div><!--
-							--><label>参数内容</label><!--
-							--><div class="layui-input-inline"><!--
-								--><input type="text" class="layui-input" name="parameter_content0" lay-verify="required"><!--
-							--></div><!--
-							--><label class="removeBtn"><span class="iconfont icon-gx_cha"></span><span>删除</span></label><!--
-						--></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
 		<!--【发送】提交按钮-->
 		<div class="text_right">
 			<button class="layui-btn layui-btn-darkBlue" id="sub_protocolConfig" lay-submit="" lay-filter="sub_send">提交</button>
 			<button type="reset" class="layui-btn layui-btn-darkBlue">重置</button>
 		</div>
 </form>
-<script type="text/javascript">
-    // 基于准备好的dom，初始化echarts实例
-    var myChart = echarts.init(document.getElementById('main'));
-
-    // 指定图表的配置项和数据
-    var option = {
-        title: {
-            text: 'ECharts 入门示例'
-        },
-        tooltip: {},
-        legend: {
-            data:['销量']
-        },
-        xAxis: {
-            data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-        },
-        yAxis: {},
-        series: [{
-            name: '销量',
-            type: 'bar',
-            data: [5, 20, 36, 10, 10, 20]
-        }]
-    };
-
-    // 使用刚指定的配置项和数据显示图表。
-    myChart.setOption(option);
-</script>
 
 <script>
 

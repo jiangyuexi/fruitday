@@ -3,6 +3,7 @@ import json
 import logging
 import pickle
 
+import time
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import DatabaseError
 from django.http import HttpResponse, JsonResponse
@@ -13,14 +14,16 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User
+from vnpy_core.models import User, Min1
 from .view_utils import View_utils
 # 存放 通道 对象
 g_gateways = {}
-# 工具类
+# 工具类 单例
 g_view_utils = View_utils()
-
+# cookie的保留时间
 COOKIE_EXPIRES_TIME = 60*60*24*365
+# 一天的时间间隔
+ONEDAY = 1512489600000 - 1512403200000
 
 @csrf_exempt
 def vnpy_core_views(request):
@@ -93,6 +96,81 @@ def balance_views(request):
         msg = {"账户": user_id, "balances": balances}
 
         return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
+def fetch_ohlcv_views(request):
+    """
+    获取市场价格
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        user_id = body["user_id"]
+        symbol = body["symbol"]
+        timeframe = body["timeframe"]
+
+        for k, gateway in g_gateways.items():
+            # 现在只支持bitmex， 后面可以在此处扩展
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+                # 请求的candles个数
+                limit = 5
+                #  当前时间
+                current_time = int(time.time() // 60 * 60 * 1000)  # 毫秒
+                print(current_time)
+
+                # 获取请求开始的时间
+                since_time = current_time - limit * 60 * 1000
+                returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=limit, since=since_time)
+
+        msg = {"user_id": user_id, "markets": returns}
+
+        return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
+def fetch_history_ohlcv_views(request):
+    """
+    获取市场价格 60天
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        user_id = body["user_id"]
+        symbol = body["symbol"]
+        timeframe = body["timeframe"]
+
+        # 1 开始时间
+        a = "2019-05-20 00:00:00"
+        # a = start_date + " 00:00:00"
+        # 将其转换为时间数组
+        timeArray = time.strptime(a, "%Y-%m-%d %H:%M:%S")
+        start_timeStamp = int(time.mktime(timeArray)) * 1000
+
+        for k, gateway in g_gateways.items():
+            # 现在只支持bitmex， 后面可以在此处扩展
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+                for i in range(31 * 2):
+                    time.sleep(3)
+                    start_timeStamp += i * ONEDAY / 2
+                    lst = g_view_utils.get_history_ohlcv(gateway=gateway,symbol=symbol,since_time=start_timeStamp)
+                    for o in lst:
+                        Min1(min1_timestamp=o[0], min1_open=o[1], min1_high=o[2],
+                             min1_low=o[3], min1_close=o[4], min1_volume=o[5]).save();
+
+
+        msg = {"user_id": user_id, "markets": "OK"}
+
+        return HttpResponse(json.dumps(msg))
+
 
 
 @csrf_exempt
@@ -441,13 +519,13 @@ def trade_operation_views(request):
     return  render(request, "trade_operation.html")
 
 
-def sub_echart_views(request):
+def sub_candlestick_views(request):
     """
     显示行情
-    :param request: 
-    :return: 
+    :param request:
+    :return:
     """
-    return render(request, "sub_echart.html")
+    return render(request, "sub_candlestick.html")
 
 
 def commit_apikey_views(request):
@@ -458,4 +536,26 @@ def commit_apikey_views(request):
     """
 
     return redirect('/api_key/')
+
+
+@csrf_exempt
+def get_symbols_views(request):
+    """
+    获取交易所的所有交易对
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        user_id = body["user_id"]
+
+        for k, gateway in g_gateways.items():
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+                returns = g_view_utils.get_symbols(gateway=gateway)
+
+        msg = {"user_id": user_id, "symbols": returns}
+        return HttpResponse(json.dumps(msg))
 

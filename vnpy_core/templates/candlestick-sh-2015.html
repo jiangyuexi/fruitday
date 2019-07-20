@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="config" style="height: 5%">
+{#          <form id="configForm" method="post">#}
+              <span >
+                  <label>
+                蜡烛周期：
+              </label></span >
+              <span >
+                  <select id="select_candles">
+                      <option value ="5min">5min</option>
+                      <option value ="10min">10min</option>
+                      <option value = "1day">1day</option>
+                 </select>
+              </span >
+              <span ><label >
+                参数
+              </label></span >
+              <span ><input name="XXXX" type="text" ></span >
+              <span ><button onclick="my_back()">向后</button></span >
+              <span ><button onclick="my_show()">显示</button></span >
+              <span ><button onclick="my_go()">向前</button></span >
+{#          </form>#}
+
+    {#           <span ><button id="5m" onclick="show_5_min_K_line()">5分钟</button></span>#}
+    {#           <span ><button id="5m" onclick="show_10_min_K_line()">10分钟</button></span>#}
+    {#           <span ><button id="5m" onclick="show_20_min_K_line()">20分钟</button></span>#}
+    {#           <span ><button id="1d" onclick="show_one_day_K_line()">日K</button></span>#}
+       </div>
+       <div id="container" style="height: 95%"></div>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+{#       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>#}
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+       <script type="text/javascript" src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
+{#       <script src="../static/static/js/jquery-1.11.1/jquery.js"></script>#}
+{#       <script src="../static/static/js/jquery-1.11.1/jquery.min.js"></script>#}
+       <script type="text/javascript">
+{#       <script type="text/javascript" src=./static/js/echarts.min.js></script>#}
+{#       <script type="text/javascript" src=./static/js/echarts-gl.min.js></script>#}
+{#       <script type="text/javascript" src=./static/js/ecStat.min.js></script>#}
+{#       <script type="text/javascript" src=./static/js/dataTool.min.js></script>#}
+{#       <script type="text/javascript" src=./static/js/china.js></script>#}
+{#       <script type="text/javascript" src=./static/js/world.js></script>#}
+{#       <script type="text/javascript" src=https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM></script>#}
+{#       <script type="text/javascript" src=./static/js/bmap.min.js></script>#}
+{#       <script type="text/javascript" src=./static/js/simplex.js></script>#}
+{#       <script type="text/javascript">#}
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+app.title = '比特币K线图';
+var myDate = new Date();//获取系统当前时间
+var mytime=myDate.toLocaleTimeString(); //获取当前时间
+var date_time = myDate.toLocaleString( ); //获取日期与时间
+var current_timestamp = myDate.getTime(); //获取当前时间(从1970.1.1开始的毫秒数)
+var now_date = myDate.toLocaleDateString(); //获取当前日期
+console.log(mytime, date_time, current_timestamp, now_date);
+var oneday = 1512489600000 - 1512403200000;
+{#['2015/12/31','3570.47','3539.18','-33.69','-0.94%','3538.35','3580.6','176963664','25403106','-']#}
+function show_5_min_K_line(option_arg, timestamp_arg) {
+    console.log("show_5_min_K_line");
+    $.ajax({
+        type:"POST",
+        url:"candles/5min?option_arg=" + option_arg + "&timestamp_arg=" + timestamp_arg,
+        dataType:"json",
+        contentType:"application/json",
+        data:"get_candles_info",
+        success:function(data){
+            console.log("成功调用！！");
+{#            console.log(data);#}
+{#            console.log(data["history_prices"]);#}
+            var MD_X = data["MD_X"];
+{#            console.log(MD_X);#}
+            var rawData = data["history_prices"];
+            var dates = rawData.map(function (item) {
+                return item[0];
+            });
+
+            var data = rawData.map(function (item) {
+                return [+item[1], +item[2], +item[5], +item[6]];
+            });
+
+            var option = {
+            backgroundColor: '#21202D',
+            legend: {
+                data: ['5min', 'MA5', 'MA10', 'MA20', 'MA30'],
+                inactiveColor: '#777',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false,
+                    type: 'cross',
+                    lineStyle: {
+                        color: '#376df4',
+                        width: 2,
+                        opacity: 1
+                    }
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: dates,
+                axisLine: { lineStyle: { color: '#8392A5' } }
+            },
+            yAxis: {
+                scale: true,
+                axisLine: { lineStyle: { color: '#8392A5' } },
+                splitLine: { show: false }
+            },
+            grid: {
+                bottom: 80
+            },
+            dataZoom: [{
+                textStyle: {
+                    color: '#8392A5'
+                },
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                handleSize: '80%',
+                dataBackground: {
+                    areaStyle: {
+                        color: '#8392A5'
+                    },
+                    lineStyle: {
+                        opacity: 0.8,
+                        color: '#8392A5'
+                    }
+                },
+                handleStyle: {
+                    color: '#fff',
+                    shadowBlur: 3,
+                    shadowColor: 'rgba(0, 0, 0, 0.6)',
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2
+                }
+            }, {
+                type: 'inside'
+            }],
+            animation: false,
+            series: [
+                {
+                    type: 'candlestick',
+                    name: '5min',
+                    data: data,
+                    itemStyle: {
+                        normal: {
+                            color: '#0CF49B',
+                            color0: '#FD1050',
+                            borderColor: '#0CF49B',
+                            borderColor0: '#FD1050'
+                        }
+                    }
+                },
+                {
+                    name: 'MA5',
+                    type: 'line',
+{#                    data: calculateMA(5, data),#}
+                    data: MD_X[0],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA10',
+                    type: 'line',
+{#                    data: calculateMA(10, data),#}
+                    data: MD_X[1],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA20',
+                    type: 'line',
+{#                    data: calculateMA(20, data),#}
+                    data: MD_X[2],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA30',
+                    type: 'line',
+{#                    data: calculateMA(30, data),#}
+                    data: MD_X[3],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                }
+            ]
+        };;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        },
+        error:function(data){
+            console.log("失败", data);
+        }
+     });
+}
+
+function show_10_min_K_line(option_arg, timestamp_arg) {
+    console.log("show_10_min_K_line");
+
+}
+function show_20_min_K_line(option_arg, timestamp_arg) {
+    console.log("show_20_min_K_line");
+
+}
+function show_one_day_K_line() {
+    $.ajax({
+        type:"POST",
+        url:"candles",
+        dataType:"json",
+        contentType:"application/json",
+        data:"get_candles_info",
+        success:function(data){
+            console.log("成功调用！！");
+{#            console.log(data);#}
+{#            console.log(data["history_prices"]);#}
+            var MD_X = data["MD_X"];
+{#            console.log(MD_X);#}
+            var rawData = data["history_prices"];
+            var dates = rawData.map(function (item) {
+                return item[0];
+            });
+
+            var data = rawData.map(function (item) {
+                return [+item[1], +item[2], +item[5], +item[6]];
+            });
+
+            var option = {
+            backgroundColor: '#21202D',
+            legend: {
+                data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
+                inactiveColor: '#777',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    animation: false,
+                    type: 'cross',
+                    lineStyle: {
+                        color: '#376df4',
+                        width: 2,
+                        opacity: 1
+                    }
+                }
+            },
+            xAxis: {
+                type: 'category',
+                data: dates,
+                axisLine: { lineStyle: { color: '#8392A5' } }
+            },
+            yAxis: {
+                scale: true,
+                axisLine: { lineStyle: { color: '#8392A5' } },
+                splitLine: { show: false }
+            },
+            grid: {
+                bottom: 80
+            },
+            dataZoom: [{
+                textStyle: {
+                    color: '#8392A5'
+                },
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                handleSize: '80%',
+                dataBackground: {
+                    areaStyle: {
+                        color: '#8392A5'
+                    },
+                    lineStyle: {
+                        opacity: 0.8,
+                        color: '#8392A5'
+                    }
+                },
+                handleStyle: {
+                    color: '#fff',
+                    shadowBlur: 3,
+                    shadowColor: 'rgba(0, 0, 0, 0.6)',
+                    shadowOffsetX: 2,
+                    shadowOffsetY: 2
+                }
+            }, {
+                type: 'inside'
+            }],
+            animation: false,
+            series: [
+                {
+                    type: 'candlestick',
+                    name: '日K',
+                    data: data,
+                    itemStyle: {
+                        normal: {
+                            color: '#0CF49B',
+                            color0: '#FD1050',
+                            borderColor: '#0CF49B',
+                            borderColor0: '#FD1050'
+                        }
+                    }
+                },
+                {
+                    name: 'MA5',
+                    type: 'line',
+{#                    data: calculateMA(5, data),#}
+                    data: MD_X[0],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA10',
+                    type: 'line',
+{#                    data: calculateMA(10, data),#}
+                    data: MD_X[1],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA20',
+                    type: 'line',
+{#                    data: calculateMA(20, data),#}
+                    data: MD_X[2],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    name: 'MA30',
+                    type: 'line',
+{#                    data: calculateMA(30, data),#}
+                    data: MD_X[3],
+                    smooth: true,
+                    showSymbol: false,
+                    lineStyle: {
+                        normal: {
+                            width: 1
+                        }
+                    }
+                }
+            ]
+        };;
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+        },
+        error:function(data){
+            console.log("失败", data);
+        }
+     });
+}
+
+$(document).ready(function(){
+    show_one_day_K_line();
+});
+
+function my_show(){
+{#    获取蜡烛周期#}
+    var obj = document.getElementById("select_candles"); //定位id
+    var index = obj.selectedIndex; // 选中索引
+    var text = obj.options[index].text; // 选中文本
+    var value = obj.options[index].value; // 选中值
+    if ("5min" == text){
+        show_5_min_K_line("show", current_timestamp);
+    }else if ("10min" == text){
+
+    }else {
+
+    }
+
+};
+function my_back() {
+{#    获取蜡烛周期#}
+    var obj = document.getElementById("select_candles"); //定位id
+    var index = obj.selectedIndex; // 选中索引
+    var text = obj.options[index].text; // 选中文本
+    var value = obj.options[index].value; // 选中值
+    if ("5min" == text){
+        current_timestamp -= oneday * 10
+        show_5_min_K_line("back", current_timestamp);
+    }else if ("10min" == text){
+
+    }else {
+
+    }
+};
+
+function my_go() {
+{#    获取蜡烛周期#}
+    var obj = document.getElementById("select_candles"); //定位id
+    var index = obj.selectedIndex; // 选中索引
+    var text = obj.options[index].text; // 选中文本
+    var value = obj.options[index].value; // 选中值
+    if ("5min" == text){
+        current_timestamp += oneday * 10;
+        show_5_min_K_line("go", current_timestamp);
+    }else if ("10min" == text){
+
+    }else {
+
+    }
+};
+       </script>
+   </body>
+</html>
