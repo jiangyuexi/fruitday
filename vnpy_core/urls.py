@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^login/sub_changepwd.html$', sub_changepwd_views),
     url(r'^login/sub_index.html$', sub_index_views),
     url(r'^login/trade_operation.html$', trade_operation_views),
+    url(r'^login/sub_echart.html$', sub_echart_views),
     # url(r'^account_info/commit_apikey/$', commit_apikey_views),
 
     url(r'^login/sub_protocolConfig$', sub_protocolConfig_views),

@@ -441,6 +441,15 @@ def trade_operation_views(request):
     return  render(request, "trade_operation.html")
 
 
+def sub_echart_views(request):
+    """
+    显示行情
+    :param request: 
+    :return: 
+    """
+    return render(request, "sub_echart.html")
+
+
 def commit_apikey_views(request):
     """
     
