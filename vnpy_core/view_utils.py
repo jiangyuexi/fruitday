@@ -96,4 +96,15 @@ class View_utils(object):
                                       limit=limit, since=since_time)
         return returns
 
+    def custom_time(self, timestamp):
+        """
+        时间戳转换成日期和时间
+        :param timestamp: 
+        :return: 
+        """
+        # 转换成localtime
+        time_local = time.localtime(timestamp)
+        # 转换成新的时间格式(2016-05-05 20:28:54)
+        dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
+        return dt
 

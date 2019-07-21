@@ -4,57 +4,14 @@
        <meta charset="utf-8">
    </head>
    <body style="height: 100%; margin: 0">
-       <div id="config" style="height: 5%">
-{#          <form id="configForm" method="post">#}
-              <span >
-                  <label>
-                蜡烛周期：
-              </label></span >
-              <span >
-                  <select id="select_candles">
-                      <option value ="5min">5min</option>
-                      <option value ="10min">10min</option>
-                      <option value = "1day">1day</option>
-                 </select>
-              </span >
-              <span ><label >
-                参数
-              </label></span >
-              <span ><input name="XXXX" type="text" ></span >
-              <span ><button onclick="my_back()">向后</button></span >
-              <span ><button onclick="my_show()">显示</button></span >
-              <span ><button onclick="my_go()">向前</button></span >
-{#          </form>#}
 
-    {#           <span ><button id="5m" onclick="show_5_min_K_line()">5分钟</button></span>#}
-    {#           <span ><button id="5m" onclick="show_10_min_K_line()">10分钟</button></span>#}
-    {#           <span ><button id="5m" onclick="show_20_min_K_line()">20分钟</button></span>#}
-    {#           <span ><button id="1d" onclick="show_one_day_K_line()">日K</button></span>#}
-       </div>
        <div id="container" style="height: 95%"></div>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
-{#       <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM"></script>#}
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
-       <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
-       <script type="text/javascript" src="http://libs.baidu.com/jquery/1.10.2/jquery.min.js"></script>
-{#       <script src="../static/static/js/jquery-1.11.1/jquery.js"></script>#}
-{#       <script src="../static/static/js/jquery-1.11.1/jquery.min.js"></script>#}
-       <script type="text/javascript">
-{#       <script type="text/javascript" src=./static/js/echarts.min.js></script>#}
-{#       <script type="text/javascript" src=./static/js/echarts-gl.min.js></script>#}
-{#       <script type="text/javascript" src=./static/js/ecStat.min.js></script>#}
-{#       <script type="text/javascript" src=./static/js/dataTool.min.js></script>#}
-{#       <script type="text/javascript" src=./static/js/china.js></script>#}
-{#       <script type="text/javascript" src=./static/js/world.js></script>#}
-{#       <script type="text/javascript" src=https://api.map.baidu.com/api?v=2.0&ak=ZUONbpqGBsYGXNIYHicvbAbM></script>#}
-{#       <script type="text/javascript" src=./static/js/bmap.min.js></script>#}
-{#       <script type="text/javascript" src=./static/js/simplex.js></script>#}
-{#       <script type="text/javascript">#}
+       <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.js"></script>
+       <script src="../static/jquery/dist/jquery.js"></script>
+       <script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
 var app = {};
@@ -77,6 +34,7 @@ function show_5_min_K_line(option_arg, timestamp_arg) {
         data:"get_candles_info",
         success:function(data){
             console.log("成功调用！！");
+            return;
 {#            console.log(data);#}
 {#            console.log(data["history_prices"]);#}
             var MD_X = data["MD_X"];
@@ -153,7 +111,7 @@ function show_5_min_K_line(option_arg, timestamp_arg) {
             series: [
                 {
                     type: 'candlestick',
-                    name: '5min',
+                    name: '1min',
                     data: data,
                     itemStyle: {
                         normal: {
@@ -239,12 +197,13 @@ function show_20_min_K_line(option_arg, timestamp_arg) {
 function show_one_day_K_line() {
     $.ajax({
         type:"POST",
-        url:"candles",
+        url:"candles/",
         dataType:"json",
         contentType:"application/json",
         data:"get_candles_info",
         success:function(data){
-            console.log("成功调用！！");
+            console.log(data);
+            return;
 {#            console.log(data);#}
 {#            console.log(data["history_prices"]);#}
             var MD_X = data["MD_X"];

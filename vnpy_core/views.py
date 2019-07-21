@@ -199,6 +199,39 @@ def fetch_my_trades_views(request):
 
 
 @csrf_exempt
+def candles_views(request):
+    """
+    获取1min k线历史数据
+    :param request: 
+    :return: 
+    """
+    if "POST" != request.method:
+        return
+
+    try:
+        # 查询数据库
+        candles = Min1.objects.filter()
+    except DatabaseError as e:
+        logging.warning(e)
+        return HttpResponse(json.dumps({'return': '数据库错误'}))
+
+    history_price = []
+    for candle in candles:
+
+        # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
+        # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
+        timeYMD = g_view_utils.custom_time(candle.min1_timestamp // 1000)
+        _temp = \
+            [timeYMD, candle.min1_open, candle.min1_close, '?', '?',
+             candle.min1_low, candle.min1_close, '?', candle.min1_volume, '_']
+        history_price.append(_temp)
+
+    msg = {"user_name": "", "return": history_price}
+
+    return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
 def fetch_orders_views(request):
     """
     现有某个品种所有订单
@@ -526,6 +559,16 @@ def sub_candlestick_views(request):
     :return:
     """
     return render(request, "sub_candlestick.html")
+
+
+def sub_candlestick1_views(request):
+    """
+    显示行情
+    :param request:
+    :return:
+    """
+    return render(request, "candlestick-sh-2015.html")
+
 
 
 def commit_apikey_views(request):
