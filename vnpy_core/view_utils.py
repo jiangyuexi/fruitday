@@ -6,6 +6,7 @@
 
 @author: jiangyuexi1992@qq.com
 """
+import bitmex
 import ccxt
 
 # 单例类
@@ -33,11 +34,13 @@ class View_utils(object):
         :return: 交易所对象
         """
         if "BITMEX" == exchange:
-            bitmex = ccxt.bitmex(setting)
+            _bitmex = ccxt.bitmex(setting)
             # 设置为测试服务器
-            bitmex.urls["api"] = bitmex.urls["test"]
-            bitmex.urls["www"] = bitmex.urls["test"]
-            return bitmex
+            _bitmex.urls["api"] = _bitmex.urls["test"]
+            _bitmex.urls["www"] = _bitmex.urls["test"]
+            # 引入bitmex官方的对象
+            _bitmex.client = bitmex.bitmex(test=True, api_key=setting["apiKey"], api_secret=setting["secret"])
+            return _bitmex
         else:
             pass
 

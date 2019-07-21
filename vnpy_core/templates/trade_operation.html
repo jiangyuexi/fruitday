@@ -54,9 +54,15 @@
 					<td>
 						<select id="sub_config_user_ids" name="parameter_user_ids" lay-filter="sub_config_user_ids" lay-verify="required"></select>
 					</td>
+                    <td>当前价格</td>
+                    <td><input type="text" class="layui-input" id="price" lay-verify="required" readonly></td>
 
-				</tr>
+                </tr>
+                <tr>
+                    <input colspan="6" type="text" class="layui-input" id="position" lay-verify="required" readonly>
+                </tr>
                 <tr>账户余额</tr>
+
                 <tr>
                     <textarea  class="layui-textarea" id="balance_json"
                     style="width:90%;height:20px" readonly></textarea>
@@ -116,6 +122,63 @@
             exp.setTime(exp.getTime() + strsec*1);
             document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
         }
+
+        //十五秒刷新一次
+
+        window.get_price = function () {
+            var user = {};
+            user.exchange = "BITMEX";
+            user.gateway_name = "BITMEX";
+            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
+            user.symbol="BTC/USD";
+            //debugger;
+            $.ajax({
+                url:"fetch_ticks/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    var obj = strToJson(__data);
+                    $("#price").val(obj.ticks.last);
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+
+        };
+        window.get_position = function () {
+            var user = {};
+            user.exchange = "BITMEX";
+            user.gateway_name = "BITMEX";
+            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
+            user.symbol="BTC/USD";
+            //debugger;
+            $.ajax({
+                url:"fetch_my_trades/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    var obj = strToJson(__data);
+                    $("#position").val( "仓位和方向："+ JSON.stringify(obj.position.openingQty)
+                        + "开仓价格：" + JSON.stringify(obj.position.avgEntryPrice) + "当前市价mark:" +
+                    JSON.stringify(obj.position.markPrice));
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+
+
+        };
+
+        setInterval('get_price()',3000);
+        setInterval('get_position()',3000);
 
         $(document).on('click','#show_user_ids',function(){
           var cookieObj=getCookie("user_ids");

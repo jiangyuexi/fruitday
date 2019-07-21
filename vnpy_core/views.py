@@ -4,6 +4,8 @@ import logging
 import pickle
 
 import time
+
+import bitmex
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import DatabaseError
 from django.http import HttpResponse, JsonResponse
@@ -133,6 +135,32 @@ def fetch_ohlcv_views(request):
 
 
 @csrf_exempt
+def fetch_ticks_views(request):
+    """
+    获取市场价格
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        user_id = body["user_id"]
+        symbol = body["symbol"]
+        returns = None
+        for k, gateway in g_gateways.items():
+            # 现在只支持bitmex， 后面可以在此处扩展
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+
+                returns = gateway.fetch_ticker(symbol=symbol)
+
+        msg = {"user_id": user_id, "ticks": returns}
+
+        return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
 def fetch_history_ohlcv_views(request):
     """
     获取市场价格 60天
@@ -166,7 +194,6 @@ def fetch_history_ohlcv_views(request):
                         Min1(min1_timestamp=o[0], min1_open=o[1], min1_high=o[2],
                              min1_low=o[3], min1_close=o[4], min1_volume=o[5]).save();
 
-
         msg = {"user_id": user_id, "markets": "OK"}
 
         return HttpResponse(json.dumps(msg))
@@ -186,15 +213,18 @@ def fetch_my_trades_views(request):
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
         gateway_name = body["gateway_name"]
         symbol = body["symbol"]
-        user_name = body["账户"]
+        user_id = body["user_id"]
 
-        fetch_my_trades = []
+        result = None
         for k, gateway in g_gateways.items():
-            if isinstance(gateway, ccxt_class_name) and k == user_name:
-                my_trades = gateway.fetch_my_trades(symbol=symbol)
-                fetch_my_trades.append(my_trades)
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+                # my_trades = gateway.fetch_my_trades(symbol=symbol)
+                result = gateway.client.Position.Position_get(filter=json.dumps({'symbol': 'XBTUSD'})).result()[0][0]
+                result["currentTimestamp"] = str(result["currentTimestamp"])
+                result["openingTimestamp"] = str(result["openingTimestamp"])
+                result["timestamp"] = str(result["timestamp"])
 
-        msg = {"user_name": user_name, "获取现有仓位和方向": fetch_my_trades}
+        msg = {"user_id": user_id, "position": result}
         return HttpResponse(json.dumps(msg))
 
 
@@ -567,7 +597,7 @@ def sub_candlestick1_views(request):
     :param request:
     :return:
     """
-    return render(request, "candlestick-sh-2015.html")
+    return render(request, "candlestick_sh.html")
 
 
 

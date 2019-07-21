@@ -29,7 +29,7 @@ urlpatterns = [
     url(r'^login/sub_index.html$', sub_index_views),
     url(r'^login/trade_operation.html$', trade_operation_views),
     url(r'^login/sub_candlestick.html$', sub_candlestick_views),
-    url(r'^login/candlestick-sh-2015.html$', sub_candlestick1_views),
+    url(r'^login/candlestick_sh.html$', sub_candlestick1_views),
     # url(r'^account_info/commit_apikey/$', commit_apikey_views),
 
 
@@ -39,8 +39,9 @@ urlpatterns = [
     url(r'^login/balance/$', balance_views),
     url(r'^login/get_symbols/$', get_symbols_views),
     url(r'^login/fetch_ohlcv/$', fetch_ohlcv_views),
+    url(r'^login/fetch_ticks/$', fetch_ticks_views),
     url(r'^login/fetch_history_ohlcv/$', fetch_history_ohlcv_views),
-    url(r'^fetch_my_trades/$', fetch_my_trades_views),
+    url(r'^login/fetch_my_trades/$', fetch_my_trades_views),
     url(r'^login/candles/$', candles_views),
     url(r'^create_order/$', create_order_views),
     url(r'^cancel_order/$', cancel_order_views),
