@@ -83,7 +83,7 @@ class View_utils(object):
         print(gateway.symbols)  # 打印市场交易对
         return symbols
 
-    def get_history_ohlcv(self, gateway, symbol, since_time):
+    def get_history_ohlcv(self, gateway, timeframe, symbol, since_time):
         """
         获取历史ohlcv 数据
         :param gateway: 交易所对象
@@ -91,11 +91,11 @@ class View_utils(object):
         :param since_time: 开始时间
         :return: 返回 list   开高低收 成交量
         """
-
+        return  None
         # 请求的candles个数 12小时 的 1min k 个数
         limit = 24 * 60 / 2
 
-        returns = gateway.fetch_ohlcv(symbol=symbol, timeframe="1m",
+        returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe,
                                       limit=limit, since=since_time)
         return returns
 

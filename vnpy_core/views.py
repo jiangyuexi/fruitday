@@ -1,10 +1,13 @@
+import datetime
 import json
 
 import logging
 import pickle
 
 import time
-
+from pandas import DataFrame, Series
+import pandas as pd
+import numpy as np
 import bitmex
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import DatabaseError
@@ -199,7 +202,6 @@ def fetch_history_ohlcv_views(request):
         return HttpResponse(json.dumps(msg))
 
 
-
 @csrf_exempt
 def fetch_my_trades_views(request):
     """
@@ -253,10 +255,88 @@ def candles_views(request):
         timeYMD = g_view_utils.custom_time(candle.min1_timestamp // 1000)
         _temp = \
             [timeYMD, candle.min1_open, candle.min1_close, '?', '?',
-             candle.min1_low, candle.min1_close, '?', candle.min1_volume, '_']
+             candle.min1_low, candle.min1_high, '?', candle.min1_volume, '_']
         history_price.append(_temp)
 
     msg = {"user_name": "", "return": history_price}
+
+    return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
+def get_candles_views(request):
+    """
+    获取 k线历史数据
+    :param request: 
+    :return: 
+    """
+    if "POST" != request.method:
+        return
+
+    body = json.loads(request.body)
+    exchange = body["exchange"]
+    ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+    gateway_name = body["gateway_name"]
+    user_id = body["user_id"]
+    symbol = body["symbol"]
+    timeframe = body["timeframe"]
+    limit = body["limit"]
+
+    # 1 开始时间
+    a = "2019-07-05 00:00:00"
+    # a = start_date + " 00:00:00"
+    # 将其转换为时间数组
+    timeArray = time.strptime(a, "%Y-%m-%d %H:%M:%S")
+    start_timeStamp = time.time() * 1000 - ONEDAY * 20
+    history_price = []
+    candles = []
+    for k, gateway in g_gateways.items():
+        # 现在只支持bitmex， 后面可以在此处扩展
+        if isinstance(gateway, ccxt_class_name) and k == user_id:
+            # 行情信息
+            candles = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe,
+                                limit=limit, since=start_timeStamp)
+
+            for candle in candles:
+                # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
+                # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
+                timeYMD = g_view_utils.custom_time(candle[0] // 1000)
+                _temp = \
+                    [timeYMD, candle[1], candle[4], '?', '?',
+                     candle[3], candle[2], '?', candle[5], '_']
+                history_price.append(_temp)
+
+            # 历史费率
+            result = gateway.client.Funding.Funding_get(symbol="XBTUSD", reverse=True, count=20*3
+                                                        ).result()[0]
+            result.reverse()
+            # 连续的时间
+            timestamps = [str(result[0]["timestamp"] + datetime.timedelta(hours=8 + i))[0:-6] \
+                          for i in range(20 *3 * 8)]
+
+            founding_rates = []
+            for r in result:
+                r["timestamp"] = str(r["timestamp"] + datetime.timedelta(hours=8))[0:-6]
+                r["fundingInterval"] = str(r["fundingInterval"])[0:-6]
+                _tmp = [r["timestamp"], r["symbol"],
+                        r["fundingInterval"], r["fundingRate"], r["fundingRateDaily"]]
+                founding_rates.append(_tmp)
+
+
+    df_founding_rates = DataFrame(founding_rates,
+                                  columns=["timestamp", "symbol", "fundingInterval",
+                                         "fundingRate", "fundingRateDaily"])
+    df_history_price = DataFrame(history_price,
+                                 columns=['timestamp', 'open', 'close', 'v1',
+                                        'v2', 'low', 'high', 'v3', 'vol', 'v4'])
+    # 合并d1 和df_founding_rates
+    d1 = DataFrame(timestamps, columns=['timestamp'])
+
+    pd_datas = pd.merge(d1, df_founding_rates, on=['timestamp'], how='left').fillna(0)
+    # left jion
+    pd_datas_inner = pd.merge(pd_datas, df_history_price, on=["timestamp"], how='inner')
+
+    msg = {"user_id": user_id, "return": pd_datas_inner.values.tolist()}
 
     return HttpResponse(json.dumps(msg))
 
@@ -588,7 +668,16 @@ def sub_candlestick_views(request):
     :param request:
     :return:
     """
-    return render(request, "sub_candlestick.html")
+    return render(request, "candlestick-brush.html")
+
+
+def line_simple_views(request):
+    """
+    历史费率
+    :param request:
+    :return:
+    """
+    return render(request, "line-simple.html")
 
 
 def sub_candlestick1_views(request):
@@ -631,4 +720,55 @@ def get_symbols_views(request):
 
         msg = {"user_id": user_id, "symbols": returns}
         return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
+def get_history_founding_rate_views(request):
+    """
+    获取历史费率
+    :param request: 
+    :return: 
+    """
+    if "POST" != request.method:
+        return None
+
+    body = json.loads(request.body)
+    exchange = body["exchange"]
+    ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+    gateway_name = body["gateway_name"]
+    symbol = body["symbol"]
+    user_id = body["user_id"]
+    reverse = body["reverse"]
+    count = body["count"]
+
+    result = None
+    founding_rates = []
+    for k, gateway in g_gateways.items():
+        if isinstance(gateway, ccxt_class_name) and k == user_id:
+
+            # api_response = api_instance.funding_get(symbol=symbol, filter=filter, columns=columns, count=count,
+            #                                         start=start, reverse=reverse, start_time=start_time,
+            #                                         end_time=end_time)
+            result = gateway.client.Funding.Funding_get(symbol=symbol, reverse=reverse,count=count
+                                                        ).result()[0]
+            result.reverse()
+            # 连续的时间
+            timestamps = [str( result[0]["timestamp"] + datetime.timedelta(hours=8 + i))[0:-6] \
+                          for i in range(count * 8)]
+
+            for r in result:
+                r["timestamp"] = str( r["timestamp"] + datetime.timedelta(hours=8))[0:-6]
+                r["fundingInterval"] = str( r["fundingInterval"])[0:-6]
+                _tmp =[r["timestamp"], r["symbol"],
+                       r["fundingInterval"], r["fundingRate"], r["fundingRateDaily"]]
+                founding_rates.append(_tmp)
+
+    d1 = DataFrame(timestamps)
+    d2 = DataFrame(founding_rates)
+    # 合并d1 和d2
+    pd_datas = pd.merge(d1, d2, on=0, how='left').fillna(0)
+    # merge将df4和df5按apts列合并,left表示以df4为基准,注意合并DataFrame里cars列名字变化
+    msg = {"user_id": user_id, "founding_rate": pd_datas.values.tolist()}
+    return HttpResponse(json.dumps(msg))
+
 

@@ -6,6 +6,8 @@
    <body style="height: 100%; margin: 0">
 
        <div id="container" style="height: 95%"></div>
+
+       <div id="founding_rate" style="height: 95%"></div>
        <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.min.js"></script>
        <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.js"></script>
        <script src="../static/jquery/dist/jquery.js"></script>
@@ -14,6 +16,7 @@
 
 var dom = document.getElementById("container");
 var myChart = echarts.init(dom);
+
 var app = {};
 app.title = '比特币K线图';
 var myDate = new Date();//获取系统当前时间
@@ -194,13 +197,35 @@ function show_20_min_K_line(option_arg, timestamp_arg) {
     console.log("show_20_min_K_line");
 
 }
+function calculateMA(dayCount, data) {
+    var result = [];
+    for (var i = 0, len = data.length; i < len; i++) {
+        if (i < dayCount) {
+            result.push('-');
+            continue;
+        }
+        var sum = 0;
+        for (var j = 0; j < dayCount; j++) {
+            sum += data[i - j][1];
+        }
+        result.push(sum / dayCount);
+    }
+    return result;
+}
 function show_one_day_K_line() {
+    var user = {};
+    user.exchange = "BITMEX";
+	user.gateway_name = "BITMEX";
+	user.user_id ="jiangyuexi1992@qq.com";
+	user.symbol = "BTC/USD";
+	user.timeframe = "1h";
+	user.limit = 500;
     $.ajax({
         type:"POST",
-        url:"candles/",
+        url:"get_candles/",
         dataType:"json",
         contentType:"application/json",
-        data:"get_candles_info",
+        data:JSON.stringify(user),
         success:function(data){
             //console.log(data.return);
             //debugger;
@@ -276,7 +301,7 @@ function show_one_day_K_line() {
             series: [
                 {
                     type: 'candlestick',
-                    name: '日K',
+                    name: '1min',
                     data: data,
                     itemStyle: {
                         normal: {
@@ -290,7 +315,7 @@ function show_one_day_K_line() {
                 {
                     name: 'MA5',
                     type: 'line',
-{#                    data: calculateMA(5, data),#}
+                    data: calculateMA(5, data),
                     //data: MD_X[0],
                     smooth: true,
                     showSymbol: false,
@@ -303,7 +328,7 @@ function show_one_day_K_line() {
                 {
                     name: 'MA10',
                     type: 'line',
-{#                    data: calculateMA(10, data),#}
+                    data: calculateMA(10, data),
                     //data: MD_X[1],
                     smooth: true,
                     showSymbol: false,
@@ -316,7 +341,7 @@ function show_one_day_K_line() {
                 {
                     name: 'MA20',
                     type: 'line',
-{#                    data: calculateMA(20, data),#}
+                    data: calculateMA(20, data),
                     //data: MD_X[2],
                     smooth: true,
                     showSymbol: false,
@@ -329,7 +354,7 @@ function show_one_day_K_line() {
                 {
                     name: 'MA30',
                     type: 'line',
-{#                    data: calculateMA(30, data),#}
+                    data: calculateMA(30, data),
                     //data: MD_X[3],
                     smooth: true,
                     showSymbol: false,
@@ -351,8 +376,10 @@ function show_one_day_K_line() {
      });
 }
 
+
 $(document).ready(function(){
     show_one_day_K_line();
+
 });
 
 function my_show(){
