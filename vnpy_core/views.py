@@ -666,7 +666,7 @@ def trade_operation_views(request):
     return  render(request, "trade_operation.html")
 
 
-def sub_candlestick_views(request):
+def candlestick_brush_views(request):
     """
     显示行情
     :param request:

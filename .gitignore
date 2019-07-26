@@ -13,12 +13,11 @@
 x64
 
 # Temp
-build
-dist
+
 *.local
 
 # vn.py
-.vntrader
+
 
 # Visual Studio intermediate files
 *.exp
