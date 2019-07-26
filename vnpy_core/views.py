@@ -424,6 +424,90 @@ def create_order_views(request):
         msg = {"user_name": user_name, "create_orders": create_orders}
         return HttpResponse(json.dumps(msg))
 
+@csrf_exempt
+def create_orders_views(request):
+    """
+        下单  多账号
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        params = body["params"]
+        # 下单价格
+        if "market" == params["type"]:
+            # 市价
+            price =None
+        else:
+            # 限价
+            price = params["price"]
+        percent  = int(params["percent"])
+        create_orders = []
+        for k, gateway in g_gateways.items():
+            if isinstance(gateway, ccxt_class_name):
+                # 获取余额
+                free = gateway.fetch_free_balance()["BTC"]
+                orders = gateway.create_order(symbol=params["symbol"],
+                                              type=params["type"],
+                                              side=params["side"],
+                                              amount=int(free * 100 * percent),
+                                              price=price
+                                              )
+                create_orders.append(orders)
+
+        msg = {"user_name": "all", "create_orders": create_orders}
+        return HttpResponse(json.dumps(msg))
+
+
+@csrf_exempt
+def create_orders_close_views(request):
+    """
+        平仓  多账号
+    :param request: 
+    :return: 
+    """
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        params = body["params"]
+        # 下单价格
+        if "market" == params["type"]:
+            # 市价
+            price =None
+        else:
+            # 限价
+            price = params["price"]
+        percent  = int(params["percent"])
+        create_orders = []
+        for k, gateway in g_gateways.items():
+            if isinstance(gateway, ccxt_class_name):
+                # 获取仓位
+                result = gateway.client.Position.Position_get(filter=json.dumps({'symbol': 'XBTUSD'})).result()[0][0]
+                result["currentTimestamp"] = str(result["currentTimestamp"])
+                result["openingTimestamp"] = str(result["openingTimestamp"])
+                result["timestamp"] = str(result["timestamp"])
+                position = int(result["currentQty"])
+                if position >= 0:
+                    side = "sell"
+                else:
+                    side = "buy"
+
+                orders = gateway.create_order(symbol=params["symbol"],
+                                              type=params["type"],
+                                              side=side,
+                                              amount=int(abs(position) * percent // 100),
+                                              price=price
+                                              )
+                create_orders.append(orders)
+
+        msg = {"user_name": "all", "create_orders": create_orders}
+        return HttpResponse(json.dumps(msg))
+
 
 @csrf_exempt
 def cancel_order_views(request):

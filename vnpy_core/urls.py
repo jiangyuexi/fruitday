@@ -46,10 +46,12 @@ urlpatterns = [
     url(r'^login/get_history_founding_rate/$', get_history_founding_rate_views),
     url(r'^login/candles/$', candles_views),
     url(r'^login/get_candles/$', get_candles_views),
-    url(r'^create_order/$', create_order_views),
-    url(r'^cancel_order/$', cancel_order_views),
-    url(r'^fetch_orders/$', fetch_orders_views),
-    url(r'^fetch_open_orders/$', fetch_open_orders_views),
+    url(r'^login/create_order/$', create_order_views),
+    url(r'^login/create_orders/$', create_orders_views),
+    url(r'^login/create_orders_close/$', create_orders_close_views),
+    url(r'^login/cancel_order/$', cancel_order_views),
+    url(r'^login/fetch_orders/$', fetch_orders_views),
+    url(r'^login/fetch_open_orders/$', fetch_open_orders_views),
 
 
 

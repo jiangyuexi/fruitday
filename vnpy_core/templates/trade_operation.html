@@ -37,6 +37,8 @@
 				<tr>
 					<th colspan="6">成功接入的账户</th>
 				</tr>
+			</thead>
+			<tbody class="grey center">
                 <tr>
                     <textarea  class="layui-textarea" id="return_account_login_info"
                     style="width:90%;height:20px" readonly></textarea>
@@ -46,9 +48,6 @@
                             class="layui-btn layui-btn-primary layui-btn-radius">显示账户</button>
 
                 </tr>
-			</thead>
-			<tbody class="grey center">
-
 				<tr>
 					<td>账号名称</td>
 					<td>
@@ -66,6 +65,87 @@
                 <tr>
                     <textarea  class="layui-textarea" id="balance_json"
                     style="width:90%;height:20px" readonly></textarea>
+                </tr>
+
+                <tr>
+					<td>市价/限价</td>
+	                <td>
+					<select id="open_position_market_limit" lay-verify="required">
+						<option value="market">市价</option>
+						<option value="limit">限价</option>
+					</select>
+				    </td>
+					<td>百分比</td>
+					<td>
+					<select id="open_position_percent" lay-verify="required">
+						<option value="10">10</option>
+						<option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
+                        <option value="100">100</option>
+                    </select>
+                    </td>
+                    <td>
+                        价格（USD）
+                    </td>
+                    <td>
+                        <input type="text" class="layui-input" id="open_position_price" lay-verify="required" >
+                    </td>
+                    <td>
+                        <select id="open_position_side" lay-verify="required">
+						<option value="buy">做多/购买</option>
+						<option value="sell">做空/卖出</option>
+					    </select>
+                    </td>
+                    <td>
+                        <button id="open_position_button" type="button"
+                            class="layui-btn layui-btn-primary layui-btn-radius">建仓</button>
+                    </td>
+				</tr>
+                <tr>
+					<td>市价/限价</td>
+	                <td>
+					<select id="close_position_market_limit" lay-verify="required">
+						<option value="market">市价</option>
+						<option value="limit">限价</option>
+					</select>
+				    </td>
+					<td>百分比</td>
+					<td>
+					<select id="close_position_percent" lay-verify="required">
+						<option value="10">10</option>
+						<option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
+                        <option value="100">100</option>
+                    </select>
+                    </td>
+                    <td>
+                        价格（USD）
+                    </td>
+                    <td>
+                        <input type="text" class="layui-input" id="close_position_price" lay-verify="required" >
+                    </td>
+                    <td>
+                        <select id="close_position_side" lay-verify="required">
+						<option value="buy">买入平空</option>
+						<option value="sell">卖出平多</option>
+					    </select>
+                    </td>
+                     <td>
+                        <button id="close_position_button" type="button"
+                            class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger" >平仓</button>
+                    </td>
                 </tr>
 
 			</tbody>
@@ -164,8 +244,8 @@
                 success:function(res){
                     var __data = unescape(res.replace(/\\u/g, '%u'));
                     var obj = strToJson(__data);
-                    $("#position").val( "仓位和方向："+ JSON.stringify(obj.position.openingQty)
-                        + "开仓价格：" + JSON.stringify(obj.position.avgEntryPrice) + "当前市价mark:" +
+                    $("#position").val( "仓位和方向："+ JSON.stringify(obj.position.currentQty)
+                        + "开仓价格：" + JSON.stringify(obj.position.avgEntryPrice) + "标记价格mark:" +
                     JSON.stringify(obj.position.markPrice));
                 },
                 error:function(res){
@@ -235,6 +315,88 @@
                 }
             });
             return false;
+        });
+
+        $(document).on('click', '#open_position_button', function () {
+            //准备数据
+            var user = {};
+            user.exchange = "BITMEX";
+	        user.gateway_name= "BITMEX";
+	        //"账户":"jiangyuexi1992@qq.com",
+            var params = {};
+            params.symbol="BTC/USD";
+            //市价/限价
+            params.type=$("#open_position_market_limit option:selected").val();
+            //buy/sell
+            params.side=$("#open_position_side option:selected").val();
+            params.percent=$("#open_position_percent option:selected").val();
+            //数量
+            //params.amount=20.0;
+            params.price=$("#open_position_price").val();
+            user.params = params;
+            //console.log(user);
+            //debugger;
+            $.ajax({
+                url:"create_orders/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    var obj = strToJson(__data);
+
+                    var balances_text = "";
+
+                    //debugger;
+                    layer.msg("成功");
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+
+        });
+
+        $(document).on('click', '#close_position_button', function () {
+            //准备数据
+            var user = {};
+            user.exchange = "BITMEX";
+	        user.gateway_name= "BITMEX";
+	        //"账户":"jiangyuexi1992@qq.com",
+            var params = {};
+            params.symbol="BTC/USD";
+            //市价/限价
+            params.type=$("#close_position_market_limit option:selected").val();
+            //buy/sell
+            params.side=$("#close_position_side option:selected").val();
+            params.percent=$("#close_position_percent option:selected").val();
+            //数量
+            //params.amount=20.0;
+            params.price=$("#close_position_price").val();
+            user.params = params;
+            //console.log(user);
+            //debugger;
+            $.ajax({
+                url:"create_orders_close/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    var obj = strToJson(__data);
+
+                    var balances_text = "";
+
+                    //debugger;
+                    layer.msg("成功");
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+
         });
 
     });
