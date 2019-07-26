@@ -71,7 +71,7 @@ function show__K_line() {
         async:true,
         success:function(data){
             console.log(data.return);
-            debugger;
+            //debugger;
             var rawData = data.return;
             var dates = rawData.map(function (item) {
                 return item[0];
@@ -86,17 +86,30 @@ function show__K_line() {
             });
 
             // 历史费率
-            var rawData = founding_rate_datas;
-
-            var founding_rate_dates = rawData.map(function (item) {
-                return item[0];
-            });
+{#            var rawData = founding_rate_datas;#}
+{##}
+{#            var founding_rate_dates = rawData.map(function (item) {#}
+{#                return item[0];#}
+{#            });#}
 
             var founding_rate_fundingRate = rawData.map(function (item) {
-                return item[3];
+                if(1100001 == item[12])
+                {
+                    return ;
+                }else
+                {
+                    return item[12];
+                }
+
             });
             var founding_rate_fundingRateDaily = rawData.map(function (item) {
-                return item[4];
+                if(1100001 == item[13])
+                {
+                    return ;
+                }else
+                {
+                    return item[13];
+                }
             });
 
             var option = {
@@ -198,7 +211,7 @@ function show__K_line() {
                     {
                         type: 'category',
                         gridIndex: 1,
-                        data: founding_rate_dates,
+                        data: dates,
                         scale: true,
                         boundaryGap : false,
                         axisLine: {onZero: true},
@@ -321,16 +334,18 @@ function show__K_line() {
                     },
                     {
                         name: '历史费率',
-                        type: 'line',
+                        type: 'bar',
                         xAxisIndex: 1,
                         yAxisIndex: 1,
+                        color: '#0f0',
                         data: founding_rate_fundingRate
                     },
                     {
                         name: '历史费率',
-                        type: 'line',
+                        type: 'bar',
                         xAxisIndex: 1,
                         yAxisIndex: 1,
+                        color: '#f00',
                         data: founding_rate_fundingRateDaily
                     }
 

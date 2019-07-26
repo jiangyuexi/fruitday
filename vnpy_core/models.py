@@ -64,6 +64,25 @@ class Min1Old201907204(models.Model):
         db_table = '_min1_old_20190720_4'
 
 
+class UserOld20190726(models.Model):
+    user_name = models.TextField(primary_key=True)  # This field type is a guess.
+    user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
+
+    class Meta:
+        managed = False
+        db_table = '_user_old_20190726'
+
+
+class UserOld201907261(models.Model):
+    user_name = models.TextField(primary_key=True)  # This field type is a guess.
+    user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
+    permission = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = '_user_old_20190726_1'
+
+
 class AuthGroup(models.Model):
     id = models.IntegerField(primary_key=True)  # AutoField?
     name = models.CharField(unique=True, max_length=80)
@@ -199,6 +218,7 @@ class Min1(models.Model):
 class User(models.Model):
     user_name = models.TextField(primary_key=True)  # This field type is a guess.
     user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
+    user_permission = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False

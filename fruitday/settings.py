@@ -134,7 +134,9 @@ STATIC_URL = '/static/'
 STATICFILE_DIRS = (
     (BASE_DIR, "static"),
 )
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 引擎（默认）
+# SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # 引擎（默认）
+# session 混合存储，优先从本机内存中存取，如果没有则从数据库中存取
+SESSION_ENGINE='django.contrib.sessions.backends.cached_db'
 
 SESSION_COOKIE_NAME = "sessionid"  # Session的cookie保存在浏览器上时的key，即：sessionid＝随机字符串（默认）
 SESSION_COOKIE_PATH = "/"  # Session的cookie保存的路径（默认）

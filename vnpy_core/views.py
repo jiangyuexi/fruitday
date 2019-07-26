@@ -332,9 +332,9 @@ def get_candles_views(request):
     # 合并d1 和df_founding_rates
     d1 = DataFrame(timestamps, columns=['timestamp'])
 
-    pd_datas = pd.merge(d1, df_founding_rates, on=['timestamp'], how='left').fillna(0)
+    pd_datas = pd.merge(d1, df_founding_rates, on=['timestamp'], how='left').fillna(1100001)
     # left jion
-    pd_datas_inner = pd.merge(pd_datas, df_history_price, on=["timestamp"], how='inner')
+    pd_datas_inner = pd.merge(df_history_price, pd_datas, on=["timestamp"], how='inner')
 
     msg = {"user_id": user_id, "return": pd_datas_inner.values.tolist()}
 
@@ -480,12 +480,14 @@ def check_user_views(request):
 @csrf_exempt
 def login_views(request):
     """
-
+    用户登录
     :param request:
     :return:
     """
     if request.method == "GET":
-        return render(request, "login.html")
+        # 每次在登录的时候，都要去cookie中获取username的值。
+        UserName = request.COOKIES.get('UserName', '')
+        return render(request, "login.html", {'UserName': UserName})
     elif request.method == "POST":
         print("COOKIES", request.COOKIES)
         '''
@@ -511,8 +513,12 @@ def login_views(request):
         if find_user:
             if UserName == find_user[0].user_name and PassWord == find_user[0].user_pass_word:
                 resp = render(request, "index.html")
+                # 设置cookies
                 resp.set_cookie("UserName", find_user[0].user_name, COOKIE_EXPIRES_TIME)
-                resp.set_cookie("PassWord", find_user[0].user_pass_word, COOKIE_EXPIRES_TIME)
+                # resp.set_cookie("PassWord", find_user[0].user_pass_word, COOKIE_EXPIRES_TIME)
+                # 设置sessions
+                request.session['UserName'] = find_user[0].user_name
+                request.session["UserPermission"] = find_user[0].user_permission
                 return resp
             else:
                 return JsonResponse({"msg": "用户或密码错误！", "dsf":"dsfsd", "dfsdsd":4325435})
@@ -525,9 +531,7 @@ def login_views(request):
 
 def logout_views(request):
     try:
-        if request.session['user_name']:
-            del request.session['user_id']
-            del request.session['user_name']
+        request.session.flush()
     except KeyError as e:
         logging.warning(e)
     return redirect('/index/')
