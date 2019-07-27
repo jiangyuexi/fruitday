@@ -573,12 +573,12 @@ def login_views(request):
         UserName = request.COOKIES.get('UserName', '')
         return render(request, "login.html", {'UserName': UserName})
     elif request.method == "POST":
-        print("COOKIES", request.COOKIES)
-        '''
-        cookies {'sessionid': 'wdwllf0numkxii9e69ljmpy1vzamu2o1', 
-            'csrftoken': 'h57XzcWUMXnIdyPtB7gPzanh9IFl7BN27w2kSFlPnLzMwM4em5H5YcgDomBmcyxF'}
-        '''
-        print("SESSION", request.session)
+        # print("COOKIES", request.COOKIES)
+        # '''
+        # cookies {'sessionid': 'wdwllf0numkxii9e69ljmpy1vzamu2o1',
+        #     'csrftoken': 'h57XzcWUMXnIdyPtB7gPzanh9IFl7BN27w2kSFlPnLzMwM4em5H5YcgDomBmcyxF'}
+        # '''
+        # print("SESSION", request.session)
         UserName = request.POST["UserName"]
         PassWord = request.POST["PassWord"]
 
@@ -638,107 +638,6 @@ def account_info_views(request):
     """
     if request.method == "GET":
         return render(request, "account_info.html")
-
-
-@csrf_exempt
-def sub_protocolConfig_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    if request.method == "GET":
-        return render(request, "sub_protocolConfig.html")
-    elif request.method == "POST":
-        # $.post('sub_protocolConfig', {"FileName": "sub_protocolConfig.html", "method": "send_get"}, function(data)
-        FileName = request.POST["FileName"]
-        if FileName == "sub_protocolConfig.html":
-            # 这里进行数据库查询操作
-
-
-            # 假数据，测试
-
-            return JsonResponse({"msg": [
-                (1002001, "eth0", 1001001, "网络通信"),
-                (1002002, "CAN0", 1001002, "CAN通信"),
-                (1002003, "tty/mxc0", 1001003, "232通信"),
-                (1002004, "tty/mxc1", 1001004, "485通信"),
-
-            ]})
-
-
-
-
-def sub_equipInfo_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_equipInfo.html")
-
-
-def sub_equipStatus_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_equipStatus.html")
-
-
-def sub_RS232_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_RS232.html")
-
-
-def sub_RS485_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_RS485.html")
-
-
-def sub_CAN_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_CAN.html")
-
-
-def sub_web_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_web.html")
-
-
-def sub_userManage_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_userManage.html")
-
-
-def sub_changepwd_views(request):
-    """
-
-    :param request:
-    :return:
-    """
-    return render(request, "sub_changepwd.html")
 
 
 def trade_operation_views(request):
@@ -860,3 +759,15 @@ def get_history_founding_rate_views(request):
     return HttpResponse(json.dumps(msg))
 
 
+@csrf_exempt
+def set_stop_views(request):
+    """
+    止损设置
+    :param request: 
+    :return: 
+    """
+    # if "POST" != request.method:
+    #     return None
+    #
+    # for k, gateway in g_gateways.items():
+    #     bitmex.bitmex().

@@ -136,26 +136,59 @@
                     <td>
                         <input type="text" class="layui-input" id="close_position_price" lay-verify="required" >
                     </td>
-                    <td>
-                        <select id="close_position_side" lay-verify="required">
-						<option value="buy">买入平空</option>
-						<option value="sell">卖出平多</option>
-					    </select>
-                    </td>
+
                      <td>
                         <button id="close_position_button" type="button"
                             class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger" >平仓</button>
+                    </td>
+                </tr>
+                <tr>
+					<td>止损止盈</td>
+	                <td>
+					<select id="stop_position_market_limit" lay-verify="required">
+						<option value="Stop">市价</option>
+						<option value="StopLimit">限价</option>
+                        <option value="MarketIfTouched">MarketIfTouched</option>
+						<option value="LimitIfTouched">LimitIfTouched</option>
+					</select>
+				    </td>
+					<td>百分比</td>
+					<td>
+					<select id="stop_position_percent" lay-verify="required">
+						<option value="10">10</option>
+						<option value="20">20</option>
+                        <option value="30">30</option>
+                        <option value="40">40</option>
+                        <option value="50">50</option>
+                        <option value="60">60</option>
+                        <option value="70">70</option>
+                        <option value="80">80</option>
+                        <option value="90">90</option>
+                        <option value="100">100</option>
+                    </select>
+                    </td>
+                    <td>
+                        价格（USD）
+                    </td>
+                    <td>
+                        <input type="text" class="layui-input" id="close_position_price" lay-verify="required" >
+                    </td>
+                    <td>
+                        <select id="stop_position_side" lay-verify="required">
+						<option value="buy">买入</option>
+						<option value="sell">卖出</option>
+					    </select>
+                    </td>
+                     <td>
+                        <button id="stop_position_button" type="button"
+                            class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger" >设置止损单</button>
                     </td>
                 </tr>
 
 			</tbody>
 		</table>
 
-		<!--【发送】提交按钮-->
-		<div class="text_right">
-			<button class="layui-btn layui-btn-darkBlue" id="sub_protocolConfig" lay-submit="" lay-filter="sub_send">提交</button>
-			<button type="reset" class="layui-btn layui-btn-darkBlue">重置</button>
-		</div>
+
 </form>
 
 <script>
