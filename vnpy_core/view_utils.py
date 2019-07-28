@@ -6,11 +6,19 @@
 
 @author: jiangyuexi1992@qq.com
 """
+import json
+
 import bitmex
 import ccxt
 
 # 单例类
 import time
+
+import logging
+from django.db import DatabaseError
+from django.http import HttpResponse
+
+from vnpy_core.models import DjangoSession
 
 
 class View_utils(object):
@@ -110,4 +118,27 @@ class View_utils(object):
         # 转换成新的时间格式(2016-05-05 20:28:54)
         dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
         return dt
+
+    def check_sessionid(self, request):
+        """
+            检查sessionid 是否是最新的
+        :param request: 
+        :return:  是：True 否：false
+        """
+        cookie_sessionid = request.COOKIES["sessionid"]
+
+        try:
+            sessions = DjangoSession.objects.filter(session_key=cookie_sessionid)
+        except DatabaseError as e:
+            logging.warning(e)
+            return HttpResponse(json.dumps({'return': '数据库错误'}))
+
+        for session in sessions:
+            session
+
+        if sessions:
+
+            return True
+        else:
+            return False
 

@@ -19,19 +19,28 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, Min1
+from vnpy_core.models import User, DjangoSession
 from .view_utils import View_utils
 # 存放 通道 对象
 g_gateways = {}
 # 工具类 单例
 g_view_utils = View_utils()
 # cookie的保留时间
-COOKIE_EXPIRES_TIME = 60*60*24*365
+COOKIE_EXPIRES_TIME = 60*60*24
 # 一天的时间间隔
 ONEDAY = 1512489600000 - 1512403200000
 
 @csrf_exempt
 def vnpy_core_views(request):
+    """
+    
+    :param request: 
+    :return: 
+    """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -41,7 +50,6 @@ def vnpy_core_views(request):
     return HttpResponse(json.dumps(msg))
 
 
-
 @csrf_exempt
 def api_key_views(request):
     """
@@ -49,6 +57,10 @@ def api_key_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         # 把 body 里的数据取出来，转换成json格式
         data = request.body.decode()
@@ -84,6 +96,10 @@ def balance_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -110,6 +126,10 @@ def fetch_ohlcv_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -144,6 +164,10 @@ def fetch_ticks_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -170,6 +194,10 @@ def fetch_history_ohlcv_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -209,6 +237,10 @@ def fetch_my_trades_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -237,26 +269,31 @@ def candles_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" != request.method:
         return
 
     try:
+        pass
         # 查询数据库
-        candles = Min1.objects.filter()
+        # candles = Min1.objects.filter()
     except DatabaseError as e:
         logging.warning(e)
         return HttpResponse(json.dumps({'return': '数据库错误'}))
 
     history_price = []
-    for candle in candles:
-
-        # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
-        # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
-        timeYMD = g_view_utils.custom_time(candle.min1_timestamp // 1000)
-        _temp = \
-            [timeYMD, candle.min1_open, candle.min1_close, '?', '?',
-             candle.min1_low, candle.min1_high, '?', candle.min1_volume, '_']
-        history_price.append(_temp)
+    # for candle in candles:
+    #
+    #     # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
+    #     # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
+    #     timeYMD = g_view_utils.custom_time(candle.min1_timestamp // 1000)
+    #     _temp = \
+    #         [timeYMD, candle.min1_open, candle.min1_close, '?', '?',
+    #          candle.min1_low, candle.min1_high, '?', candle.min1_volume, '_']
+    #     history_price.append(_temp)
 
     msg = {"user_name": "", "return": history_price}
 
@@ -270,6 +307,10 @@ def get_candles_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" != request.method:
         return
 
@@ -348,6 +389,10 @@ def fetch_orders_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -373,6 +418,10 @@ def fetch_open_orders_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -398,6 +447,10 @@ def create_order_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -431,6 +484,10 @@ def create_orders_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -469,6 +526,10 @@ def create_orders_close_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -516,6 +577,10 @@ def cancel_order_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg":"已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -538,10 +603,11 @@ def cancel_order_views(request):
 @csrf_exempt
 def check_user_views(request):
     """
-
+    检查用户名是否存在
     :param request:
     :return:
     """
+
     if request.method == "GET":
         return JsonResponse({"msg": "GET"})
     elif request.method == "POST":
@@ -573,12 +639,12 @@ def login_views(request):
         UserName = request.COOKIES.get('UserName', '')
         return render(request, "login.html", {'UserName': UserName})
     elif request.method == "POST":
-        # print("COOKIES", request.COOKIES)
-        # '''
-        # cookies {'sessionid': 'wdwllf0numkxii9e69ljmpy1vzamu2o1',
-        #     'csrftoken': 'h57XzcWUMXnIdyPtB7gPzanh9IFl7BN27w2kSFlPnLzMwM4em5H5YcgDomBmcyxF'}
-        # '''
-        # print("SESSION", request.session)
+        # print("COOKIES", request.COOKIES["sessionid"])
+        # # '''
+        # # cookies {'sessionid': 'wdwllf0numkxii9e69ljmpy1vzamu2o1',
+        # #     'csrftoken': 'h57XzcWUMXnIdyPtB7gPzanh9IFl7BN27w2kSFlPnLzMwM4em5H5YcgDomBmcyxF'}
+        # # '''
+        # print("SESSION", request.session.session_key)
         UserName = request.POST["UserName"]
         PassWord = request.POST["PassWord"]
 
@@ -597,13 +663,37 @@ def login_views(request):
         if find_user:
             if UserName == find_user[0].user_name and PassWord == find_user[0].user_pass_word:
                 resp = render(request, "index.html")
-                # 设置cookies
+                # 设置cookies 用户名
                 resp.set_cookie("UserName", find_user[0].user_name, COOKIE_EXPIRES_TIME)
                 # resp.set_cookie("PassWord", find_user[0].user_pass_word, COOKIE_EXPIRES_TIME)
-                # 设置sessions
-                request.session['UserName'] = find_user[0].user_name
-                request.session["UserPermission"] = find_user[0].user_permission
+                # 设置sessions  保存用户名和用户权限
+                # 用户信息记录在session中
+                request.session['user'] = list(find_user.values())
+                # 创建session,否则key为None
+
+                if not request.session.session_key:
+                    request.session.create()
+
+                # 获取session_key
+                key = request.session.session_key
+
+                # 当另一机器登录时，本机器应该被挤下即当前sessionkey失效，后登录的用户的session可用，之前的sessionkey从数据库中删除
+                # 获取指定key的session_data，下面用的ORM模型去数据库中取数据
+                results =  DjangoSession.objects.filter(session_key=key).values_list('session_data')
+                session_data = None
+                if results:
+                    session_data = list(results)[0][0]
+                # 删除key不为当前key，session_data等于当前session_data的session记录，从而达到一个账号只能一台机器登录的目的
+                DjangoSession.objects.filter(session_data=session_data).exclude(session_key=key).delete()
+
+                rs = DjangoSession.objects.filter(session_data=session_data)
+                print("obj count == ", len(rs))
+                for r in rs:
+                    r
+
+
                 return resp
+
             else:
                 return JsonResponse({"msg": "用户或密码错误！", "dsf":"dsfsd", "dfsdsd":4325435})
         else:
@@ -614,6 +704,10 @@ def login_views(request):
 
 
 def logout_views(request):
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     try:
         request.session.flush()
     except KeyError as e:
@@ -627,6 +721,10 @@ def sub_index_views(request):
     :param request:
     :return:
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     return render(request, "sub_index.html")
 
 
@@ -636,6 +734,10 @@ def account_info_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if request.method == "GET":
         return render(request, "account_info.html")
 
@@ -646,6 +748,10 @@ def trade_operation_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     return  render(request, "trade_operation.html")
 
 
@@ -655,6 +761,10 @@ def candlestick_brush_views(request):
     :param request:
     :return:
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     return render(request, "candlestick-brush.html")
 
 
@@ -664,6 +774,10 @@ def line_simple_views(request):
     :param request:
     :return:
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     return render(request, "line-simple.html")
 
 
@@ -673,6 +787,10 @@ def sub_candlestick1_views(request):
     :param request:
     :return:
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     return render(request, "candlestick_sh.html")
 
 
@@ -683,6 +801,10 @@ def commit_apikey_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
 
     return redirect('/api_key/')
 
@@ -694,6 +816,10 @@ def get_symbols_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" == request.method:
         body = json.loads(request.body)
         exchange = body["exchange"]
@@ -716,6 +842,10 @@ def get_history_founding_rate_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     if "POST" != request.method:
         return None
 
@@ -766,6 +896,10 @@ def set_stop_views(request):
     :param request: 
     :return: 
     """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
     # if "POST" != request.method:
     #     return None
     #
