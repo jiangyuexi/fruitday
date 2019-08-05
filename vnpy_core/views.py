@@ -19,12 +19,12 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, DjangoSession
-from .view_utils import View_utils
+from vnpy_core.models import User, DjangoSession, Min1
+from .view_utils import View_utils, g_view_utils
+
 # 存放 通道 对象
 g_gateways = {}
-# 工具类 单例
-g_view_utils = View_utils()
+
 # cookie的保留时间
 COOKIE_EXPIRES_TIME = 60*60*24
 # 一天的时间间隔
@@ -766,6 +766,19 @@ def candlestick_brush_views(request):
         return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     return render(request, "candlestick-brush.html")
+
+
+def spot_futures_brush_views(request):
+    """
+    期货和现货
+    :param request:
+    :return:
+    """
+    # 每个用户唯一登录
+    if not g_view_utils.check_sessionid(request):
+        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+
+    return render(request, "spot_futures_brush.html")
 
 
 def line_simple_views(request):

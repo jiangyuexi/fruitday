@@ -128,3 +128,16 @@ class User(models.Model):
     class Meta:
         managed = False
         db_table = 'user'
+
+
+class Min1(models.Model):
+    min1_timestamp = models.BigIntegerField(primary_key=True)
+    min1_open = models.TextField(blank=True, null=True)  # This field type is a guess.
+    min1_high = models.TextField(blank=True, null=True)  # This field type is a guess.
+    min1_low = models.TextField(blank=True, null=True)  # This field type is a guess.
+    min1_close = models.TextField(blank=True, null=True)  # This field type is a guess.
+    min1_volume = models.TextField(blank=True, null=True)  # This field type is a guess.
+
+    class Meta:
+        managed = False
+        db_table = 'min1'

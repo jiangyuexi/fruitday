@@ -8,7 +8,10 @@
 """
 
 from django.conf.urls import url
+
+from vnpy_core.okex_views import OkexViews
 from .views import *
+
 
 
 urlpatterns = [
@@ -22,6 +25,7 @@ urlpatterns = [
     url(r'^login/candlestick-brush.html$', candlestick_brush_views),
     url(r'^login/candlestick_sh.html$', sub_candlestick1_views),
     url(r'^login/line-simple.html$', line_simple_views),
+    url(r'^login/spot_futures_brush.html$', spot_futures_brush_views),
 
 
 
@@ -42,6 +46,9 @@ urlpatterns = [
     url(r'^login/cancel_order/$', cancel_order_views),
     url(r'^login/fetch_orders/$', fetch_orders_views),
     url(r'^login/fetch_open_orders/$', fetch_open_orders_views),
+
+    url(r'^login/okex_api_key/$', OkexViews.api_key_views),
+    url(r'^login/okex_fetch_history_ohlcv/$', OkexViews.fetch_history_ohlcv_views),
 
 
 

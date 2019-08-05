@@ -2,7 +2,7 @@
 """
 时间:
 文件名:
-描述:
+描述:  单例 工具类
 
 @author: jiangyuexi1992@qq.com
 """
@@ -42,6 +42,7 @@ class View_utils(object):
         :return: 交易所对象
         """
         if "BITMEX" == exchange:
+            # _bitmex 避免和 bitmex 模块重名，所以加下划线区分
             _bitmex = ccxt.bitmex(setting)
             # 设置为测试服务器
             _bitmex.urls["api"] = _bitmex.urls["test"]
@@ -49,6 +50,9 @@ class View_utils(object):
             # 引入bitmex官方的对象
             _bitmex.client = bitmex.bitmex(test=True, api_key=setting["apiKey"], api_secret=setting["secret"])
             return _bitmex
+        elif "OKEX" == exchange:
+            obj_okex = ccxt.okex3()
+            return obj_okex
         else:
             pass
 
@@ -142,3 +146,5 @@ class View_utils(object):
         else:
             return False
 
+# 工具类 单例
+g_view_utils = View_utils()
