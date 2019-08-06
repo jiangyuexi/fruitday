@@ -36,6 +36,7 @@ urlpatterns = [
     url(r'^login/fetch_ohlcv/$', fetch_ohlcv_views),
     url(r'^login/fetch_ticks/$', fetch_ticks_views),
     url(r'^login/fetch_history_ohlcv/$', fetch_history_ohlcv_views),
+    url(r'^login/fetch_history_founding_rates/$', fetch_history_founding_rates_views),
     url(r'^login/fetch_my_trades/$', fetch_my_trades_views),
     url(r'^login/get_history_founding_rate/$', get_history_founding_rate_views),
     url(r'^login/candles/$', candles_views),

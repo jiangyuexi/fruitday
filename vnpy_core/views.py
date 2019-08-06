@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, DjangoSession, Min1
+from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour
 from .view_utils import g_view_utils
 
 # 存放 通道 对象
@@ -59,7 +59,8 @@ def api_key_views(request):
     """
     # 每个用户唯一登录
     if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+        pass
+        # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         # 把 body 里的数据取出来，转换成json格式
@@ -190,13 +191,14 @@ def fetch_ticks_views(request):
 @csrf_exempt
 def fetch_history_ohlcv_views(request):
     """
-    获取市场价格 60天
+    获取市场历史价格 
     :param request: 
     :return: 
     """
     # 每个用户唯一登录
-    if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # if not g_view_utils.check_sessionid(request):
+    #     pass
+        # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -208,22 +210,30 @@ def fetch_history_ohlcv_views(request):
         timeframe = body["timeframe"]
 
         # 1 开始时间
-        a = "2019-05-20 00:00:00"
-        # a = start_date + " 00:00:00"
+        a = "2016-05-20 00:00:00"
         # 将其转换为时间数组
-        timeArray = time.strptime(a, "%Y-%m-%d %H:%M:%S")
-        start_timeStamp = int(time.mktime(timeArray)) * 1000
-
+        start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
+        day15_num = 24 * 15
         for k, gateway in g_gateways.items():
             # 现在只支持bitmex， 后面可以在此处扩展
             if isinstance(gateway, ccxt_class_name) and k == user_id:
-                for i in range(31 * 2):
+                for i in range(12 * 2 * 5):
                     time.sleep(3)
-                    start_timeStamp += i * ONEDAY / 2
-                    lst = g_view_utils.get_history_ohlcv(gateway=gateway,symbol=symbol,since_time=start_timeStamp)
-                    for o in lst:
-                        Min1(min1_timestamp=o[0], min1_open=o[1], min1_high=o[2],
-                             min1_low=o[3], min1_close=o[4], min1_volume=o[5]).save();
+                    # day15_num为一个时间窗口
+                    since = start_timeStamp + ONEDAY * 15 * i
+                    returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=day15_num,
+                                                  since=since)
+                    # 存入数据库
+                    for o in returns:
+                        # print(g_view_utils.convert_time(o[0]//1000))
+                        Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                             low=o[3], close=o[4], vol=o[5]).save()
+                    # time.sleep(3)
+                    # print(len(returns))
+                    if day15_num != len(returns):
+
+                        # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
+                        break
 
         msg = {"user_id": user_id, "markets": "OK"}
 
@@ -301,6 +311,53 @@ def candles_views(request):
 
 
 @csrf_exempt
+def fetch_history_founding_rates_views(request):
+    """
+    获取历史费率并存入数据库
+    :param request: 
+    :return: 
+    """
+
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        user_id = body["user_id"]
+        symbol = body["symbol"]
+        timeframe = body["timeframe"]
+
+        # 1 开始时间
+        a = "2016-05-20 00:00:00"
+        # 将其转换为时间数组
+        start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
+        day15_num = 24 * 15
+        for k, gateway in g_gateways.items():
+            # 现在只支持bitmex， 后面可以在此处扩展
+            if isinstance(gateway, ccxt_class_name) and k == user_id:
+                for i in range(12 * 2 * 5):
+                    time.sleep(3)
+                    # day15_num为一个时间窗口
+                    since = start_timeStamp + ONEDAY * 15 * i
+                    returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=day15_num,
+                                                  since=since)
+                    # 存入数据库
+                    for o in returns:
+                        # print(g_view_utils.convert_time(o[0]//1000))
+                        Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                             low=o[3], close=o[4], vol=o[5]).save()
+                    # time.sleep(3)
+                    # print(len(returns))
+                    if day15_num != len(returns):
+
+                        # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
+                        break
+
+        msg = {"user_id": user_id, "markets": "OK"}
+
+        return HttpResponse(json.dumps(msg))
+
+@csrf_exempt
 def get_candles_founding_rates_views(request):
     """
     （历史）  获取 8小时K线数据 和 费率
@@ -308,7 +365,7 @@ def get_candles_founding_rates_views(request):
     :return: 
     """
     # 每个用户唯一登录
-    """
+
     if not g_view_utils.check_sessionid(request):
         pass
         # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
@@ -323,13 +380,14 @@ def get_candles_founding_rates_views(request):
     user_id = body["user_id"]
     symbol = body["symbol"]
     timeframe = "1h"
-    limit = 500
+    limit = 0
 
     # 1 开始时间
     a = "2018-07-05 00:00:00"
     # a = start_date + " 00:00:00"
     # 将其转换为时间数组
-    timeArray = time.strptime(a, "%Y-%m-%d %H:%M:%S")
+    # start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
+    # 当前时间 后退 20 天
     start_timeStamp = time.time() * 1000 - ONEDAY * 20
     history_price = []
     candles = []
@@ -337,20 +395,31 @@ def get_candles_founding_rates_views(request):
         # 现在只支持bitmex， 后面可以在此处扩展
         if isinstance(gateway, ccxt_class_name) and k == user_id:
             # 行情信息
-            candles = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe,
-                                limit=limit, since=start_timeStamp)
+            candles = gateway.fetch_ohlcv(symbol=symbol, limit=500, timeframe=timeframe, since=start_timeStamp)
+            # 存入数据库
+            for o in candles:
+                # print(g_view_utils.convert_time(o[0]//1000))
+                Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                            low=o[3], close=o[4], vol=o[5]).save()
+
+            candles_from_BD = Candle1Hour.objects.filter().order_by("timestamp")
+            for o in candles_from_BD:
+                # 1 从4点开始， 合并8 根1 小时k
+                o
+
+
 
             for candle in candles:
                 # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
                 # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
-                timeYMD = g_view_utils.custom_time(candle[0] // 1000)
+                timeYMD = g_view_utils.convert_time(candle[0] // 1000)
                 _temp = \
                     [timeYMD, candle[1], candle[4], '?', '?',
                      candle[3], candle[2], '?', candle[5], '_']
                 history_price.append(_temp)
 
             # 历史费率
-            result = gateway.client.Funding.Funding_get(symbol="XBTUSD", reverse=True, count=20*3
+            result = gateway.client.Funding.Funding_get(symbol=symbol, reverse=True, startTime="2016-08-20", endTime="2016-09-20"
                                                         ).result()[0]
             result.reverse()
             # 连续的时间
@@ -382,7 +451,6 @@ def get_candles_founding_rates_views(request):
     msg = {"user_id": user_id, "return": pd_datas_inner.values.tolist()}
 
     return HttpResponse(json.dumps(msg))
-    """
 
 
 @csrf_exempt

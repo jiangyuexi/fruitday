@@ -141,3 +141,27 @@ class Min1(models.Model):
     class Meta:
         managed = False
         db_table = 'min1'
+
+
+class Fundingrate(models.Model):
+    timestamp = models.TextField(primary_key=True)  # This field type is a guess.
+    symbol = models.TextField(blank=True, null=True)  # This field type is a guess.
+    fundingrate = models.FloatField(db_column='fundingRate', blank=True, null=True)  # Field name made lowercase.
+    fundingratedaily = models.FloatField(db_column='fundingRateDaily', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'fundingRate'
+
+
+class Candle1Hour(models.Model):
+    timestamp = models.TextField(primary_key=True)  # This field type is a guess.
+    open = models.FloatField(blank=True, null=True)
+    high = models.FloatField(blank=True, null=True)
+    low = models.FloatField(blank=True, null=True)
+    close = models.FloatField(blank=True, null=True)
+    vol = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'candle_1hour'

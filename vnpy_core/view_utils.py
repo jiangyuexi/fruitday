@@ -95,25 +95,10 @@ class View_utils(object):
         print(gateway.symbols)  # 打印市场交易对
         return symbols
 
-    def get_history_ohlcv(self, gateway, timeframe, symbol, since_time):
-        """
-        获取历史ohlcv 数据
-        :param gateway: 交易所对象
-        :param symbol:  交易对
-        :param since_time: 开始时间
-        :return: 返回 list   开高低收 成交量
-        """
-        return  None
-        # 请求的candles个数 12小时 的 1min k 个数
-        limit = 24 * 60 / 2
 
-        returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe,
-                                      limit=limit, since=since_time)
-        return returns
-
-    def custom_time(self, timestamp):
+    def convert_time(self, timestamp):
         """
-        时间戳转换成日期和时间
+        时间戳转换成日期和时间  单位 s
         :param timestamp: 
         :return: 
         """
@@ -122,6 +107,18 @@ class View_utils(object):
         # 转换成新的时间格式(2016-05-05 20:28:54)
         dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
         return dt
+
+    def convert_date2timestamp(self, date):
+        """
+        把日期(2016-05-05 20:28:54) 转换成 时间戳    单位s
+        :param date: (2016-05-05 20:28:54)
+        :return: 时间戳 s
+        """
+        # 转为时间数组
+        timeArray = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+        # 转为时间戳
+        timeStamp = int(time.mktime(timeArray))
+        return timeStamp
 
     def check_sessionid(self, request):
         """
@@ -145,6 +142,38 @@ class View_utils(object):
             return True
         else:
             return False
+
+    def barGenerator(self, little_bars_lst):
+        """
+        根据小的bar 合并为一根bar
+        :param little_bar_lst:  小的bar   [[1564502400000	9670.5	10000.0	9632.5	9757.0	15979043.0], 
+                                            [1564502400000	9670.5	10000.0	9632.5	9757.0	15979043.0],[], [], []]   
+        :return: 一根bar
+        """
+        # 时间戳
+        timestamp = little_bars_lst[0][0]
+        # open price
+        open = little_bars_lst[0][1]
+        highs = []
+        lows = []
+        # close price
+        close = little_bars_lst[-1][4]
+        vols = []
+        for little_bar in little_bars_lst:
+            highs.append(little_bar[2])
+            lows.append(little_bar[3])
+            vols.append(little_bar[5])
+        # high price
+        high = max(highs)
+        # low price
+        low = min(lows)
+        # 成交量
+        vol = sum(vols)
+        return [timestamp, open, high, low, close, vol]
+
+
+
+
 
 # 工具类 单例
 g_view_utils = View_utils()

@@ -95,16 +95,19 @@ class OkexViews(object):
             # 现货 一天的 开高低收
             spot_ohlcv_1d = okex_instance.obj_spot.fetch_ohlcv(symbol, timeframe=timeframe, limit=90)
             for o in spot_ohlcv_1d:
-                o[0] = g_view_utils.custom_time(o[0]//1000)
+                o[0] = g_view_utils.convert_time(o[0] // 1000)
             # 期货 一天的 开高低收
             futures_ohlcv_1d = okex_instance.obj_futures.fetch_ohlcv(symbol_futures, timeframe=timeframe, limit=90)
             for o in futures_ohlcv_1d:
-                o[0] = g_view_utils.custom_time(o[0]//1000)
+                o[0] = g_view_utils.convert_time(o[0] // 1000)
             # 期货除以现货
             futures_spot = []
             for o1, o2 in zip(futures_ohlcv_1d, spot_ohlcv_1d):
                 if o1[0] == o2[0]:
-                    futures_spot.append([o1[0], (float(o1[4])/float(o2[4]) - 1.0) * 100.0])
+                    # （期货/现货 - 1.0）* 100   保留小数点后2位
+                    f = (float(o1[4]) / float(o2[4]) - 1.0) * 100.0
+                    f2 = round(f, 2)
+                    futures_spot.append([o1[0], f2])
             lst_len = 0
             if (len(spot_ohlcv_1d) == len(futures_ohlcv_1d)) and (len(spot_ohlcv_1d) == len(futures_spot)):
                 lst_len = len(spot_ohlcv_1d)

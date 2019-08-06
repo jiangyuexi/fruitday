@@ -61,6 +61,7 @@ function show__K_line() {
 	user.user_id ="jiangyuexi1992@qq.com";
 	user.symbol = "BTC/USD";
 	user.timeframe = "1h";
+	//debugger;
 	
 	user.limit = 0;
     $.ajax({
@@ -72,7 +73,7 @@ function show__K_line() {
         async:true,
         success:function(data){
             console.log(data.return);
-            //debugger;
+            debugger;
             var rawData = data.return;
             var dates = rawData.map(function (item) {
                 return item[0];
