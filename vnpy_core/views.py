@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 import ccxt
 
 from vnpy_core.models import User, DjangoSession, Min1
-from .view_utils import View_utils, g_view_utils
+from .view_utils import g_view_utils
 
 # 存放 通道 对象
 g_gateways = {}
@@ -301,15 +301,17 @@ def candles_views(request):
 
 
 @csrf_exempt
-def get_candles_views(request):
+def get_candles_founding_rates_views(request):
     """
-    获取 k线历史数据
+    （历史）  获取 8小时K线数据 和 费率
     :param request: 
     :return: 
     """
     # 每个用户唯一登录
+    """
     if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+        pass
+        # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" != request.method:
         return
@@ -320,11 +322,11 @@ def get_candles_views(request):
     gateway_name = body["gateway_name"]
     user_id = body["user_id"]
     symbol = body["symbol"]
-    timeframe = body["timeframe"]
-    limit = body["limit"]
+    timeframe = "1h"
+    limit = 500
 
     # 1 开始时间
-    a = "2019-07-05 00:00:00"
+    a = "2018-07-05 00:00:00"
     # a = start_date + " 00:00:00"
     # 将其转换为时间数组
     timeArray = time.strptime(a, "%Y-%m-%d %H:%M:%S")
@@ -380,6 +382,7 @@ def get_candles_views(request):
     msg = {"user_id": user_id, "return": pd_datas_inner.values.tolist()}
 
     return HttpResponse(json.dumps(msg))
+    """
 
 
 @csrf_exempt

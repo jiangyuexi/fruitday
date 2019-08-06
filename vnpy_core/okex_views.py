@@ -104,10 +104,13 @@ class OkexViews(object):
             futures_spot = []
             for o1, o2 in zip(futures_ohlcv_1d, spot_ohlcv_1d):
                 if o1[0] == o2[0]:
-                    futures_spot.append([o1[0], float(o1[4])/float(o2[4])])
+                    futures_spot.append([o1[0], (float(o1[4])/float(o2[4]) - 1.0) * 100.0])
+            lst_len = 0
+            if (len(spot_ohlcv_1d) == len(futures_ohlcv_1d)) and (len(spot_ohlcv_1d) == len(futures_spot)):
+                lst_len = len(spot_ohlcv_1d)
 
-            msg = {"spot_ohlcv_1d": spot_ohlcv_1d, "futures_ohlcv_1d": futures_ohlcv_1d, "futures_spot": futures_spot}
-
+            msg = {"spot_ohlcv_1d": spot_ohlcv_1d, "futures_ohlcv_1d": futures_ohlcv_1d,
+                   "futures_spot": futures_spot, "lst_len": lst_len}
             return HttpResponse(json.dumps(msg))
 
 

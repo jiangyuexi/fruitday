@@ -39,7 +39,7 @@ urlpatterns = [
     url(r'^login/fetch_my_trades/$', fetch_my_trades_views),
     url(r'^login/get_history_founding_rate/$', get_history_founding_rate_views),
     url(r'^login/candles/$', candles_views),
-    url(r'^login/get_candles/$', get_candles_views),
+    url(r'^login/get_candles_founding_rates/$', get_candles_founding_rates_views),
     url(r'^login/create_order/$', create_order_views),
     url(r'^login/create_orders/$', create_orders_views),
     url(r'^login/create_orders_close/$', create_orders_close_views),

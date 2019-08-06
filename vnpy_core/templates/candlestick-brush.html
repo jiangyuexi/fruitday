@@ -61,10 +61,11 @@ function show__K_line() {
 	user.user_id ="jiangyuexi1992@qq.com";
 	user.symbol = "BTC/USD";
 	user.timeframe = "1h";
-	user.limit = 500;
+	
+	user.limit = 0;
     $.ajax({
         type:"POST",
-        url:"get_candles/",
+        url:"get_candles_founding_rates/",
         dataType:"json",
         contentType:"application/json",
         data:JSON.stringify(user),

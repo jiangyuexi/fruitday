@@ -70,11 +70,19 @@ function show__K_line() {
         data:JSON.stringify(user),
         async:true,
         success:function(data){
-            console.log(data);
-            debugger;
+            if(0 == data.lst_len)
+            {
+                 layer.msg("数据没有对齐，长度不一致");
+                return;
+            }else
+            {
+                 console.log(data.lst_len);
+            }
+
+            //debugger;
             //  现货 数据
             var rawData = data.spot_ohlcv_1d;
-            console.log(rawData);
+            //console.log(rawData);
             var dates_spot = rawData.map(function (item) {
                 return item[0];
             });
@@ -88,7 +96,7 @@ function show__K_line() {
             });
             //  季度期货 数据
             var rawData = data.futures_ohlcv_1d;
-            console.log(rawData);
+            //console.log(rawData);
             var dates_futures = rawData.map(function (item) {
                 return item[0];
             });
@@ -102,7 +110,7 @@ function show__K_line() {
             });
 
             var rawData = data.futures_spot;
-            console.log(rawData);
+            //console.log(rawData);
             var dates_futures_spot = rawData.map(function (item) {
                 return item[0];
             });
@@ -110,14 +118,6 @@ function show__K_line() {
             var futures_spot = rawData.map(function (item) {
                 return item[1];
             });
-
-            // 历史费率
-{#            var rawData = founding_rate_datas;#}
-{##}
-{#            var founding_rate_dates = rawData.map(function (item) {#}
-{#                return item[0];#}
-{#            });#}
-
 
             var option = {
                 backgroundColor: '#fff',
@@ -309,7 +309,7 @@ function show__K_line() {
 
                     },
                     {
-                        name: '期货/现货',
+                        name: '(期货/现货 - 1.0)* 100  ',
                         type: 'line',
                         xAxisIndex: 1,
                         yAxisIndex: 1,
