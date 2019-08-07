@@ -331,23 +331,27 @@ def fetch_history_founding_rates_views(request):
         a = "2016-05-20 00:00:00"
         # 将其转换为时间数组
         start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
-        day15_num = 24 * 15
+        day15_num = 3 * 15
         for k, gateway in g_gateways.items():
             # 现在只支持bitmex， 后面可以在此处扩展
             if isinstance(gateway, ccxt_class_name) and k == user_id:
                 for i in range(12 * 2 * 5):
                     time.sleep(3)
                     # day15_num为一个时间窗口
-                    since = start_timeStamp + ONEDAY * 15 * i
-                    returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=day15_num,
-                                                  since=since)
+                    startTime = start_timeStamp + ONEDAY * 15 * i
+                    endTime = start_timeStamp + ONEDAY * 15 * (i + 1)
+
+                    # 历史费率
+                    returns = gateway.client.Funding.Funding_get(symbol=symbol, reverse=True,
+                                    startTime="2016-05-20",
+                                    endTime="2016-07-20").result()[0]
                     # 存入数据库
                     for o in returns:
-                        # print(g_view_utils.convert_time(o[0]//1000))
-                        Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
-                             low=o[3], close=o[4], vol=o[5]).save()
-                    # time.sleep(3)
-                    # print(len(returns))
+                        print(g_view_utils.convert_time(o[0]//1000))
+                    #     Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                    #          low=o[3], close=o[4], vol=o[5]).save()
+                    time.sleep(3)
+                    print(len(returns))
                     if day15_num != len(returns):
 
                         # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
@@ -383,7 +387,7 @@ def get_candles_founding_rates_views(request):
     limit = 0
 
     # 1 开始时间
-    a = "2018-07-05 00:00:00"
+    # a = "2018-07-05 00:00:00"
     # a = start_date + " 00:00:00"
     # 将其转换为时间数组
     # start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000

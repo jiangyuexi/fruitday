@@ -108,6 +108,18 @@ class View_utils(object):
         dt = time.strftime("%Y-%m-%d %H:%M:%S", time_local)
         return dt
 
+    def convert_date(self, timestamp):
+        """
+        时间戳转换成日期  单位 s
+        :param timestamp: 
+        :return: 
+        """
+        # 转换成localtime
+        time_local = time.localtime(timestamp)
+        # 转换成新的时间格式(2016-05-05 20:28:54)
+        dt = time.strftime("%Y-%m-%d", time_local)
+        return dt
+
     def convert_date2timestamp(self, date):
         """
         把日期(2016-05-05 20:28:54) 转换成 时间戳    单位s
