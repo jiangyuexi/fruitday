@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour
+from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour, Fundingrate
 from .view_utils import g_view_utils
 
 # 存放 通道 对象
@@ -328,7 +328,7 @@ def fetch_history_founding_rates_views(request):
         timeframe = body["timeframe"]
 
         # 1 开始时间
-        a = "2016-05-20 00:00:00"
+        a = "2016-06-02 00:00:00"
         # 将其转换为时间数组
         start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
         day15_num = 3 * 15
@@ -342,14 +342,23 @@ def fetch_history_founding_rates_views(request):
                     endTime = start_timeStamp + ONEDAY * 15 * (i + 1)
 
                     # 历史费率
-                    returns = gateway.client.Funding.Funding_get(symbol=symbol, reverse=True,
-                                    startTime="2016-05-20",
-                                    endTime="2016-07-20").result()[0]
+                    symbol_bitmex = symbol
+                    if "BTC/USD" == symbol:
+                        # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
+                        symbol_bitmex = "XBTUSD"
+                    returns = gateway.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
+                                                            startTime=g_view_utils.convert_datetime(startTime//1000),
+                                                            endTime=g_view_utils.convert_datetime(endTime // 1000),
+                                                            count=day15_num
+                                                            ).result()[0]
+                    if day15_num != len(returns):
+                        print("数据缺失")
                     # 存入数据库
                     for o in returns:
-                        print(g_view_utils.convert_time(o[0]//1000))
-                    #     Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
-                    #          low=o[3], close=o[4], vol=o[5]).save()
+                        print(o["timestamp"])
+                        timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
+                        Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
+                                    fundingratedaily=o["fundingRateDaily"]).save()
                     time.sleep(3)
                     print(len(returns))
                     if day15_num != len(returns):
@@ -360,6 +369,59 @@ def fetch_history_founding_rates_views(request):
         msg = {"user_id": user_id, "markets": "OK"}
 
         return HttpResponse(json.dumps(msg))
+
+
+def __bar_8hour_generator(candles_from_BD):
+    """
+    生成8小时 k线数据
+    :return: 
+    """
+    # 存放8小时K的list
+    candles_8hour = []
+    # 从 2016 年 6月 2号 4 点 开始 （英国的时间）
+    # 临时计数器
+    _candle_count = 0
+    # 临时list
+    _candle_lst = []
+    # 上次的时间 备份
+    _pre_timestamp = 0
+    for o in candles_from_BD:
+        # 1合并8 根1 小时k
+        _candle_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 8 * 3600), o.open, o.high, o.low, o.close, o.vol])
+        if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000):
+            print("时间不连续， 数据出现异常")
+            # 当前时间戳备份
+        _pre_timestamp = o.timestamp
+        if _candle_count >= 7:
+            # 攒够8条K了，合并一下
+            _bar8 = g_view_utils.barGenerator(_candle_lst)
+            candles_8hour.append(_bar8)
+            # 清理临时变量
+            _candle_count = 0
+            _candle_lst = []
+        else:
+            _candle_count += 1
+
+    return candles_8hour
+
+
+def __founding_rates(fundingrate_from_BD):
+    """
+    历史费率整理
+    :return: 
+    """
+    # 保存历史费率的list
+    _fundingrate_lst = []
+    # 临时变量 保存上一个时间戳
+    _pre_timestamp = 0
+    for o in fundingrate_from_BD:
+        # 1合并8 根1 小时k
+        _fundingrate_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 8 * 3600), o.symbol, o.fundingrate, o.fundingratedaily])
+        if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000,
+                                         interval=3600 * 8):
+            print("时间不连续， 数据出现异常")
+
+    return _fundingrate_lst
 
 @csrf_exempt
 def get_candles_founding_rates_views(request):
@@ -386,11 +448,6 @@ def get_candles_founding_rates_views(request):
     timeframe = "1h"
     limit = 0
 
-    # 1 开始时间
-    # a = "2018-07-05 00:00:00"
-    # a = start_date + " 00:00:00"
-    # 将其转换为时间数组
-    # start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
     # 当前时间 后退 20 天
     start_timeStamp = time.time() * 1000 - ONEDAY * 20
     history_price = []
@@ -405,55 +462,40 @@ def get_candles_founding_rates_views(request):
                 # print(g_view_utils.convert_time(o[0]//1000))
                 Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
                             low=o[3], close=o[4], vol=o[5]).save()
-
-            candles_from_BD = Candle1Hour.objects.filter().order_by("timestamp")
-            for o in candles_from_BD:
-                # 1 从4点开始， 合并8 根1 小时k
-                o
-
-
-
-            for candle in candles:
-                # ['2015/12/31', '3570.47', '3539.18', '-33.69', '-0.94%', '3538.35', '3580.6', '176963664', '25403106', '-']
-                # [   "时间"，       “开”，  “关”    “？”，  “？”，   “低”，  “高”，  “？”，     “？”，   '_']
-                timeYMD = g_view_utils.convert_time(candle[0] // 1000)
-                _temp = \
-                    [timeYMD, candle[1], candle[4], '?', '?',
-                     candle[3], candle[2], '?', candle[5], '_']
-                history_price.append(_temp)
+            # 取 2016 年 6月 2 号 4 点 的之后 的K线 （英国的时间）
+            tm_20160602 = g_view_utils.convert_date2timestamp("2016-06-02 04:00:00") * 1000
+            candles_from_BD = Candle1Hour.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+            candles_8hour = __bar_8hour_generator(candles_from_BD)
 
             # 历史费率
-            result = gateway.client.Funding.Funding_get(symbol=symbol, reverse=True, startTime="2016-08-20", endTime="2016-09-20"
-                                                        ).result()[0]
-            result.reverse()
-            # 连续的时间
-            timestamps = [str(result[0]["timestamp"] + datetime.timedelta(hours=8 + i))[0:-6] \
-                          for i in range(20 *3 * 8)]
+            symbol_bitmex = symbol
+            if "BTC/USD" == symbol:
+                # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
+                symbol_bitmex = "XBTUSD"
+            returns = gateway.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
+                                                         count=45
+                                                         ).result()[0]
+            # 存入数据库
+            for o in returns:
+                # print(o["timestamp"])
+                timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
+                Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
+                            fundingratedaily=o["fundingRateDaily"]).save()
 
+            # 把历史费率都拿出来
+            fundingrate_from_BD = Fundingrate.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+            _fundingrate_lst = __founding_rates(fundingrate_from_BD=fundingrate_from_BD)
+
+            # 连续的时间
             founding_rates = []
-            for r in result:
+            for r in returns:
                 r["timestamp"] = str(r["timestamp"] + datetime.timedelta(hours=8))[0:-6]
                 r["fundingInterval"] = str(r["fundingInterval"])[0:-6]
                 _tmp = [r["timestamp"], r["symbol"],
                         r["fundingInterval"], r["fundingRate"], r["fundingRateDaily"]]
                 founding_rates.append(_tmp)
 
-
-    df_founding_rates = DataFrame(founding_rates,
-                                  columns=["timestamp", "symbol", "fundingInterval",
-                                         "fundingRate", "fundingRateDaily"])
-    df_history_price = DataFrame(history_price,
-                                 columns=['timestamp', 'open', 'close', 'v1',
-                                        'v2', 'low', 'high', 'v3', 'vol', 'v4'])
-    # 合并d1 和df_founding_rates
-    d1 = DataFrame(timestamps, columns=['timestamp'])
-
-    pd_datas = pd.merge(d1, df_founding_rates, on=['timestamp'], how='left').fillna(1100001)
-    # left jion
-    pd_datas_inner = pd.merge(df_history_price, pd_datas, on=["timestamp"], how='inner')
-
-    msg = {"user_id": user_id, "return": pd_datas_inner.values.tolist()}
-
+    msg = {"user_id": user_id, "fundingrate": _fundingrate_lst, "candles_8hour": candles_8hour}
     return HttpResponse(json.dumps(msg))
 
 

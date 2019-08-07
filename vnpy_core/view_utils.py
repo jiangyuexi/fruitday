@@ -15,6 +15,8 @@ import ccxt
 import time
 
 import logging
+
+import datetime
 from django.db import DatabaseError
 from django.http import HttpResponse
 
@@ -98,7 +100,7 @@ class View_utils(object):
 
     def convert_time(self, timestamp):
         """
-        时间戳转换成日期和时间  单位 s
+        时间戳转换成日期和时间 str类型 单位 s
         :param timestamp: 
         :return: 
         """
@@ -120,9 +122,22 @@ class View_utils(object):
         dt = time.strftime("%Y-%m-%d", time_local)
         return dt
 
+    def convert_datetime(self, timestamp):
+        """
+        时间戳转换成日期 datetime类型 单位 s
+        :param timestamp: 
+        :return: datetime类型 的日期和时间
+        """
+        # 转换成localtime
+        time_local = time.localtime(timestamp)
+        # str  to   datetime
+        dt_datetime = datetime.datetime(time_local.tm_year, time_local.tm_mon, time_local.tm_mday, time_local.tm_hour,
+                                        time_local.tm_hour, time_local.tm_min, time_local.tm_sec)
+        return dt_datetime
+
     def convert_date2timestamp(self, date):
         """
-        把日期(2016-05-05 20:28:54) 转换成 时间戳    单位s
+        str    把日期(2016-05-05 20:28:54) 转换成 时间戳    单位s
         :param date: (2016-05-05 20:28:54)
         :return: 时间戳 s
         """
@@ -131,6 +146,49 @@ class View_utils(object):
         # 转为时间戳
         timeStamp = int(time.mktime(timeArray))
         return timeStamp
+
+    def convert_datetime2timestamp(self, datetime):
+        """
+        （datetime 类型 ）把日期 转换成 时间戳    单位s
+        :param date: (2016-05-05 20:28:54)
+        :return: 时间戳 s
+        """
+        # 转为时间戳
+        timeStamp = int(time.mktime(datetime.timetuple()))
+        return timeStamp
+
+    def check_2_time(self, t1, t2, interval=3600):
+        """
+        校验两个时间是否相差一个小时
+        :param t1: 时间戳1 前
+        :param t2: 时间戳2 后
+        :param interval: 时间间隔 （sec）
+        :return:  True:相差1小时；False: not
+        """
+        if 0 == t1:
+            # 只有一条时间戳，返回True
+            return True
+
+        if interval == (t2 - t1):
+            # 一小时有 3600 sec
+            return True
+        else:
+            return False
+
+    def check_is_series(self, t_list, interval=3600):
+        """
+        检查一组时间是否连续， interval 时间间隔 （sec）
+        :param t_list:  一组时间戳  （sec）
+        :param interval: 时间间隔 （sec）
+        :return: True:连续；False: 不连续
+        """
+        t1 = 0
+        for t in t_list:
+            ret = self.check_2_time(t1=t1, t2=t, interval=interval)
+            if not ret:
+                return False
+            t1 = t
+        return True
 
     def check_sessionid(self, request):
         """
