@@ -80,7 +80,7 @@ function show__K_line() {
             });
 
             var data_candles = rawData.map(function (item) {
-                return [+item[1], +item[2], +item[3], +item[4]];
+                return [+item[1], +item[4], +item[3], +item[2]];
             });
 
             var volumes_candles = rawData.map(function (item) {
