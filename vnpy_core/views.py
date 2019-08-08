@@ -25,6 +25,9 @@ from .view_utils import g_view_utils
 # 存放 通道 对象
 g_gateways = {}
 
+# bitmex 数据获取对象
+G_OBJ_BITMEX = None
+
 # cookie的保留时间
 COOKIE_EXPIRES_TIME = 60*60*24
 # 一天的时间间隔
@@ -199,6 +202,19 @@ def fetch_history_ohlcv_views(request):
     # if not g_view_utils.check_sessionid(request):
     #     pass
         # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # 账号接入
+    global G_OBJ_BITMEX
+    setting = {
+                "apiKey": "RvaWeVuSBpQIFPZBrSdcd7YK",
+                "secret": "bvsWqi7homc8wJsoT59uVGBgou54ifdoRDF6Irh2qDEiwFEZ",
+                "role": "master",
+                "会话数": 3,
+                "账户": "jiangyuexi1992@qq.com",
+                "代理地址": "",
+                "代理端口": ""
+             }
+    if not G_OBJ_BITMEX:
+        G_OBJ_BITMEX = g_view_utils.create_gateway_obj(exchange="BITMEX_REAL", setting=setting)
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -214,26 +230,24 @@ def fetch_history_ohlcv_views(request):
         # 将其转换为时间数组
         start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
         day15_num = 24 * 15
-        for k, gateway in g_gateways.items():
-            # 现在只支持bitmex， 后面可以在此处扩展
-            if isinstance(gateway, ccxt_class_name) and k == user_id:
-                for i in range(12 * 2 * 5):
-                    time.sleep(3)
-                    # day15_num为一个时间窗口
-                    since = start_timeStamp + ONEDAY * 15 * i
-                    returns = gateway.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=day15_num,
-                                                  since=since)
-                    # 存入数据库
-                    for o in returns:
-                        # print(g_view_utils.convert_time(o[0]//1000))
-                        Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
-                             low=o[3], close=o[4], vol=o[5]).save()
-                    # time.sleep(3)
-                    # print(len(returns))
-                    if day15_num != len(returns):
 
-                        # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
-                        break
+        for i in range(12 * 2 * 5):
+            time.sleep(3)
+            # day15_num为一个时间窗口
+            since = start_timeStamp + ONEDAY * 15 * i
+            returns = G_OBJ_BITMEX.fetch_ohlcv(symbol=symbol, timeframe=timeframe, limit=day15_num,
+                                          since=since)
+            # 存入数据库
+            for o in returns:
+                # print(g_view_utils.convert_time(o[0]//1000))
+                Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                     low=o[3], close=o[4], vol=o[5]).save()
+            # time.sleep(3)
+            print(len(returns))
+            if day15_num != len(returns):
+
+                # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
+                break
 
         msg = {"user_id": user_id, "markets": "OK"}
 
@@ -317,6 +331,19 @@ def fetch_history_founding_rates_views(request):
     :param request: 
     :return: 
     """
+    # 账号接入
+    global G_OBJ_BITMEX
+    setting = {
+                "apiKey": "RvaWeVuSBpQIFPZBrSdcd7YK",
+                "secret": "bvsWqi7homc8wJsoT59uVGBgou54ifdoRDF6Irh2qDEiwFEZ",
+                "role": "master",
+                "会话数": 3,
+                "账户": "jiangyuexi1992@qq.com",
+                "代理地址": "",
+                "代理端口": ""
+             }
+    if not G_OBJ_BITMEX:
+        G_OBJ_BITMEX = g_view_utils.create_gateway_obj(exchange="BITMEX_REAL", setting=setting)
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -328,48 +355,83 @@ def fetch_history_founding_rates_views(request):
         timeframe = body["timeframe"]
 
         # 1 开始时间
-        a = "2016-06-02 00:00:00"
+        a = "2016-06-05 00:00:00"
         # 将其转换为时间数组
         start_timeStamp = g_view_utils.convert_date2timestamp(a) * 1000
         day15_num = 3 * 15
-        for k, gateway in g_gateways.items():
-            # 现在只支持bitmex， 后面可以在此处扩展
-            if isinstance(gateway, ccxt_class_name) and k == user_id:
-                for i in range(12 * 2 * 5):
-                    time.sleep(3)
-                    # day15_num为一个时间窗口
-                    startTime = start_timeStamp + ONEDAY * 15 * i
-                    endTime = start_timeStamp + ONEDAY * 15 * (i + 1)
 
-                    # 历史费率
-                    symbol_bitmex = symbol
-                    if "BTC/USD" == symbol:
-                        # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
-                        symbol_bitmex = "XBTUSD"
-                    returns = gateway.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
-                                                            startTime=g_view_utils.convert_datetime(startTime//1000),
-                                                            endTime=g_view_utils.convert_datetime(endTime // 1000),
-                                                            count=day15_num
-                                                            ).result()[0]
-                    if day15_num != len(returns):
-                        print("数据缺失")
-                    # 存入数据库
-                    for o in returns:
-                        print(o["timestamp"])
-                        timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
-                        Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
-                                    fundingratedaily=o["fundingRateDaily"]).save()
-                    time.sleep(3)
-                    print(len(returns))
-                    if day15_num != len(returns):
+        for i in range(12 * 2 * 5):
+            time.sleep(3)
+            # day15_num为一个时间窗口
+            startTime = start_timeStamp + ONEDAY * 15 * i
+            endTime = start_timeStamp + ONEDAY * 15 * (i + 1)
 
-                        # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
-                        break
+            # 历史费率
+            symbol_bitmex = symbol
+            if "BTC/USD" == symbol:
+                # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
+                symbol_bitmex = "XBTUSD"
+            returns = G_OBJ_BITMEX.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
+                                                    startTime=g_view_utils.convert_datetime(startTime//1000),
+                                                    endTime=g_view_utils.convert_datetime(endTime // 1000),
+                                                    count=day15_num
+                                                    ).result()[0]
+            if day15_num != len(returns):
+                print("数据缺失")
+            # 存入数据库
+            for o in returns:
+                print(o["timestamp"])
+                timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
+                Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
+                            fundingratedaily=o["fundingRateDaily"]).save()
+            time.sleep(3)
+            print(len(returns))
+            if day15_num != len(returns):
+
+                # 正常情况下30 天有 30 * 24 条 蜡烛，如果不是，表示到最新时间了
+                break
 
         msg = {"user_id": user_id, "markets": "OK"}
 
         return HttpResponse(json.dumps(msg))
 
+
+# def __bar_8hour_generator(candles_from_BD):
+#     """
+#     生成8小时 k线数据
+#     :return:
+#     """
+#     # 存放8小时K的list
+#     candles_8hour = []
+#     # 从 2016 年 6月 2号 4 点 开始 （英国的时间）
+#     # 临时计数器
+#     _candle_count = 0
+#     # 临时list
+#     _candle_lst = []
+#     # 上次的时间 备份
+#     _pre_timestamp = 0
+#     for o in candles_from_BD:
+#         # 1合并8 根1 小时k
+#         _candle_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 0 * 3600), o.open, o.high, o.low, o.close, o.vol])
+#         if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000):
+#             print("时间不连续， 数据出现异常")
+#             # 当前时间戳备份
+#         _pre_timestamp = o.timestamp
+#         # if _candle_count >= 7:
+#         if _candle_count >= 3:
+#             # 攒够8条K了，合并一下
+#             dt = g_view_utils.convert_date2timeArray(_candle_lst[0][0])
+#             dt.tm_hour
+#             _bar8 = g_view_utils.barGenerator(_candle_lst)
+#             candles_8hour.append(_bar8)
+#             # 清理临时变量
+#             _candle_count = 0
+#             _candle_lst = []
+#         else:
+#             _candle_count += 1
+#
+#     return candles_8hour
+#
 
 def __bar_8hour_generator(candles_from_BD):
     """
@@ -379,28 +441,26 @@ def __bar_8hour_generator(candles_from_BD):
     # 存放8小时K的list
     candles_8hour = []
     # 从 2016 年 6月 2号 4 点 开始 （英国的时间）
-    # 临时计数器
-    _candle_count = 0
     # 临时list
     _candle_lst = []
-    # 上次的时间 备份
-    _pre_timestamp = 0
+
     for o in candles_from_BD:
         # 1合并8 根1 小时k
-        _candle_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 8 * 3600), o.open, o.high, o.low, o.close, o.vol])
-        if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000):
-            print("时间不连续， 数据出现异常")
-            # 当前时间戳备份
-        _pre_timestamp = o.timestamp
-        if _candle_count >= 7:
-            # 攒够8条K了，合并一下
+        str_datetime = g_view_utils.convert_time(int(o.timestamp)//1000 - 3600)
+        # 获取小时
+        dt = g_view_utils.convert_date2timeArray(str_datetime)
+        _candle_lst.append([str_datetime, o.open, o.high, o.low, o.close, o.vol])
+
+        if (3 == dt.tm_hour % 8) or len(_candle_lst) >= 8:
+            # 攒够8条K了，合并一下, 8小时K 在3,11,19 时结束，此时对8取余数是3
             _bar8 = g_view_utils.barGenerator(_candle_lst)
             candles_8hour.append(_bar8)
+            if len(_candle_lst) < 8:
+                print("数据缺失")
             # 清理临时变量
-            _candle_count = 0
             _candle_lst = []
         else:
-            _candle_count += 1
+            pass
 
     return candles_8hour
 
@@ -416,7 +476,7 @@ def __founding_rates(fundingrate_from_BD):
     _pre_timestamp = 0
     for o in fundingrate_from_BD:
         # 1合并8 根1 小时k
-        _fundingrate_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 8 * 3600), o.symbol, o.fundingrate, o.fundingratedaily])
+        _fundingrate_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000), o.symbol, o.fundingrate, o.fundingratedaily])
         if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000,
                                          interval=3600 * 8):
             print("时间不连续， 数据出现异常")
@@ -431,13 +491,26 @@ def get_candles_founding_rates_views(request):
     :return: 
     """
     # 每个用户唯一登录
-
+    global G_OBJ_BITMEX
     if not g_view_utils.check_sessionid(request):
         pass
         # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" != request.method:
         return
+
+    # 账号接入
+    setting = {
+                "apiKey": "RvaWeVuSBpQIFPZBrSdcd7YK",
+                "secret": "bvsWqi7homc8wJsoT59uVGBgou54ifdoRDF6Irh2qDEiwFEZ",
+                "role": "master",
+                "会话数": 3,
+                "账户": "jiangyuexi1992@qq.com",
+                "代理地址": "",
+                "代理端口": ""
+             }
+    if not G_OBJ_BITMEX:
+        G_OBJ_BITMEX = g_view_utils.create_gateway_obj(exchange="BITMEX_REAL", setting=setting)
 
     body = json.loads(request.body)
     exchange = body["exchange"]
@@ -452,48 +525,37 @@ def get_candles_founding_rates_views(request):
     start_timeStamp = time.time() * 1000 - ONEDAY * 20
     history_price = []
     candles = []
-    for k, gateway in g_gateways.items():
-        # 现在只支持bitmex， 后面可以在此处扩展
-        if isinstance(gateway, ccxt_class_name) and k == user_id:
-            # 行情信息
-            candles = gateway.fetch_ohlcv(symbol=symbol, limit=500, timeframe=timeframe, since=start_timeStamp)
-            # 存入数据库
-            for o in candles:
-                # print(g_view_utils.convert_time(o[0]//1000))
-                Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
-                            low=o[3], close=o[4], vol=o[5]).save()
-            # 取 2016 年 6月 2 号 4 点 的之后 的K线 （英国的时间）
-            tm_20160602 = g_view_utils.convert_date2timestamp("2016-06-02 04:00:00") * 1000
-            candles_from_BD = Candle1Hour.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
-            candles_8hour = __bar_8hour_generator(candles_from_BD)
 
-            # 历史费率
-            symbol_bitmex = symbol
-            if "BTC/USD" == symbol:
-                # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
-                symbol_bitmex = "XBTUSD"
-            returns = gateway.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
-                                                         count=45
-                                                         ).result()[0]
-            # 存入数据库
-            for o in returns:
-                # print(o["timestamp"])
-                timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
-                Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
-                            fundingratedaily=o["fundingRateDaily"]).save()
+    # 行情信息
+    candles = G_OBJ_BITMEX.fetch_ohlcv(symbol=symbol, limit=500, timeframe=timeframe, since=start_timeStamp)
+    # 存入数据库
+    for o in candles:
+        # print(g_view_utils.convert_time(o[0]//1000))
+        Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
+                    low=o[3], close=o[4], vol=o[5]).save()
+    # 取 2016 年 6月 2 号 4 点 的之后 的K线 （英国的时间）
+    tm_20160602 = g_view_utils.convert_date2timestamp("2016-06-07 04:00:00") * 1000
+    candles_from_BD = Candle1Hour.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+    candles_8hour = __bar_8hour_generator(candles_from_BD)
 
-            # 把历史费率都拿出来
-            fundingrate_from_BD = Fundingrate.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
-            _fundingrate_lst = __founding_rates(fundingrate_from_BD=fundingrate_from_BD)
+    # 历史费率
+    symbol_bitmex = symbol
+    if "BTC/USD" == symbol:
+        # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
+        symbol_bitmex = "XBTUSD"
+    returns = G_OBJ_BITMEX.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
+                                                 count=45
+                                                 ).result()[0]
+    # 存入数据库
+    for o in returns:
+        # print(o["timestamp"])
+        timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
+        Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
+                    fundingratedaily=o["fundingRateDaily"]).save()
 
-            # 连续的时间
-            founding_rates = []
-            for r in returns:
-                r["timestamp"] = str(r["timestamp"] + datetime.timedelta(hours=8))[0:-6]
-                r["fundingInterval"] = str(r["fundingInterval"])[0:-6]
-                _tmp = [r["timestamp"], r["symbol"],
-                        r["fundingInterval"], r["fundingRate"], r["fundingRateDaily"]]
-                founding_rates.append(_tmp)
+    # 把历史费率都拿出来
+    fundingrate_from_BD = Fundingrate.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+    _fundingrate_lst = __founding_rates(fundingrate_from_BD=fundingrate_from_BD)
 
     msg = {"user_id": user_id, "fundingrate": _fundingrate_lst, "candles_8hour": candles_8hour}
     return HttpResponse(json.dumps(msg))
@@ -618,7 +680,7 @@ def create_orders_views(request):
         else:
             # 限价
             price = params["price"]
-        percent  = int(params["percent"])
+        percent = int(params["percent"])
         create_orders = []
         for k, gateway in g_gateways.items():
             if isinstance(gateway, ccxt_class_name):

@@ -28,6 +28,7 @@ class View_utils(object):
      views.py 里的基础函数
     """
 
+
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
@@ -52,6 +53,14 @@ class View_utils(object):
             # 引入bitmex官方的对象
             _bitmex.client = bitmex.bitmex(test=True, api_key=setting["apiKey"], api_secret=setting["secret"])
             return _bitmex
+        elif "BITMEX_REAL" == exchange:
+            # bitmex实盘对象
+            # _bitmex 避免和 bitmex 模块重名，所以加下划线区分
+            _bitmex = ccxt.bitmex(setting)
+
+            # 引入bitmex官方的对象
+            _bitmex.client = bitmex.bitmex(test=False, api_key=setting["apiKey"], api_secret=setting["secret"])
+            return _bitmex
         elif "OKEX" == exchange:
             obj_okex = ccxt.okex3()
             return obj_okex
@@ -65,6 +74,8 @@ class View_utils(object):
         :return: 
         """
         if "BITMEX" == str_exchange:
+            return ccxt.bitmex
+        elif "BITMEX_REAL" == str_exchange:
             return ccxt.bitmex
         elif "ZB" == str_exchange:
             return ccxt.zb
@@ -146,6 +157,16 @@ class View_utils(object):
         # 转为时间戳
         timeStamp = int(time.mktime(timeArray))
         return timeStamp
+
+    def convert_date2timeArray(self, date):
+        """
+        str    把日期(2016-05-05 20:28:54) 转换成 timeArray    
+        :param date: (2016-05-05 20:28:54)
+        :return: datatime
+        """
+        # 转为时间数组
+        timeArray = time.strptime(date, "%Y-%m-%d %H:%M:%S")
+        return timeArray
 
     def convert_datetime2timestamp(self, datetime):
         """
