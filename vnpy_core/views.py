@@ -325,6 +325,33 @@ def candles_views(request):
 
 
 @csrf_exempt
+def fetch_instruments_views(request):
+    """
+    获取历史费率并存入数据库
+    :param request: 
+    :return: 
+    """
+    # 账号接入
+    global G_OBJ_BITMEX
+    setting = {
+                "apiKey": "RvaWeVuSBpQIFPZBrSdcd7YK",
+                "secret": "bvsWqi7homc8wJsoT59uVGBgou54ifdoRDF6Irh2qDEiwFEZ",
+                "role": "master",
+                "会话数": 3,
+                "账户": "jiangyuexi1992@qq.com",
+                "代理地址": "",
+                "代理端口": ""
+             }
+    if not G_OBJ_BITMEX:
+        G_OBJ_BITMEX = g_view_utils.create_gateway_obj(exchange="BITMEX_REAL", setting=setting)
+
+    results = G_OBJ_BITMEX.client.Instrument.Instrument_get(filter=json.dumps({'symbol': 'XBTUSD'})).result()
+
+    print(results)
+
+
+
+@csrf_exempt
 def fetch_history_founding_rates_views(request):
     """
     获取历史费率并存入数据库
@@ -396,43 +423,6 @@ def fetch_history_founding_rates_views(request):
         return HttpResponse(json.dumps(msg))
 
 
-# def __bar_8hour_generator(candles_from_BD):
-#     """
-#     生成8小时 k线数据
-#     :return:
-#     """
-#     # 存放8小时K的list
-#     candles_8hour = []
-#     # 从 2016 年 6月 2号 4 点 开始 （英国的时间）
-#     # 临时计数器
-#     _candle_count = 0
-#     # 临时list
-#     _candle_lst = []
-#     # 上次的时间 备份
-#     _pre_timestamp = 0
-#     for o in candles_from_BD:
-#         # 1合并8 根1 小时k
-#         _candle_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 0 * 3600), o.open, o.high, o.low, o.close, o.vol])
-#         if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000):
-#             print("时间不连续， 数据出现异常")
-#             # 当前时间戳备份
-#         _pre_timestamp = o.timestamp
-#         # if _candle_count >= 7:
-#         if _candle_count >= 3:
-#             # 攒够8条K了，合并一下
-#             dt = g_view_utils.convert_date2timeArray(_candle_lst[0][0])
-#             dt.tm_hour
-#             _bar8 = g_view_utils.barGenerator(_candle_lst)
-#             candles_8hour.append(_bar8)
-#             # 清理临时变量
-#             _candle_count = 0
-#             _candle_lst = []
-#         else:
-#             _candle_count += 1
-#
-#     return candles_8hour
-#
-
 def __bar_8hour_generator(candles_from_BD):
     """
     生成8小时 k线数据
@@ -443,13 +433,18 @@ def __bar_8hour_generator(candles_from_BD):
     # 从 2016 年 6月 2号 4 点 开始 （英国的时间）
     # 临时list
     _candle_lst = []
-
+    #临时时间戳，保存上一个时间
+    _pre_timestamp = 0
     for o in candles_from_BD:
-        # 1合并8 根1 小时k
+        # 1合并8 根1 小时k 时区矫正 向前一个小时
         str_datetime = g_view_utils.convert_time(int(o.timestamp)//1000 - 3600)
         # 获取小时
         dt = g_view_utils.convert_date2timeArray(str_datetime)
         _candle_lst.append([str_datetime, o.open, o.high, o.low, o.close, o.vol])
+        if not g_view_utils.check_2_time(_pre_timestamp, int(o.timestamp)//1000):
+            print("数据不连续")
+
+        _pre_timestamp = int(o.timestamp)//1000
 
         if (3 == dt.tm_hour % 8) or len(_candle_lst) >= 8:
             # 攒够8条K了，合并一下, 8小时K 在3,11,19 时结束，此时对8取余数是3
@@ -476,7 +471,7 @@ def __founding_rates(fundingrate_from_BD):
     _pre_timestamp = 0
     for o in fundingrate_from_BD:
         # 1合并8 根1 小时k
-        _fundingrate_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000), o.symbol, o.fundingrate, o.fundingratedaily])
+        _fundingrate_lst.append([g_view_utils.convert_time(int(o.timestamp)//1000 + 8 * 3600), o.symbol, o.fundingrate, o.fundingratedaily])
         if not g_view_utils.check_2_time(t1=int(_pre_timestamp) // 1000, t2=int(o.timestamp) // 1000,
                                          interval=3600 * 8):
             print("时间不连续， 数据出现异常")
@@ -535,7 +530,8 @@ def get_candles_founding_rates_views(request):
                     low=o[3], close=o[4], vol=o[5]).save()
     # 取 2016 年 6月 2 号 4 点 的之后 的K线 （英国的时间）
     tm_20160602 = g_view_utils.convert_date2timestamp("2016-06-07 04:00:00") * 1000
-    candles_from_BD = Candle1Hour.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+    # 时区矫正， 从数据库查询数据
+    candles_from_BD = Candle1Hour.objects.filter(timestamp__gte=tm_20160602 + 1 * 3600 * 1000).order_by("timestamp")
     candles_8hour = __bar_8hour_generator(candles_from_BD)
 
     # 历史费率
@@ -553,8 +549,8 @@ def get_candles_founding_rates_views(request):
         Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
                     fundingratedaily=o["fundingRateDaily"]).save()
 
-    # 把历史费率都拿出来
-    fundingrate_from_BD = Fundingrate.objects.filter(timestamp__gte=tm_20160602).order_by("timestamp")
+    # 把历史费率都拿出来 时区矫正 - 8 小时
+    fundingrate_from_BD = Fundingrate.objects.filter(timestamp__gte=tm_20160602 - 8 * 3600 * 1000).order_by("timestamp")
     _fundingrate_lst = __founding_rates(fundingrate_from_BD=fundingrate_from_BD)
 
     msg = {"user_id": user_id, "fundingrate": _fundingrate_lst, "candles_8hour": candles_8hour}
@@ -858,7 +854,7 @@ def login_views(request):
 
                 # 当另一机器登录时，本机器应该被挤下即当前sessionkey失效，后登录的用户的session可用，之前的sessionkey从数据库中删除
                 # 获取指定key的session_data，下面用的ORM模型去数据库中取数据
-                results =  DjangoSession.objects.filter(session_key=key).values_list('session_data')
+                results = DjangoSession.objects.filter(session_key=key).values_list('session_data')
                 session_data = None
                 if results:
                     session_data = list(results)[0][0]
