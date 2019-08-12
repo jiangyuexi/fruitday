@@ -652,6 +652,7 @@ def create_order_views(request):
         msg = {"user_name": user_name, "create_orders": create_orders}
         return HttpResponse(json.dumps(msg))
 
+
 @csrf_exempt
 def create_orders_views(request):
     """
@@ -676,6 +677,19 @@ def create_orders_views(request):
         else:
             # 限价
             price = params["price"]
+            if "sell" == params["side"]:
+                # 如果是 卖出（做空）
+                if params["current_price"] > price:
+                    # layer.msg("限价空单（卖单）必须大于当前市价");
+                    msg = {"user_name": "all", "create_orders": "None", "msg":"限价空单（卖单）必须大于当前市价"}
+                    return HttpResponse(json.dumps(msg))
+
+            elif "buy" == params["side"]:
+                if params["current_price"] < price:
+                    # layer.msg("限价多单（买单）必须小于当前市价");
+                    msg = {"user_name": "all", "create_orders": "None", "msg": "限价多单（买单）必须小于当前市价"}
+                    return HttpResponse(json.dumps(msg))
+
         percent = int(params["percent"])
         create_orders = []
         for k, gateway in g_gateways.items():
@@ -688,9 +702,17 @@ def create_orders_views(request):
                                               amount=int(free * 100 * percent),
                                               price=price
                                               )
+                # orders = gateway.create_order(symbol=params["symbol"],
+                #                               # type=params["type"],
+                #                               type="stoplimit",
+                #                               side=params["side"],
+                #                               amount=int(free * 100 * percent),
+                #                               # price=price
+                #                               price=12000
+                #                               )
                 create_orders.append(orders)
 
-        msg = {"user_name": "all", "create_orders": create_orders}
+        msg = {"user_name": "all", "create_orders": create_orders, "msg": "成功"}
         return HttpResponse(json.dumps(msg))
 
 
@@ -718,7 +740,8 @@ def create_orders_close_views(request):
         else:
             # 限价
             price = params["price"]
-        percent  = int(params["percent"])
+
+        percent = int(params["percent"])
         create_orders = []
         for k, gateway in g_gateways.items():
             if isinstance(gateway, ccxt_class_name):
@@ -732,6 +755,20 @@ def create_orders_close_views(request):
                     side = "sell"
                 else:
                     side = "buy"
+                if "limit" == params["type"]:
+                    if "sell" == side:
+                        # 如果是 卖出（平多）
+                        if params["current_price"] > price:
+                            # layer.msg("限价卖出（平多）必须大于当前市价");
+                            msg = {"user_name": "all", "create_orders": "None", "msg": "限价空单（卖单）必须大于当前市价"}
+                            return HttpResponse(json.dumps(msg))
+
+                    elif "buy" == side:
+                        # 如果是 买入（平空）
+                        if params["current_price"] < price:
+                            # layer.msg("限价买入（平空）必须小于当前市价");
+                            msg = {"user_name": "all", "create_orders": "None", "msg": "买入（平空）必须小于当前市价"}
+                            return HttpResponse(json.dumps(msg))
 
                 orders = gateway.create_order(symbol=params["symbol"],
                                               type=params["type"],
@@ -741,7 +778,7 @@ def create_orders_close_views(request):
                                               )
                 create_orders.append(orders)
 
-        msg = {"user_name": "all", "create_orders": create_orders}
+        msg = {"user_name": "all", "create_orders": create_orders, "msg": "成功"}
         return HttpResponse(json.dumps(msg))
 
 
@@ -982,7 +1019,6 @@ def sub_candlestick1_views(request):
     return render(request, "candlestick_sh.html")
 
 
-
 def commit_apikey_views(request):
     """
     
@@ -1080,7 +1116,7 @@ def get_history_founding_rate_views(request):
 @csrf_exempt
 def set_stop_views(request):
     """
-    止损设置
+        下单  多账号
     :param request: 
     :return: 
     """
@@ -1088,8 +1124,45 @@ def set_stop_views(request):
     if not g_view_utils.check_sessionid(request):
         return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
-    # if "POST" != request.method:
-    #     return None
-    #
-    # for k, gateway in g_gateways.items():
-    #     bitmex.bitmex().
+    if "POST" == request.method:
+        body = json.loads(request.body)
+        exchange = body["exchange"]
+        ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
+        gateway_name = body["gateway_name"]
+        params = body["params"]
+        # 下单价格
+        if "market" == params["type"]:
+            # 市价
+            price =None
+        else:
+            # 限价
+            price = params["price"]
+            if "sell" == params["side"]:
+                # 如果是 卖出（做空）
+                if params["current_price"] > price:
+                    # layer.msg("限价空单（卖单）必须大于当前市价");
+                    msg = {"user_name": "all", "create_orders": "None", "msg":"限价空单（卖单）必须大于当前市价"}
+                    return HttpResponse(json.dumps(msg))
+
+            elif "buy" == params["side"]:
+                if params["current_price"] < price:
+                    # layer.msg("限价多单（买单）必须小于当前市价");
+                    msg = {"user_name": "all", "create_orders": "None", "msg": "限价多单（买单）必须小于当前市价"}
+                    return HttpResponse(json.dumps(msg))
+
+        percent = int(params["percent"])
+        create_orders = []
+        for k, gateway in g_gateways.items():
+            if isinstance(gateway, ccxt_class_name):
+                # 获取余额
+                free = gateway.fetch_free_balance()["BTC"]
+                orders = gateway.create_order(symbol=params["symbol"],
+                                              type=params["type"],
+                                              side=params["side"],
+                                              amount=int(free * 100 * percent),
+                                              price=price
+                                              )
+                create_orders.append(orders)
+
+        msg = {"user_name": "all", "create_orders": create_orders, "msg": "成功"}
+        return HttpResponse(json.dumps(msg))

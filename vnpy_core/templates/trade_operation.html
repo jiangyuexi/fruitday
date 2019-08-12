@@ -234,7 +234,22 @@
             var exp = new Date();
             exp.setTime(exp.getTime() + strsec*1);
             document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
-        }
+        };
+
+        // 最简单数组去重法
+        /*
+        * 新建一新数组，遍历传入数组，值不在新数组就push进该新数组中
+        * IE8以下不支持数组的indexOf方法
+        * */
+        function uniq(array){
+            var temp = []; //一个新的临时数组
+            for(var i = 0; i < array.length; i++){
+                if(temp.indexOf(array[i]) == -1){
+                    temp.push(array[i]);
+                }
+            }
+            return temp;
+        };
 
         //十五秒刷新一次
 
@@ -290,8 +305,8 @@
 
         };
 
-        setInterval('get_price()',6000);
-        setInterval('get_position()',9000);
+        setInterval('get_price()',2000);
+        setInterval('get_position()',3000);
 
         $(document).on('click','#show_user_ids',function(){
           var cookieObj=getCookie("user_ids");
@@ -307,6 +322,7 @@
 
             options_user_ids += '<option value="'+i+'">'+obj_user_ids[i]+'</option>';
           }
+          $("#sub_config_user_ids").find("option").remove();
           $("#sub_config_user_ids").append(options_user_ids);   //填充数据到用户名称下拉框
 
           form.render("select");
@@ -349,7 +365,7 @@
             });
             return false;
         });
-
+        //开仓按钮被点击
         $(document).on('click', '#open_position_button', function () {
             //准备数据
             var user = {};
@@ -359,13 +375,21 @@
             var params = {};
             params.symbol="BTC/USD";
             //市价/限价
-            params.type=$("#open_position_market_limit option:selected").val();
+            var type = $("#open_position_market_limit option:selected").val();
+            params.type= type;
             //buy/sell
-            params.side=$("#open_position_side option:selected").val();
+            var side=$("#open_position_side option:selected").val();
+            params.side = side;
             params.percent=$("#open_position_percent option:selected").val();
             //数量
             //params.amount=20.0;
-            params.price=$("#open_position_price").val();
+            //开仓价格
+            var price=$("#open_position_price").val();
+            params.price = price;
+            //
+            //当前价格
+            var current_price = $("#price").val();
+            params.current_price = current_price;
             user.params = params;
             //console.log(user);
             //debugger;
@@ -380,8 +404,7 @@
 
                     var balances_text = "";
 
-                    //debugger;
-                    layer.msg("成功");
+                    layer.msg(obj.msg);
                 },
                 error:function(res){
                     layer.msg("连接服务器失败");
@@ -390,7 +413,7 @@
             return false;
 
         });
-
+        //平仓按钮点击
         $(document).on('click', '#close_position_button', function () {
             //准备数据
             var user = {};
@@ -400,13 +423,18 @@
             var params = {};
             params.symbol="BTC/USD";
             //市价/限价
-            params.type=$("#close_position_market_limit option:selected").val();
+            var type=$("#close_position_market_limit option:selected").val();
+            params.type = type;
             //buy/sell
-            params.side=$("#close_position_side option:selected").val();
+            var side=$("#close_position_side option:selected").val();
+            params.side=side;
             params.percent=$("#close_position_percent option:selected").val();
             //数量
             //params.amount=20.0;
             params.price=$("#close_position_price").val();
+            //当前价格
+            var current_price = $("#price").val();
+            params.current_price = current_price;
             user.params = params;
             //console.log(user);
             //debugger;
@@ -418,11 +446,10 @@
                 success:function(res){
                     var __data = unescape(res.replace(/\\u/g, '%u'));
                     var obj = strToJson(__data);
-
                     var balances_text = "";
 
                     //debugger;
-                    layer.msg("成功");
+                    layer.msg(obj.msg);
                 },
                 error:function(res){
                     layer.msg("连接服务器失败");
