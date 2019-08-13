@@ -540,7 +540,9 @@ def get_candles_founding_rates_views(request):
         # bitmex上永续合约的symbol为 “XBTUSD” 所以要把“BTC/USD”转化过来
         symbol_bitmex = "XBTUSD"
     returns = G_OBJ_BITMEX.client.Funding.Funding_get(symbol=symbol_bitmex, reverse=False,
-                                                 count=45
+                                                      startTime=g_view_utils.convert_datetime((time.time()*1000 - ONEDAY * 15) // 1000),
+                                                      endTime=g_view_utils.convert_datetime(time.time()*1000 // 1000),
+                                                      count=45
                                                  ).result()[0]
     # 存入数据库
     for o in returns:
