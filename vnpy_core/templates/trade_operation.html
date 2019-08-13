@@ -171,12 +171,18 @@
                         价格（USD）
                     </td>
                     <td>
-                        <input type="text" class="layui-input" id="close_position_price" lay-verify="required" >
+                        <input type="text" class="layui-input" id="stop_position_price" lay-verify="required" >
+                    </td>
+                    <td>
+                        触发价格
+                    </td>
+                    <td>
+                        <input type="text" class="layui-input" id="stopPx_position_price" lay-verify="required" >
                     </td>
                     <td>
                         <select id="stop_position_side" lay-verify="required">
-						<option value="buy">买入</option>
-						<option value="sell">卖出</option>
+						<option value="Buy">买入</option>
+						<option value="Sell">卖出</option>
 					    </select>
                     </td>
                      <td>
@@ -440,6 +446,55 @@
             //debugger;
             $.ajax({
                 url:"create_orders_close/",
+                type:"post",
+                data:JSON.stringify(user),
+                async:true,
+                success:function(res){
+                    var __data = unescape(res.replace(/\\u/g, '%u'));
+                    var obj = strToJson(__data);
+                    var balances_text = "";
+
+                    //debugger;
+                    layer.msg(obj.msg);
+                },
+                error:function(res){
+                    layer.msg("连接服务器失败");
+                }
+            });
+            return false;
+
+        });
+
+        //设置止损止盈
+        $(document).on('click', '#stop_position_button', function () {
+            //准备数据
+            var user = {};
+            user.exchange = "BITMEX";
+	        user.gateway_name= "BITMEX";
+	        //"账户":"jiangyuexi1992@qq.com",
+            var params = {};
+            params.symbol="BTC/USD";
+            //市价/限价
+            var type=$("#stop_position_market_limit option:selected").val();
+            params.type = type;
+            //buy/sell
+            var side=$("#stop_position_side option:selected").val();
+            params.side=side;
+            params.percent=$("#stop_position_percent option:selected").val();
+            //数量
+            //params.amount=20.0;
+            params.price=$("#stop_position_price").val();
+            //触发价格
+            var stopPx = $("#stopPx_position_price").val();
+            params.stopPx = stopPx;
+            //当前价格
+            var current_price = $("#price").val();
+            params.current_price = current_price;
+            user.params = params;
+            //console.log(user);
+            //debugger;
+            $.ajax({
+                url:"set_stop/",
                 type:"post",
                 data:JSON.stringify(user),
                 async:true,

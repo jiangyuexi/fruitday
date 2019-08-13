@@ -718,14 +718,7 @@ def create_orders_views(request):
                                               amount=int(free * 100 * percent),
                                               price=price
                                               )
-                # orders = gateway.create_order(symbol=params["symbol"],
-                #                               # type=params["type"],
-                #                               type="stoplimit",
-                #                               side=params["side"],
-                #                               amount=int(free * 100 * percent),
-                #                               # price=price
-                #                               price=12000
-                #                               )
+
                 create_orders.append(orders)
 
         msg = {"user_name": "all", "create_orders": create_orders, "msg": "成功"}
@@ -1132,7 +1125,7 @@ def get_history_founding_rate_views(request):
 @csrf_exempt
 def set_stop_views(request):
     """
-        下单  多账号
+        下止盈止损单  多账号
     :param request: 
     :return: 
     """
@@ -1147,24 +1140,11 @@ def set_stop_views(request):
         gateway_name = body["gateway_name"]
         params = body["params"]
         # 下单价格
-        if "market" == params["type"]:
+        if "Stop" == params["type"]:
             # 市价
-            price =None
-        else:
-            # 限价
+            price = None
+        elif "StopLimit" == params["type"]:
             price = params["price"]
-            if "sell" == params["side"]:
-                # 如果是 卖出（做空）
-                if params["current_price"] > price:
-                    # layer.msg("限价空单（卖单）必须大于当前市价");
-                    msg = {"user_name": "all", "create_orders": "None", "msg":"限价空单（卖单）必须大于当前市价"}
-                    return HttpResponse(json.dumps(msg))
-
-            elif "buy" == params["side"]:
-                if params["current_price"] < price:
-                    # layer.msg("限价多单（买单）必须小于当前市价");
-                    msg = {"user_name": "all", "create_orders": "None", "msg": "限价多单（买单）必须小于当前市价"}
-                    return HttpResponse(json.dumps(msg))
 
         percent = int(params["percent"])
         create_orders = []
@@ -1176,7 +1156,8 @@ def set_stop_views(request):
                                               type=params["type"],
                                               side=params["side"],
                                               amount=int(free * 100 * percent),
-                                              price=price
+                                              price=price,
+                                              params={"stopPx": params["stopPx"]}
                                               )
                 create_orders.append(orders)
 
