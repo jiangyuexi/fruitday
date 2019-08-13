@@ -447,15 +447,20 @@ def __bar_8hour_generator(candles_from_BD):
         _pre_timestamp = int(o.timestamp)//1000
 
         if (3 == dt.tm_hour % 8) or len(_candle_lst) >= 8:
+            if len(_candle_lst) < 8:
+                print("数据缺失")
             # 攒够8条K了，合并一下, 8小时K 在3,11,19 时结束，此时对8取余数是3
             _bar8 = g_view_utils.barGenerator(_candle_lst)
             candles_8hour.append(_bar8)
-            if len(_candle_lst) < 8:
-                print("数据缺失")
+
             # 清理临时变量
             _candle_lst = []
         else:
             pass
+
+    if len(_candle_lst):
+        _bar8 = g_view_utils.barGenerator(_candle_lst)
+        candles_8hour.append(_bar8)
 
     return candles_8hour
 
@@ -523,11 +528,17 @@ def get_candles_founding_rates_views(request):
 
     # 行情信息
     candles = G_OBJ_BITMEX.fetch_ohlcv(symbol=symbol, limit=500, timeframe=timeframe, since=start_timeStamp)
+
     # 存入数据库
     for o in candles:
         # print(g_view_utils.convert_time(o[0]//1000))
+        # 删除
+        Candle1Hour.objects.filter(timestamp=o[0]).delete()
+        #存入
         Candle1Hour(timestamp=o[0], open=o[1], high=o[2],
                     low=o[3], close=o[4], vol=o[5]).save()
+
+
     # 取 2016 年 6月 2 号 4 点 的之后 的K线 （英国的时间）
     tm_20160602 = g_view_utils.convert_date2timestamp("2016-06-07 04:00:00") * 1000
     # 时区矫正， 从数据库查询数据
@@ -548,6 +559,9 @@ def get_candles_founding_rates_views(request):
     for o in returns:
         # print(o["timestamp"])
         timestamp = g_view_utils.convert_datetime2timestamp(o["timestamp"]) * 1000
+        # 删除
+        Fundingrate.objects.filter(timestamp=timestamp).delete()
+        # 存入
         Fundingrate(timestamp=timestamp, symbol=o["symbol"], fundingrate=o["fundingRate"],
                     fundingratedaily=o["fundingRateDaily"]).save()
 
