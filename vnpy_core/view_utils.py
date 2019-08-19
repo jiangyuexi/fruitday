@@ -142,7 +142,7 @@ class View_utils(object):
         # 转换成localtime
         time_local = time.localtime(timestamp)
         # str  to   datetime
-        dt_datetime = datetime.datetime(time_local.tm_year, time_local.tm_mon, time_local.tm_mday, time_local.tm_hour,
+        dt_datetime = datetime.datetime(time_local.tm_year, time_local.tm_mon, time_local.tm_mday,
                                         time_local.tm_hour, time_local.tm_min, time_local.tm_sec)
         return dt_datetime
 
