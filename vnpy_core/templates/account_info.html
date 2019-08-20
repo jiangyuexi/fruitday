@@ -27,44 +27,23 @@
 </head>
 <body class="gx_index">
 
-<form class="layui-form" action="">
-
+<form class="layui-form" action="" enctype="multipart/form-data">
+    <input type="file" hidden id="upAccountInfo" accept=".json" />
+    <div class="layui-input-block">
+        <button class="layui-btn layui-btn-darkBlue upAccountInfo" type="button">上传账户信息</button>
+    </div>
     <div class="layui-form-item layui-form-text">
         <div class="layui-input-block">
           <textarea  class="layui-textarea layui-input" id="account_info"
                      style="width:90%;height:400px">
-            {
-                "exchange": "BITMEX",
-                "gateway_name": "BITMEX",
-                "Keys":
-                [
-                    {
-                        "apiKey": "hX1ZysYw-jCWPHLXuxPERmZV",
-                        "secret": "Wo7_O_8kdqSoLxqZlWvtFvJI5NK_BOOtON113gyllsI9H-Ft",
-                        "role": "master",
-                        "会话数": 3,
-                        "账户": "jiangyuexi1992@qq.com",
-                        "代理地址": "",
-                        "代理端口": ""
-                    },
-                    {
-                        "apiKey": "TuNMgb-swJX_HXyUDDPyVFMx",
-                        "secret": "252Ldr1nlnDtCbBMxA2MaJnpeI3rlrtEpBINoRJyYR0Q9XzC",
-                        "role": "slave",
-                        "会话数": 3,
-                        "账户": "2677004840@qq.com",
-                        "代理地址": "",
-                        "代理端口": ""
-                    }
-                ]
-            }
+
           </textarea>
         </div>
     </div>
 
     <div class="layui-form-item">
     <div class="layui-input-block">
-      <button class="layui-btn" lay-submit="" lay-filter="demo1">提交账户API信息</button>
+        <button class="layui-btn" lay-submit="" lay-filter="demo1">接入API</button>
     </div>
     </div>
     <div class="layui-input-block">
@@ -76,13 +55,27 @@
 </form>
 
 <script>
-layui.use(['form', 'layedit', 'laydate'], function(){
+layui.use(['form', 'layedit', 'laydate', 'jquery'], function(){
   var form = layui.form
   ,layer = layui.layer
   ,layedit = layui.layedit
-  ,laydate = layui.laydate;
+  ,laydate = layui.laydate
+  ,$ = layui.jquery;
 
    //创建一个编辑器
+
+    var upBtn = $('#upAccountInfo');
+      upBtn.change(function () {
+        var readHandle = new FileReader(), file = this.files[0];
+        readHandle.readAsText(file, 'utf-8');
+        // 读取文件数据
+        readHandle.onload = function(evt){
+            $('#account_info').val(evt.currentTarget.result);
+        }
+    });
+    $('.upAccountInfo').click(function () {
+        upBtn.click();
+    });
 
   //监听提交
   form.on('submit(demo1)', function(data){

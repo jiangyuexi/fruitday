@@ -5,6 +5,7 @@ import logging
 import pickle
 
 import time
+import gevent
 from pandas import DataFrame, Series
 import pandas as pd
 import numpy as np
@@ -79,6 +80,7 @@ def api_key_views(request):
         for api_key in api_keys:
             # 建立一个对象
             if api_key["账户"] not in g_gateways:
+                time.sleep(1)
                 setting = api_key
                 gateway = g_view_utils.create_gateway_obj(exchange=exchange, setting=setting)
                 g_gateways[api_key["账户"]] = gateway
