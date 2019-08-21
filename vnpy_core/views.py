@@ -62,9 +62,9 @@ def api_key_views(request):
     :return: 
     """
     # 每个用户唯一登录
-    if not g_view_utils.check_sessionid(request):
-        pass
-        # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # if not g_view_utils.check_sessionid(request):
+    #     pass
+    #     # return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         # 把 body 里的数据取出来，转换成json格式
@@ -103,8 +103,8 @@ def balance_views(request):
     :return: 
     """
     # 每个用户唯一登录
-    if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # if not g_view_utils.check_sessionid(request):
+    #     return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -264,8 +264,8 @@ def fetch_my_trades_views(request):
     :return: 
     """
     # 每个用户唯一登录
-    if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # if not g_view_utils.check_sessionid(request):
+    #     return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -278,6 +278,7 @@ def fetch_my_trades_views(request):
         result = None
         for k, gateway in g_gateways.items():
             if isinstance(gateway, ccxt_class_name) and k == user_id:
+                # time.sleep(1)
                 # my_trades = gateway.fetch_my_trades(symbol=symbol)
                 result = gateway.client.Position.Position_get(filter=json.dumps({'symbol': 'XBTUSD'})).result()[0][0]
                 result["currentTimestamp"] = str(result["currentTimestamp"])
