@@ -1,552 +1,545 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-  <meta http-equiv="keywords" content="关键字,关键字,关键字"/>
-  <meta http-equiv="pragma" content="no-cache"/>
-  <meta http-equiv="cache-control" content="no-cache"/>
-  <meta http-equiv="expires" content="0"/>
-  <meta name="description" content="页面描述不超过150个字符"/>
-  <meta name="Author" content="页面作者"/>
-  <meta name="renderer" content="webkit"/>
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
-  <link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon" >
-  <link rel="stylesheet" type="text/css" href="../static/layui/dist/css/layui.css"/>
-  <link rel="stylesheet" href="../static/stylesheets/gx_main.min.css" />
-  <link rel="stylesheet" type="text/css" href="../static/iconfont/iconfont.css">
-  <!--[if lt IE 9]>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta http-equiv="keywords" content="关键字,关键字,关键字" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="cache-control" content="no-cache" />
+		<meta http-equiv="expires" content="0" />
+		<meta name="description" content="页面描述不超过150个字符" />
+		<meta name="Author" content="页面作者" />
+		<meta name="renderer" content="webkit" />
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+		<link rel="shortcut icon" href="../static/favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" type="text/css" href="../static/layui/dist/css/layui.css" />
+		<link rel="stylesheet" href="../static/stylesheets/gx_main.min.css" />
+		<link rel="stylesheet" type="text/css" href="../static/iconfont/iconfont.css">
+		<!--[if lt IE 9]>
   <script src="../static/html5shiv/dist/html5shiv.min.js"></script>
   <script src="../static/respond/dest/respond.min.js"></script>
   <![endif]-->
-  <script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-  <script src="../static/layui/dist/layui.js" type="text/javascript" charset="utf-8"></script>
-  <script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
-  <!--mine-->
-  <script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../static/layui/dist/layui.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="../static/highcharts-5.0.14/code/highcharts.js"></script>
+		<!--mine-->
+		<script src="../static/javascripts/gx_main.min.js" type="text/javascript" charset="utf-8"></script>
 
-</head>
-<body class="gx_index">
+	</head>
+	<body class="gx_index">
 
-<form class="layui-form trade_operation" id="form_trade_operation">
-		<input type="hidden" name="FileName" value="trade_operation.html"/>
-		<input type="hidden" name="method" value="send_post"/>
-		<!--【发送】协议配置-->
-		<table class="layui-table">
-			<thead class="lightBlue center">
-				<tr>
-					<th colspan="6">成功接入的账户</th>
-				</tr>
-			</thead>
-			<tbody class="grey center">
-                <tr>
-                    <textarea  class="layui-textarea" id="return_account_login_info"
-                    style="width:90%;height:20px" readonly></textarea>
-                </tr>
-                <tr>
-                    <button id="show_user_ids" type="button"
-                            class="layui-btn layui-btn-primary layui-btn-radius">显示账户</button>
+		<form class="layui-form trade_operation" id="form_trade_operation">
+			<input type="hidden" name="FileName" value="trade_operation.html" />
+			<input type="hidden" name="method" value="send_post" />
+			<!--【发送】协议配置-->
+			<table class="layui-table">
+				<thead class="lightBlue center">
+					<tr>
+						<th colspan="12">成功接入的账户</th>
+					</tr>
+				</thead>
+				<tbody class="grey center">
+					<tr>
+						<textarea class="layui-textarea" id="return_account_login_info" style="width:90%;height:20px" readonly></textarea>
+					</tr>
+					<tr>
+						<td>账号名称</td>
+						<td>
+							<select id="sub_config_user_ids" name="parameter_user_ids" lay-filter="sub_config_user_ids" lay-verify="required"></select>
+						</td>
+						<td>当前价格</td>
+						<td><input type="text" class="layui-input" id="price" lay-verify="required" readonly></td>
 
-                </tr>
-				<tr>
-					<td>账号名称</td>
-					<td>
-						<select id="sub_config_user_ids" name="parameter_user_ids" lay-filter="sub_config_user_ids" lay-verify="required"></select>
-					</td>
-                    <td>当前价格</td>
-                    <td><input type="text" class="layui-input" id="price" lay-verify="required" readonly></td>
+					</tr>
+					<tr>
+						<input colspan="6" type="text" class="layui-input" id="position" lay-verify="required" readonly>
+					</tr>
+					<tr>账户余额</tr>
 
-                </tr>
-                <tr>
-                    <input colspan="6" type="text" class="layui-input" id="position" lay-verify="required" readonly>
-                </tr>
-                <tr>账户余额</tr>
+					<tr>
+						<textarea class="layui-textarea" id="balance_json" style="width:90%;height:20px" readonly></textarea>
+					</tr>
 
-                <tr>
-                    <textarea  class="layui-textarea" id="balance_json"
-                    style="width:90%;height:20px" readonly></textarea>
-                </tr>
+					<tr>
+						<td>市价/限价</td>
+						<td>
+							<select id="open_position_market_limit" lay-verify="required">
+								<option value="market">市价</option>
+								<option value="limit">限价</option>
+							</select>
+						</td>
+						<td>百分比</td>
+						<td>
+							<select id="open_position_percent" lay-verify="required">
+								<option value="0">0</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="35">35</option>
+								<option value="40">40</option>
+								<option value="45">45</option>
+								<option value="50">50</option>
+								<option value="55">55</option>
+								<option value="60">60</option>
+								<option value="65">65</option>
+								<option value="70">70</option>
+								<option value="75">75</option>
+								<option value="80">80</option>
+								<option value="85">85</option>
+								<option value="90">90</option>
+								<option value="95">95</option>
+								<option value="100">100</option>
+							</select>
+						</td>
+						<td>
+							价格（USD）
+						</td>
+						<td>
+							<input type="text" class="layui-input" id="open_position_price" lay-verify="required">
+						</td>
+						<td>
+							<select id="open_position_side" lay-verify="required">
+								<option value="buy">做多/购买</option>
+								<option value="sell">做空/卖出</option>
+							</select>
+						</td>
+						<td>
+							<button id="open_position_button" type="button" class="layui-btn layui-btn-primary layui-btn-radius">建仓</button>
+						</td>
+					</tr>
+					<tr>
+						<td>市价/限价</td>
+						<td>
+							<select id="close_position_market_limit" lay-verify="required">
+								<option value="market">市价</option>
+								<option value="limit">限价</option>
+							</select>
+						</td>
+						<td>百分比</td>
+						<td>
+							<select id="close_position_percent" lay-verify="required">
+								<option value="0">0</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="35">35</option>
+								<option value="40">40</option>
+								<option value="45">45</option>
+								<option value="50">50</option>
+								<option value="55">55</option>
+								<option value="60">60</option>
+								<option value="65">65</option>
+								<option value="70">70</option>
+								<option value="75">75</option>
+								<option value="80">80</option>
+								<option value="85">85</option>
+								<option value="90">90</option>
+								<option value="95">95</option>
+								<option value="100">100</option>
+							</select>
+						</td>
+						<td>
+							价格（USD）
+						</td>
+						<td>
+							<input type="text" class="layui-input" id="close_position_price" lay-verify="required">
+						</td>
 
-                <tr>
-					<td>市价/限价</td>
-	                <td>
-					<select id="open_position_market_limit" lay-verify="required">
-						<option value="market">市价</option>
-						<option value="limit">限价</option>
-					</select>
-				    </td>
-					<td>百分比</td>
-					<td>
-					<select id="open_position_percent" lay-verify="required">
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-						<option value="10">10</option>
-						<option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                        <option value="60">60</option>
-						<option value="65">65</option>
-                        <option value="70">70</option>
-                        <option value="75">75</option>
-                        <option value="80">80</option>
-                        <option value="85">85</option>
-                        <option value="90">90</option>
-                        <option value="95">95</option>
-                        <option value="100">100</option>
-                    </select>
-                    </td>
-                    <td>
-                        价格（USD）
-                    </td>
-                    <td>
-                        <input type="text" class="layui-input" id="open_position_price" lay-verify="required" >
-                    </td>
-                    <td>
-                        <select id="open_position_side" lay-verify="required">
-						<option value="buy">做多/购买</option>
-						<option value="sell">做空/卖出</option>
-					    </select>
-                    </td>
-                    <td>
-                        <button id="open_position_button" type="button"
-                            class="layui-btn layui-btn-primary layui-btn-radius">建仓</button>
-                    </td>
-				</tr>
-                <tr>
-					<td>市价/限价</td>
-	                <td>
-					<select id="close_position_market_limit" lay-verify="required">
-						<option value="market">市价</option>
-						<option value="limit">限价</option>
-					</select>
-				    </td>
-					<td>百分比</td>
-					<td>
-					<select id="close_position_percent" lay-verify="required">
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-						<option value="10">10</option>
-						<option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                        <option value="60">60</option>
-						<option value="65">65</option>
-                        <option value="70">70</option>
-                        <option value="75">75</option>
-                        <option value="80">80</option>
-                        <option value="85">85</option>
-                        <option value="90">90</option>
-                        <option value="95">95</option>
-                        <option value="100">100</option>
-                    </select>
-                    </td>
-                    <td>
-                        价格（USD）
-                    </td>
-                    <td>
-                        <input type="text" class="layui-input" id="close_position_price" lay-verify="required" >
-                    </td>
+						<td>
+							<button id="close_position_button" type="button" class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger">平仓</button>
+						</td>
+					</tr>
+					<tr>
+						<td>止损止盈</td>
+						<td>
+							<select id="stop_position_market_limit" lay-verify="required">
+								<option value="Stop">市价</option>
+								<option value="StopLimit">限价</option>
+							</select>
+						</td>
+						<td>百分比</td>
+						<td>
+							<select id="stop_position_percent" lay-verify="required">
+								<option value="0">0</option>
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+								<option value="20">20</option>
+								<option value="25">25</option>
+								<option value="30">30</option>
+								<option value="35">35</option>
+								<option value="40">40</option>
+								<option value="45">45</option>
+								<option value="50">50</option>
+								<option value="55">55</option>
+								<option value="60">60</option>
+								<option value="65">65</option>
+								<option value="70">70</option>
+								<option value="75">75</option>
+								<option value="80">80</option>
+								<option value="85">85</option>
+								<option value="90">90</option>
+								<option value="95">95</option>
+								<option value="100">100</option>
+							</select>
+						</td>
+						<td>
+							价格（USD）
+						</td>
+						<td>
+							<input type="text" class="layui-input" id="stop_position_price" lay-verify="required">
+						</td>
+						<td>
+							触发价格
+						</td>
+						<td>
+							<input type="text" class="layui-input" id="stopPx_position_price" lay-verify="required">
+						</td>
+						<td>
+							<select id="stop_position_side" lay-verify="required">
+								<option value="Buy">买入</option>
+								<option value="Sell">卖出</option>
+							</select>
+						</td>
+						<td>
+							<button id="stop_position_button" type="button" class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger">设置止损单</button>
+						</td>
+					</tr>
 
-                     <td>
-                        <button id="close_position_button" type="button"
-                            class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger" >平仓</button>
-                    </td>
-                </tr>
-                <tr>
-					<td>止损止盈</td>
-	                <td>
-					<select id="stop_position_market_limit" lay-verify="required">
-						<option value="Stop">市价</option>
-						<option value="StopLimit">限价</option>
-					</select>
-				    </td>
-					<td>百分比</td>
-					<td>
-					<select id="stop_position_percent" lay-verify="required">
-                        <option value="0">0</option>
-                        <option value="5">5</option>
-						<option value="10">10</option>
-						<option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                        <option value="60">60</option>
-						<option value="65">65</option>
-                        <option value="70">70</option>
-                        <option value="75">75</option>
-                        <option value="80">80</option>
-                        <option value="85">85</option>
-                        <option value="90">90</option>
-                        <option value="95">95</option>
-                        <option value="100">100</option>
-                    </select>
-                    </td>
-                    <td>
-                        价格（USD）
-                    </td>
-                    <td>
-                        <input type="text" class="layui-input" id="stop_position_price" lay-verify="required" >
-                    </td>
-                    <td>
-                        触发价格
-                    </td>
-                    <td>
-                        <input type="text" class="layui-input" id="stopPx_position_price" lay-verify="required" >
-                    </td>
-                    <td>
-                        <select id="stop_position_side" lay-verify="required">
-						<option value="Buy">买入</option>
-						<option value="Sell">卖出</option>
-					    </select>
-                    </td>
-                     <td>
-                        <button id="stop_position_button" type="button"
-                            class="layui-btn layui-btn-primary layui-btn-radius layui-btn-danger" >设置止损单</button>
-                    </td>
-                </tr>
-
-			</tbody>
-		</table>
+				</tbody>
+			</table>
 
 
-</form>
+		</form>
 
-<script>
+		<script>
+			layui.use(['form', 'layedit', 'laydate', 'element', 'jquery'], function() {
+				var form = layui.form,
+					layer = layui.layer,
+					layedit = layui.layedit,
+					laydate = layui.laydate,
+					element = layui.element,
+					$ = layui.jquery;
+				/**
+				 *  字符串转换成 json 对象
+				 **/
+				function strToJson(str) {
+					var json = eval('(' + str + ')');
+					return json;
+				};
+				/**
+				 * 获取cookie 通过 key
+				 * @param name  key
+				 * @returns {null} value
+				 */
+				function getCookie(name) {
+					var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
 
-    layui.use(['form', 'layedit', 'laydate','element','jquery'], function(){
-      var form = layui.form
-      ,layer = layui.layer
-      ,layedit = layui.layedit
-      ,laydate = layui.laydate
-      ,element=layui.element
-      ,$=layui.jquery;
-      /**
-       *  字符串转换成 json 对象
-       **/
-      function strToJson(str){
-        var json = eval('(' + str + ')');
-        return json;
-      };
-        /**
-         * 获取cookie 通过 key
-         * @param name  key
-         * @returns {null} value
-         */
-        function getCookie(name)
-        {
-            var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)");
+					if (arr = document.cookie.match(reg))
 
-            if(arr=document.cookie.match(reg))
+						return unescape(arr[2]);
+					else
+						return null;
+				};
+				/**
+				 * 设置 cookie
+				 * @param name    key
+				 * @param value  value
+				 * @param time  时间
+				 */
+				function setCookie(name, value, time) {
+					var strsec = getsec(time);
+					var exp = new Date();
+					exp.setTime(exp.getTime() + strsec * 1);
+					document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+				};
 
-                return unescape(arr[2]);
-            else
-                return null;
-        };
-        /**
-         * 设置 cookie
-         * @param name    key
-         * @param value  value
-         * @param time  时间
-         */
-        function setCookie(name,value,time)
-        {
-            var strsec = getsec(time);
-            var exp = new Date();
-            exp.setTime(exp.getTime() + strsec*1);
-            document.cookie = name + "="+ escape (value) + ";expires=" + exp.toGMTString();
-        };
+				// 最简单数组去重法
+				/*
+				 * 新建一新数组，遍历传入数组，值不在新数组就push进该新数组中
+				 * IE8以下不支持数组的indexOf方法
+				 * */
+				function uniq(array) {
+					var temp = []; //一个新的临时数组
+					for (var i = 0; i < array.length; i++) {
+						if (temp.indexOf(array[i]) == -1) {
+							temp.push(array[i]);
+						}
+					}
+					return temp;
+				};
 
-        // 最简单数组去重法
-        /*
-        * 新建一新数组，遍历传入数组，值不在新数组就push进该新数组中
-        * IE8以下不支持数组的indexOf方法
-        * */
-        function uniq(array){
-            var temp = []; //一个新的临时数组
-            for(var i = 0; i < array.length; i++){
-                if(temp.indexOf(array[i]) == -1){
-                    temp.push(array[i]);
-                }
-            }
-            return temp;
-        };
+				// 从cookies获取到用户ids
+				function getUserIds() {
+					var cookieObj = getCookie("user_ids");
+					var options_user_ids = [];
+					//把\054转换成对应的','
+					cookieObj = cookieObj.replace(/\\054/g, ",");
+					cookieObj = cookieObj.replace(/"/g, "");
+					$("#return_account_login_info").val("<pre>" + cookieObj + "</pre>");
+					var obj_user_ids = strToJson(cookieObj);
+					//debugger;
+					//填充数据到用户名称下拉框
+					for (var i = 0; i < obj_user_ids.length; i++) {
 
-        //十五秒刷新一次
+						options_user_ids += '<option value="' + i + '">' + obj_user_ids[i] + '</option>';
+					}
+					$("#sub_config_user_ids").find("option").remove();
+					$("#sub_config_user_ids").append(options_user_ids); //填充数据到用户名称下拉框
 
-        window.get_price = function () {
-            var user = {};
-            user.exchange = "BITMEX";
-            user.gateway_name = "BITMEX";
-            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
-            user.symbol="BTC/USD";
-            //debugger;
-            $.ajax({
-                url:"fetch_ticks/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
-                    $("#price").val(obj.ticks.last);
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
+					form.render("select");
+					console.log(cookieObj);
+				}
 
-        };
-        window.get_position = function () {
-            var user = {};
-            user.exchange = "BITMEX";
-            user.gateway_name = "BITMEX";
-            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
-            user.symbol="BTC/USD";
-            //debugger;
-            $.ajax({
-                url:"fetch_my_trades/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
-                    $("#position").val( "仓位和方向："+ JSON.stringify(obj.position.currentQty)
-                        + "开仓价格：" + JSON.stringify(obj.position.avgEntryPrice) + "标记价格mark:" +
-                    JSON.stringify(obj.position.markPrice));
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
+				//十五秒刷新一次
+
+				window.get_price = function() {
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					user.user_id = $("#sub_config_user_ids option:selected").text(); //获取文本
+					user.symbol = "BTC/USD";
+					//debugger;
+					$.ajax({
+						url: "fetch_ticks/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
+							$("#price").val(obj.ticks.last);
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
+
+				};
+				window.get_position = function() {
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					user.user_id = $("#sub_config_user_ids option:selected").text(); //获取文本
+					user.symbol = "BTC/USD";
+					//debugger;
+					$.ajax({
+						url: "fetch_my_trades/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
+							$("#position").val("仓位和方向：" + JSON.stringify(obj.position.currentQty) +
+								"开仓价格：" + JSON.stringify(obj.position.avgEntryPrice) + "标记价格mark:" +
+								JSON.stringify(obj.position.markPrice));
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
 
 
-        };
+				};
 
-        setInterval('get_price()',2000);
-        setInterval('get_position()',3000);
+				setInterval('get_price()', 2000);
+				setInterval('get_position()', 3000);
 
-        $(document).on('click','#show_user_ids',function(){
-          var cookieObj=getCookie("user_ids");
-          var options_user_ids = [];
-          //把\054转换成对应的','
-          cookieObj = cookieObj.replace(/\\054/g, ",");
-          cookieObj = cookieObj.replace(/"/g, "");
-          $("#return_account_login_info").val(cookieObj);
-          var obj_user_ids = strToJson(cookieObj);
-          //debugger;
-          //填充数据到用户名称下拉框
-          for(var i=0;i<obj_user_ids.length;i++){
+				$(function() {
+					getUserIds();
+				});
 
-            options_user_ids += '<option value="'+i+'">'+obj_user_ids[i]+'</option>';
-          }
-          $("#sub_config_user_ids").find("option").remove();
-          $("#sub_config_user_ids").append(options_user_ids);   //填充数据到用户名称下拉框
 
-          form.render("select");
-          console.log(cookieObj);
-        });
-        //选择账户
-        form.on('select(sub_config_user_ids)',function(data){
+				//选择账户
+				form.on('select(sub_config_user_ids)', function(data) {
 
-            var user = {};
-            user.exchange = "BITMEX";
-            user.gateway_name = "BITMEX";
-            user.name = data.elem.name;
-            user.user_id =  $("#sub_config_user_ids option:selected").text();//获取文本
-            //debugger;
-            $.ajax({
-                url:"balance/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					user.name = data.elem.name;
+					user.user_id = $("#sub_config_user_ids option:selected").text(); //获取文本
+					//debugger;
+					$.ajax({
+						url: "balance/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
 
-                    var balances_text = "";
-                    for(var i = 0; i < obj.balances.length; i++)
-                    {
-                        var o = obj.balances[i];
-                        balances_text += JSON.stringify(o.BTC)  + "\n\r"
-                            + "free: "+JSON.stringify(o.free) + "\n\r"
-                            + "used: "+JSON.stringify(o.used) + "\n\r"
-                            + "total:" + JSON.stringify(o.total) + "\n\r";
+							var balances_text = "";
+							for (var i = 0; i < obj.balances.length; i++) {
+								var o = obj.balances[i];
+								balances_text += JSON.stringify(o.BTC) + "\n\r" +
+									"free: " + JSON.stringify(o.free) + "\n\r" +
+									"used: " + JSON.stringify(o.used) + "\n\r" +
+									"total:" + JSON.stringify(o.total) + "\n\r";
 
-                    }
+							}
 
-                    $("#balance_json").val(balances_text);
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
-        });
-        //开仓按钮被点击
-        $(document).on('click', '#open_position_button', function () {
-            //准备数据
-            var user = {};
-            user.exchange = "BITMEX";
-	        user.gateway_name= "BITMEX";
-	        //"账户":"jiangyuexi1992@qq.com",
-            var params = {};
-            params.symbol="BTC/USD";
-            //市价/限价
-            var type = $("#open_position_market_limit option:selected").val();
-            params.type= type;
-            //buy/sell
-            var side=$("#open_position_side option:selected").val();
-            params.side = side;
-            params.percent=$("#open_position_percent option:selected").val();
-            //数量
-            //params.amount=20.0;
-            //开仓价格
-            var price=$("#open_position_price").val();
-            params.price = price;
-            //
-            //当前价格
-            var current_price = $("#price").val();
-            params.current_price = current_price;
-            user.params = params;
-            //console.log(user);
-            //debugger;
-            $.ajax({
-                url:"create_orders/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
+							$("#balance_json").val(balances_text);
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
+				});
+				//开仓按钮被点击
+				$(document).on('click', '#open_position_button', function() {
+					//准备数据
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					//"账户":"jiangyuexi1992@qq.com",
+					var params = {};
+					params.symbol = "BTC/USD";
+					//市价/限价
+					var type = $("#open_position_market_limit option:selected").val();
+					params.type = type;
+					//buy/sell
+					var side = $("#open_position_side option:selected").val();
+					params.side = side;
+					params.percent = $("#open_position_percent option:selected").val();
+					//数量
+					//params.amount=20.0;
+					//开仓价格
+					var price = $("#open_position_price").val();
+					params.price = price;
+					//
+					//当前价格
+					var current_price = $("#price").val();
+					params.current_price = current_price;
+					user.params = params;
+					//console.log(user);
+					//debugger;
+					$.ajax({
+						url: "create_orders/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
 
-                    var balances_text = "";
+							var balances_text = "";
 
-                    layer.msg(obj.msg);
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
+							layer.msg(obj.msg);
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
 
-        });
-        //平仓按钮点击
-        $(document).on('click', '#close_position_button', function () {
-            //准备数据
-            var user = {};
-            user.exchange = "BITMEX";
-	        user.gateway_name= "BITMEX";
-	        //"账户":"jiangyuexi1992@qq.com",
-            var params = {};
-            params.symbol="BTC/USD";
-            //市价/限价
-            var type=$("#close_position_market_limit option:selected").val();
-            params.type = type;
-            //buy/sell
-            var side=$("#close_position_side option:selected").val();
-            params.side=side;
-            params.percent=$("#close_position_percent option:selected").val();
-            //数量
-            //params.amount=20.0;
-            params.price=$("#close_position_price").val();
-            //当前价格
-            var current_price = $("#price").val();
-            params.current_price = current_price;
-            user.params = params;
-            //console.log(user);
-            //debugger;
-            $.ajax({
-                url:"create_orders_close/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
-                    var balances_text = "";
+				});
+				//平仓按钮点击
+				$(document).on('click', '#close_position_button', function() {
+					//准备数据
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					//"账户":"jiangyuexi1992@qq.com",
+					var params = {};
+					params.symbol = "BTC/USD";
+					//市价/限价
+					var type = $("#close_position_market_limit option:selected").val();
+					params.type = type;
+					//buy/sell
+					var side = $("#close_position_side option:selected").val();
+					params.side = side;
+					params.percent = $("#close_position_percent option:selected").val();
+					//数量
+					//params.amount=20.0;
+					params.price = $("#close_position_price").val();
+					//当前价格
+					var current_price = $("#price").val();
+					params.current_price = current_price;
+					user.params = params;
+					//console.log(user);
+					//debugger;
+					$.ajax({
+						url: "create_orders_close/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
+							var balances_text = "";
 
-                    //debugger;
-                    layer.msg(obj.msg);
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
+							//debugger;
+							layer.msg(obj.msg);
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
 
-        });
+				});
 
-        //设置止损止盈
-        $(document).on('click', '#stop_position_button', function () {
-            //准备数据
-            var user = {};
-            user.exchange = "BITMEX";
-	        user.gateway_name= "BITMEX";
-	        //"账户":"jiangyuexi1992@qq.com",
-            var params = {};
-            params.symbol="BTC/USD";
-            //市价/限价
-            var type=$("#stop_position_market_limit option:selected").val();
-            params.type = type;
-            //buy/sell
-            var side=$("#stop_position_side option:selected").val();
-            params.side=side;
-            params.percent=$("#stop_position_percent option:selected").val();
-            //数量
-            //params.amount=20.0;
-            params.price=$("#stop_position_price").val();
-            //触发价格
-            var stopPx = $("#stopPx_position_price").val();
-            params.stopPx = stopPx;
-            //当前价格
-            var current_price = $("#price").val();
-            params.current_price = current_price;
-            user.params = params;
-            //console.log(user);
-            //debugger;
-            $.ajax({
-                url:"set_stop/",
-                type:"post",
-                data:JSON.stringify(user),
-                async:true,
-                success:function(res){
-                    var __data = unescape(res.replace(/\\u/g, '%u'));
-                    var obj = strToJson(__data);
-                    var balances_text = "";
+				//设置止损止盈
+				$(document).on('click', '#stop_position_button', function() {
+					//准备数据
+					var user = {};
+					user.exchange = "BITMEX";
+					user.gateway_name = "BITMEX";
+					//"账户":"jiangyuexi1992@qq.com",
+					var params = {};
+					params.symbol = "BTC/USD";
+					//市价/限价
+					var type = $("#stop_position_market_limit option:selected").val();
+					params.type = type;
+					//buy/sell
+					var side = $("#stop_position_side option:selected").val();
+					params.side = side;
+					params.percent = $("#stop_position_percent option:selected").val();
+					//数量
+					//params.amount=20.0;
+					params.price = $("#stop_position_price").val();
+					//触发价格
+					var stopPx = $("#stopPx_position_price").val();
+					params.stopPx = stopPx;
+					//当前价格
+					var current_price = $("#price").val();
+					params.current_price = current_price;
+					user.params = params;
+					//console.log(user);
+					//debugger;
+					$.ajax({
+						url: "set_stop/",
+						type: "post",
+						data: JSON.stringify(user),
+						async: true,
+						success: function(res) {
+							var __data = unescape(res.replace(/\\u/g, '%u'));
+							var obj = strToJson(__data);
+							var balances_text = "";
 
-                    //debugger;
-                    layer.msg(obj.msg);
-                },
-                error:function(res){
-                    layer.msg("连接服务器失败");
-                }
-            });
-            return false;
+							//debugger;
+							layer.msg(obj.msg);
+						},
+						error: function(res) {
+							layer.msg("连接服务器失败");
+						}
+					});
+					return false;
 
-        });
+				});
 
-    });
-</script>
+			});
+		</script>
 
-</body>
+	</body>
 </html>
