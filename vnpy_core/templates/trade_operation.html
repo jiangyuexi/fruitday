@@ -35,7 +35,7 @@
         <div class="layui-inline">
             <label class="layui-form-label">交易品种:</label>
             <div class="layui-input-inline">
-                <select class="layui-form-select" lay-search lay-skin="primary">
+                <select class="layui-form-select transaction_type" lay-search lay-skin="primary">
                     <option value="XBTUSD">XBTUSD</option>
                 </select>
             </div>
@@ -44,8 +44,8 @@
         <div class="layui-inline">
             <label class="layui-form-label">交易所:</label>
             <div class="layui-input-inline">
-                <select class="layui-form-select" lay-search lay-skin="primary">
-                    <option value="BITMAX">BITMAX</option>
+                <select class="layui-form-select exchange" lay-search lay-skin="primary">
+                    <option value="BITMEX">BITMEX</option>
                 </select>
             </div>
         </div>
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="layui-inline">
-            <button class="layui-btn layui-btn-darkBlue">显示</button>
+            <button class="layui-btn layui-btn-darkBlue showUserDetailInfo" type="button">显示</button>
         </div>
     </div>
 
@@ -354,7 +354,7 @@
 
             for (var i = 0; i < obj_user_ids.length; i++) {
                 tableUserData[i] = {
-                    'test1': obj_user_ids[i],
+                    'user_id': obj_user_ids[i],
                     'test2': '',
                     'test3': '',
                     'test4': '',
@@ -390,6 +390,7 @@
             console.log(cookieObj);
         }
 
+		// 初始化杠杆标识
         function initDataSection(elem, opt) {
             // 初始化参数
             var  maxStep = opt.maxStep || 100
@@ -403,7 +404,7 @@
             if (step > maxStep) return;
 
             for (var i = 0; i <= stepNum; i++) {
-                initStr += '<span style=" ' + defaultStyle + '; left: ' + (i * stepNum) + '%">';
+                initStr += '<span style=" ' + defaultStyle + '; left: ' + (i * (100 / stepNum)) + '%">';
                 initStr += (stepArr[i] ? stepArr[i] : (step * i)) + '</span>';
             }
 
@@ -414,6 +415,49 @@
             });
             $(elem).html(initStr);
         }
+		
+		$('.showUserDetailInfo').on('click', function () {
+			var transaction_type = $('.transaction_type').val(),
+			    exchange = $('.exchange').val(),
+				userData = init_user_info_table();
+				
+			var sendInfo = {
+				'exchange': exchange,
+				'gateway_name': transaction_type,
+				'symbol': exchange
+			};
+			
+			// 延时请求
+			sleepRequest(function (i) {
+				if (userData[i].user_id) {
+				    sendInfo.user_id = userData[i].user_id;
+					$.ajax({
+						url: "fetch_my_trades/",
+						type: "post",
+						data: JSON.stringify(sendInfo),
+						async: true,
+						success: function (res) {
+						    console.log(res);
+						},
+						error: function (res) {
+						    layer.msg("连接服务器失败");
+						}
+					})
+				}
+			}, 0, userData.length);
+		})
+		
+		/**
+		 * 轮训延时请求
+		 */
+		function sleepRequest(cb, num = 0, totalNum, time = 800) {
+			if (num < totalNum) {
+				setTimeout(function () { 
+					cb(num); 
+					sleepRequest(cb, ++num, totalNum, time);
+				}, time);
+			}
+		}
 
         //十五秒刷新一次
         window.get_price = function () {
@@ -440,12 +484,21 @@
             return false;
 
         };
-        window.get_position = function () {
+      //  获取一个用户的持仓信息
+      function get_position(exchange,gateway_name , user_id, symbol) {
             var user = {};
-            user.exchange = "BITMEX";
-            user.gateway_name = "BITMEX";
-            user.user_id = $("#sub_config_user_ids option:selected").text(); //获取文本
-            user.symbol = "BTC/USD";
+            //交易所
+            user.exchange = exchange;
+            //交易所名字
+            user.gateway_name = gateway_name;
+            // user id
+            user.user_id = user_id
+            // 交易对
+            if("XBTUSD" == symbol)
+            {
+                user.symbol = "BTC/USD";
+            }
+
             //debugger;
             $.ajax({
                 url: "fetch_my_trades/",
@@ -474,7 +527,9 @@
         $(function () {
             getUserIds();
             var opt = {
-                'stepArr': ['全仓']
+                'stepArr': ['全仓', '1x', '2x', '3x', '5x', '10x', '25x', '50x', '100x'],
+				'maxStep': 8,
+				'step': 1
             }
             initDataSection('.data-section-show-num', opt);
         });
@@ -482,9 +537,11 @@
         // 杠杆选择滑块
         slider.render({
             elem: '#data-section'
-            , step: 10 				// 步长
+            , step: 1 				// 步长
             , showstep: true			// 开启间隔点
-            , tips: true
+            , tips: false
+			, max: 8
+			, min: 0
             , change: function (e) {
                 console.log(e);
             }
@@ -497,7 +554,7 @@
             , title: '哈哈'
             // ,toolbar: 'default'
             , cols: [[
-                {field: 'test1', title: '备注名'}
+                {field: 'user_id', title: '备注名'}
                 , {field: 'test2', title: '仓位和方向'}
                 , {field: 'test3', title: '开仓价格'}
                 , {field: 'test4', title: '标记价格'}
@@ -507,7 +564,17 @@
                 , {field: 'test8', title: '总资金'}
                 , {field: 'test9', title: '操作', toolbar: '#rowDefaultToolCodeStr'}
             ]]
-            , data: init_user_info_table()
+            , /* data: init_user_info_table() */
+			data: [{
+                    'user_id': 'test',
+                    'test2': '',
+                    'test3': '',
+                    'test4': '',
+                    'test5': '',
+                    'test6': '',
+                    'test7': '',
+                    'test8': ''
+                }]
         });
         // 用户信息表操作监听
         table.on('tool(user-table-1)', function (data) {
@@ -598,6 +665,7 @@
             return false;
 
         });
+
         //平仓按钮点击
         $(document).on('click', '#close_position_button', function () {
             //准备数据
