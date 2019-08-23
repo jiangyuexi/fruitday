@@ -143,6 +143,19 @@ class Min1(models.Model):
         db_table = 'min1'
 
 
+class Money(models.Model):
+    money_user_id = models.TextField(primary_key=True)  # This field type is a guess.
+    money_balance = models.FloatField(blank=True, null=True)
+    money_available = models.FloatField(blank=True, null=True)
+    money_frozen = models.FloatField(blank=True, null=True)
+    money_accountid = models.TextField(primary_key=True)  # This field type is a guess.
+
+    class Meta:
+        managed = False
+        db_table = 'money'
+        unique_together = (('money_user_id', 'money_accountid'),)
+
+
 class Fundingrate(models.Model):
     timestamp = models.TextField(primary_key=True)  # This field type is a guess.
     symbol = models.TextField(blank=True, null=True)  # This field type is a guess.
@@ -165,3 +178,21 @@ class Candle1Hour(models.Model):
     class Meta:
         managed = False
         db_table = 'candle_1hour'
+
+
+class Position(models.Model):
+    position_user_id = models.TextField(primary_key=True)  # This field type is a guess.
+    position_accountid = models.TextField(primary_key=True)  # This field type is a guess.
+    position_symbol = models.TextField(blank=True, null=True)  # This field type is a guess.
+    position_currentqty = models.FloatField(db_column='position_currentQty', blank=True, null=True)  # Field name made lowercase.
+    position_liqprice = models.FloatField(db_column='position_liqPrice', blank=True, null=True)  # Field name made lowercase.
+    position_markprice = models.FloatField(db_column='position_markPrice', blank=True, null=True)  # Field name made lowercase.
+    position_lastprice = models.FloatField(db_column='position_lastPrice', blank=True, null=True)  # Field name made lowercase.
+    position_avgentryprice = models.FloatField(db_column='position_avgEntryPrice', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'position'
+        unique_together = (('position_user_id', 'position_accountid'),)
+
+

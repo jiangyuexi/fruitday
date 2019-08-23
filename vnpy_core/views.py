@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour, Fundingrate
+from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour, Fundingrate, Position
 from .view_utils import g_view_utils
 
 # 存放 通道 对象
@@ -95,6 +95,35 @@ def api_key_views(request):
     return response
 
 
+def __get_balance_postion_by_user_id(user_id):
+    """
+    通过user_id 获取到 余额和仓位
+    :param user_id: 
+    :return: 
+    """
+    try:
+        # 查询数据库
+        position = Position.objects.filter(position_user_id=user_id)
+    except DatabaseError as e:
+        logging.warning(e)
+        return {'return': '数据库错误'}
+
+    if position:
+        dict_position = {
+            "user_id": position[0].position_user_id,
+            "accountid": position[0].position_accountid,
+            "symbol": position[0].position_symbol,
+            "currentqty": position[0].position_currentqty,
+            "liqprice": position[0].position_liqprice,
+            "markprice": position[0].position_markprice,
+            "lastprice": position[0].position_lastprice,
+            "avgentryprice": position[0].position_avgentryprice
+        }
+        print(dict_position)
+
+    return position
+
+
 @csrf_exempt
 def balance_views(request):
     """
@@ -117,8 +146,7 @@ def balance_views(request):
         for k, gateway in g_gateways.items():
             # 现在只支持bitmex， 后面可以在此处扩展
             if isinstance(gateway, ccxt_class_name) and k == user_id:
-                balance = gateway.fetch_balance()
-                balances.append(balance)
+                __get_balance_postion_by_user_id(user_id=user_id)
 
         msg = {"账户": user_id, "balances": balances}
 
