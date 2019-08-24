@@ -1,0 +1,969 @@
+2019-06-30 23:11:54,686  INFO: REST API启动成功
+2019-06-30 23:11:59,853  INFO: 合约信息查询成功
+2019-06-30 23:11:59,853  INFO: 账户代码8957462查询成功
+2019-06-30 23:11:59,853  INFO: 交易Websocket API连接成功
+2019-06-30 23:11:59,853  INFO: 行情Websocket API连接成功
+2019-06-30 23:11:59,853  INFO: 委托信息查询成功
+2019-06-30 23:11:59,853  INFO: 交易Websocket API登录成功
+2019-07-01 15:37:37,700  INFO: 行情Websocket API连接成功
+2019-08-23 18:40:11,549  INFO: REST API启动成功
+2019-08-23 18:40:12,433  INFO: Websocket API连接成功
+2019-08-23 18:40:12,665  INFO: Websocket API验证授权成功
+2019-08-23 18:40:17,558  INFO: REST API启动成功
+2019-08-23 18:40:18,523  INFO: Websocket API连接成功
+2019-08-23 18:40:18,765  INFO: Websocket API验证授权成功
+2019-08-23 18:40:23,566  INFO: REST API启动成功
+2019-08-23 18:40:24,437  INFO: Websocket API连接成功
+2019-08-23 18:40:24,658  INFO: Websocket API验证授权成功
+2019-08-23 18:40:29,570  INFO: REST API启动成功
+2019-08-23 18:40:30,442  INFO: Websocket API连接成功
+2019-08-23 18:40:30,661  INFO: Websocket API验证授权成功
+2019-08-23 18:40:35,574  INFO: REST API启动成功
+2019-08-23 18:40:36,535  INFO: Websocket API连接成功
+2019-08-23 18:40:36,775  INFO: Websocket API验证授权成功
+2019-08-24 16:35:15,696  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:35:15.672110]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":4478,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"be1c826d-ef0d-250b-95bc-f39f63b0f450","grossValue":44135168,"homeNotional":0.44135168,"foreignNotional":4478},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":52,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"bb644ece-e2cc-a8ab-4aee-485c65eb5dba","grossValue":512512,"homeNotional":0.00512512,"foreignNotional":52},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"026f33f4-477d-0b42-adae-44d0780625d1","grossValue":295680,"homeNotional":0.0029568,"foreignNotional":30},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"7a05a80d-e713-e38f-b163-cfbbc79211c9","grossValue":985600
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:35:17,736  INFO: Websocket API连接成功
+2019-08-24 16:35:17,982  INFO: Websocket API验证授权成功
+2019-08-24 16:35:26,148  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:35:26.145860]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":4478,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"be1c826d-ef0d-250b-95bc-f39f63b0f450","grossValue":44135168,"homeNotional":0.44135168,"foreignNotional":4478},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":52,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"bb644ece-e2cc-a8ab-4aee-485c65eb5dba","grossValue":512512,"homeNotional":0.00512512,"foreignNotional":52},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"026f33f4-477d-0b42-adae-44d0780625d1","grossValue":295680,"homeNotional":0.0029568,"foreignNotional":30},{"timestamp":"2019-08-24T08:35:08.185Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10146.5,"tickDirection":"ZeroMinusTick","trdMatchID":"7a05a80d-e713-e38f-b163-cfbbc79211c9","grossValue":985600
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:35:27,446  INFO: Websocket API连接成功
+2019-08-24 16:35:27,666  INFO: Websocket API验证授权成功
+2019-08-24 16:35:35,261  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:35:35.256804]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:35:21.476Z","symbol":"XBTUSD","side":"Buy","size":25,"price":10138,"tickDirection":"PlusTick","trdMatchID":"be039cf5-303e-eeae-0790-2a2a44fde84d","grossValue":246600,"homeNotional":0.002466,"foreignNotional":25},{"timestamp":"2019-08-24T08:35:21.476Z","symbol":"XBTUSD","side":"Buy","size":49,"price":10138,"tickDirection":"ZeroPlusTick","trdMatchID":"cee4f18b-ef19-cb21-88b3-345b9f5164bb","grossValue":483336,"homeNotional":0.00483336,"foreignNotional":49},{"timestamp":"2019-08-24T08:35:21.476Z","symbol":"XBTUSD","side":"Buy","size":49,"price":10138,"tickDirection":"ZeroPlusTick","trdMatchID":"ff2c764f-1be0-1b61-cb76-e630fdde1da5","grossValue":483336,"homeNotional":0.00483336,"foreignNotional":49},{"timestamp":"2019-08-24T08:35:21.476Z","symbol":"XBTUSD","side":"Buy","size":50,"price":10138,"tickDirection":"ZeroPlusTick","trdMatchID":"b0fd7a24-3ea4-2ef3-0d8d-71b22ccf8649","grossValue":493200,"homeNotional":0.004932,"fo
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:35:36,364  INFO: Websocket API连接成功
+2019-08-24 16:35:36,595  INFO: Websocket API验证授权成功
+2019-08-24 16:35:53,340  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+2019-08-24 16:35:53,348  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:35:53.340666]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10141.5,"tickDirection":"PlusTick","trdMatchID":"44a0e58f-a6ef-3662-e473-52f912d1089a","grossValue":473280,"homeNotional":0.0047328,"foreignNotional":48},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"7461ec39-ac65-b0d8-84e8-dc002cdd7894","grossValue":493000,"homeNotional":0.00493,"foreignNotional":50},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":51,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"9c65b465-7fa5-944a-988d-1310f4fcdd71","grossValue":502860,"homeNotional":0.0050286,"foreignNotional":51},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"23ebb60c-6952-e1d6-65b7-74b93204cac9","grossValue":473280,"homeNotional":0.0
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+[2019-08-24T16:35:53.347856]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10141.5,"tickDirection":"PlusTick","trdMatchID":"44a0e58f-a6ef-3662-e473-52f912d1089a","grossValue":473280,"homeNotional":0.0047328,"foreignNotional":48},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"7461ec39-ac65-b0d8-84e8-dc002cdd7894","grossValue":493000,"homeNotional":0.00493,"foreignNotional":50},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":51,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"9c65b465-7fa5-944a-988d-1310f4fcdd71","grossValue":502860,"homeNotional":0.0050286,"foreignNotional":51},{"timestamp":"2019-08-24T08:35:45.932Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10141.5,"tickDirection":"ZeroPlusTick","trdMatchID":"23ebb60c-6952-e1d6-65b7-74b93204cac9","grossValue":473280,"homeNotional":0.0
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:35:54,742  INFO: Websocket API连接成功
+2019-08-24 16:35:54,924  INFO: Websocket API连接成功
+2019-08-24 16:35:54,946  INFO: Websocket API验证授权成功
+2019-08-24 16:35:55,162  INFO: Websocket API验证授权成功
+2019-08-24 16:37:59,522  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:37:59.514601]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":25,"price":10136.5,"tickDirection":"MinusTick","trdMatchID":"d63c8a39-c1a5-8bb2-05a3-788b167def18","grossValue":246625,"homeNotional":0.00246625,"foreignNotional":25},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"a647b4f8-3bea-e44f-1d68-cf9065b7f801","grossValue":986500,"homeNotional":0.009865,"foreignNotional":100},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"280a68a0-df4e-c44b-7aa2-e0adc9379d7b","grossValue":986500,"homeNotional":0.009865,"foreignNotional":100},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"70917a65-5222-c584-924d-0b7e0d33682d","grossValue":493250,"homeNoti
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+[2019-08-24T16:37:59.697942]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":25,"price":10136.5,"tickDirection":"MinusTick","trdMatchID":"d63c8a39-c1a5-8bb2-05a3-788b167def18","grossValue":246625,"homeNotional":0.00246625,"foreignNotional":25},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"a647b4f8-3bea-e44f-1d68-cf9065b7f801","grossValue":986500,"homeNotional":0.009865,"foreignNotional":100},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"280a68a0-df4e-c44b-7aa2-e0adc9379d7b","grossValue":986500,"homeNotional":0.009865,"foreignNotional":100},{"timestamp":"2019-08-24T08:37:51.256Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10136.5,"tickDirection":"ZeroMinusTick","trdMatchID":"70917a65-5222-c584-924d-0b7e0d33682d","grossValue":493250,"homeNoti
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+2019-08-24 16:37:59,807  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+close status: 31522
+2019-08-24 16:38:01,352  INFO: Websocket API连接成功
+2019-08-24 16:38:01,356  INFO: Websocket API连接成功
+2019-08-24 16:38:01,606  INFO: Websocket API验证授权成功
+2019-08-24 16:38:01,606  INFO: Websocket API验证授权成功
+2019-08-24 16:38:31,572  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:38:31.572247]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":6046,"price":10127,"tickDirection":"ZeroPlusTick","trdMatchID":"5b32fb53-2fa8-dba2-8476-322b714f6033","grossValue":59704250,"homeNotional":0.5970425,"foreignNotional":6046},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10127,"tickDirection":"ZeroPlusTick","trdMatchID":"ddd9be2a-e198-e984-2688-adabdd19ee04","grossValue":296250,"homeNotional":0.0029625,"foreignNotional":30},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10126.5,"tickDirection":"MinusTick","trdMatchID":"75a87646-aaa9-2e49-64af-9d0bd955ad3c","grossValue":256750,"homeNotional":0.0025675,"foreignNotional":26},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10126,"tickDirection":"MinusTick","trdMatchID":"fc598239-541e-8cd8-f78a-dcb184ff632d","grossValue":256776,"homeNotional":0.0
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+[2019-08-24T16:38:31.573971]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":6046,"price":10127,"tickDirection":"ZeroPlusTick","trdMatchID":"5b32fb53-2fa8-dba2-8476-322b714f6033","grossValue":59704250,"homeNotional":0.5970425,"foreignNotional":6046},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10127,"tickDirection":"ZeroPlusTick","trdMatchID":"ddd9be2a-e198-e984-2688-adabdd19ee04","grossValue":296250,"homeNotional":0.0029625,"foreignNotional":30},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10126.5,"tickDirection":"MinusTick","trdMatchID":"75a87646-aaa9-2e49-64af-9d0bd955ad3c","grossValue":256750,"homeNotional":0.0025675,"foreignNotional":26},{"timestamp":"2019-08-24T08:38:26.247Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10126,"tickDirection":"MinusTick","trdMatchID":"fc598239-541e-8cd8-f78a-dcb184ff632d","grossValue":256776,"homeNotional":0.0
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:38:31,920  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+close status: 31522
+2019-08-24 16:38:32,776  INFO: Websocket API连接成功
+2019-08-24 16:38:32,920  INFO: Websocket API连接成功
+2019-08-24 16:38:32,982  INFO: Websocket API验证授权成功
+2019-08-24 16:38:33,162  INFO: Websocket API验证授权成功
+2019-08-24 16:39:04,864  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:39:04.860179]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:38:58.036Z","symbol":"XBTUSD","side":"Sell","size":9,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"985902a0-80a6-be17-9b20-31f72bc07d00","grossValue":88920,"homeNotional":0.0008892,"foreignNotional":9},{"timestamp":"2019-08-24T08:38:58.036Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"64d8b60e-072c-ed68-9fe7-8161c7e719c9","grossValue":256880,"homeNotional":0.0025688,"foreignNotional":26},{"timestamp":"2019-08-24T08:38:58.036Z","symbol":"XBTUSD","side":"Sell","size":49,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"cd1741c2-b9bd-19ae-59e6-d5e5eb859276","grossValue":484120,"homeNotional":0.0048412,"foreignNotional":49},{"timestamp":"2019-08-24T08:38:58.036Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"b45a8843-08b5-ab75-69db-3b998878934b","grossValue":494000,"homeNotion
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:39:07,163  INFO: Websocket API连接成功
+2019-08-24 16:39:07,451  INFO: Websocket API验证授权成功
+2019-08-24 16:42:06,304  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:42:06.208927]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:41:58.538Z","symbol":"XBTUSD","side":"Sell","size":4,"price":10114.5,"tickDirection":"MinusTick","trdMatchID":"3ca313c6-b985-9263-a58c-9e664a36f92e","grossValue":39548,"homeNotional":0.00039548,"foreignNotional":4},{"timestamp":"2019-08-24T08:41:58.538Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10114.5,"tickDirection":"ZeroMinusTick","trdMatchID":"c159048e-39e1-239a-7610-7738bca6c26f","grossValue":988700,"homeNotional":0.009887,"foreignNotional":100},{"timestamp":"2019-08-24T08:41:58.538Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10114.5,"tickDirection":"ZeroMinusTick","trdMatchID":"45876c16-5b51-5731-9773-5539887fb26f","grossValue":296610,"homeNotional":0.0029661,"foreignNotional":30},{"timestamp":"2019-08-24T08:41:58.538Z","symbol":"XBTUSD","side":"Sell","size":40,"price":10114.5,"tickDirection":"ZeroMinusTick","trdMatchID":"3f2a5910-b790-8303-ca4e-f429df020f77","grossValue":395480,"homeNotional
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:42:08,052  INFO: Websocket API连接成功
+2019-08-24 16:42:08,262  INFO: Websocket API验证授权成功
+2019-08-24 16:50:01,915  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:50:01.872063]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:49:50.119Z","symbol":"XBTUSD","side":"Sell","size":593,"price":10136,"tickDirection":"ZeroMinusTick","trdMatchID":"3576f86c-1ea8-1837-d7dd-50565c4be485","grossValue":5850538,"homeNotional":0.05850538,"foreignNotional":593},{"timestamp":"2019-08-24T08:49:50.119Z","symbol":"XBTUSD","side":"Sell","size":45,"price":10136,"tickDirection":"ZeroMinusTick","trdMatchID":"aef1345b-122f-dbf3-01e4-45683d93dc1d","grossValue":443970,"homeNotional":0.0044397,"foreignNotional":45},{"timestamp":"2019-08-24T08:49:50.119Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10136,"tickDirection":"ZeroMinusTick","trdMatchID":"afef0e3a-20e9-96c0-d4db-457e47eaf006","grossValue":295980,"homeNotional":0.0029598,"foreignNotional":30},{"timestamp":"2019-08-24T08:49:50.119Z","symbol":"XBTUSD","side":"Sell","size":40,"price":10136,"tickDirection":"ZeroMinusTick","trdMatchID":"90dcab1f-588d-0d31-1478-328012252dd0","grossValue":394640,"homeNotiona
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex1/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:50:03,621  INFO: Websocket API连接成功
+2019-08-24 16:50:03,915  INFO: Websocket API验证授权成功
+2019-08-24 16:50:04,505  INFO: 触发异常，状态码：<class 'peewee.InterfaceError'>，信息：Error binding parameter 0 - probably unsupported type.
+[2019-08-24T16:50:04.504836]: Unhandled WebSocket Error:<class 'peewee.InterfaceError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:49:52.842Z","symbol":"XBTUSD","side":"Sell","size":802,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"e040e3eb-ddca-a3d7-e1e4-eba607440720","grossValue":7915740,"homeNotional":0.0791574,"foreignNotional":802},{"timestamp":"2019-08-24T08:49:52.842Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"0d6b0871-bf14-59ee-17d3-4312e246efb3","grossValue":256620,"homeNotional":0.0025662,"foreignNotional":26},{"timestamp":"2019-08-24T08:49:52.842Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"9a2c5447-981f-f4e6-c07b-5022ad341895","grossValue":296100,"homeNotional":0.002961,"foreignNotional":30},{"timestamp":"2019-08-24T08:49:52.842Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"0de633ba-8780-0563-5f53-16d6fd2ae166","grossValue":296100,"homeNotional"
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.InterfaceError: Error binding parameter 0 - probably unsupported type.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.InterfaceError: Error binding parameter 0 - probably unsupported type.
+close status: 31522
+2019-08-24 16:50:04,606  INFO: 触发异常，状态码：<class 'peewee.InterfaceError'>，信息：Error binding parameter 0 - probably unsupported type.
+[2019-08-24T16:50:04.606233]: Unhandled WebSocket Error:<class 'peewee.InterfaceError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:49:53.372Z","symbol":"XBTUSD","side":"Sell","size":38,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"b1c4db19-8306-5932-f610-17c5aa92d5e2","grossValue":375060,"homeNotional":0.0037506,"foreignNotional":38},{"timestamp":"2019-08-24T08:49:53.372Z","symbol":"XBTUSD","side":"Sell","size":45,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"c8558a48-c8a6-8fe0-0fe6-92b37e2c8e45","grossValue":444150,"homeNotional":0.0044415,"foreignNotional":45},{"timestamp":"2019-08-24T08:49:53.372Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"909a8acc-38b9-d6ab-f35b-274ecf60ee5e","grossValue":987000,"homeNotional":0.00987,"foreignNotional":100},{"timestamp":"2019-08-24T08:49:53.372Z","symbol":"XBTUSD","side":"Sell","size":35,"price":10132,"tickDirection":"ZeroMinusTick","trdMatchID":"f1f3b4fb-e63b-60b2-e0de-5cb773f65b59","grossValue":345450,"homeNotional":0
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.InterfaceError: Error binding parameter 0 - probably unsupported type.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 550, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex/bitmex_gateway.py", line 616, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.InterfaceError: Error binding parameter 0 - probably unsupported type.
+close status: 31522
+2019-08-24 16:50:06,165  INFO: Websocket API连接成功
+2019-08-24 16:50:06,191  INFO: Websocket API连接成功
+2019-08-24 16:50:06,383  INFO: Websocket API验证授权成功
+2019-08-24 16:50:06,413  INFO: Websocket API验证授权成功
+2019-08-24 16:50:12,397  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:50:12.395702]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:49:58.228Z","symbol":"XBTUSD","side":"Sell","size":17,"price":10120.5,"tickDirection":"MinusTick","trdMatchID":"9aed3b0e-9f8d-9b50-f2fc-9a47855ea22b","grossValue":167977,"homeNotional":0.00167977,"foreignNotional":17},{"timestamp":"2019-08-24T08:49:58.228Z","symbol":"XBTUSD","side":"Sell","size":35,"price":10120.5,"tickDirection":"ZeroMinusTick","trdMatchID":"092dd62d-c6a2-6345-3e0e-763f15948a8e","grossValue":345835,"homeNotional":0.00345835,"foreignNotional":35},{"timestamp":"2019-08-24T08:49:58.228Z","symbol":"XBTUSD","side":"Sell","size":100,"price":10120,"tickDirection":"MinusTick","trdMatchID":"7908663a-7ce4-3ea4-1351-5f5eb1c69d81","grossValue":988100,"homeNotional":0.009881,"foreignNotional":100},{"timestamp":"2019-08-24T08:49:58.228Z","symbol":"XBTUSD","side":"Sell","size":26,"price":10120,"tickDirection":"ZeroMinusTick","trdMatchID":"9493a1ae-d2cc-2679-2896-1873c1142ff9","grossValue":256906,"homeNotional":0.
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:50:13,837  INFO: Websocket API连接成功
+2019-08-24 16:50:14,080  INFO: Websocket API验证授权成功
+2019-08-24 16:54:04,456  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:54:04.449640]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:53:50.299Z","symbol":"XBTUSD","side":"Sell","size":321,"price":10121.5,"tickDirection":"MinusTick","trdMatchID":"0c4b3d6f-36d2-b4f5-7c89-93457c18e5c3","grossValue":3171480,"homeNotional":0.0317148,"foreignNotional":321},{"timestamp":"2019-08-24T08:53:50.299Z","symbol":"XBTUSD","side":"Sell","size":40,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"83b42c50-a941-8d10-64ec-0f4748497d9e","grossValue":395200,"homeNotional":0.003952,"foreignNotional":40},{"timestamp":"2019-08-24T08:53:50.299Z","symbol":"XBTUSD","side":"Sell","size":45,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"6dd75a79-3034-51bf-2baa-ad4cc5fde12e","grossValue":444600,"homeNotional":0.004446,"foreignNotional":45},{"timestamp":"2019-08-24T08:53:50.299Z","symbol":"XBTUSD","side":"Sell","size":30,"price":10121.5,"tickDirection":"ZeroMinusTick","trdMatchID":"4c5a8af5-7345-0b70-bd3e-05af235c41d8","grossValue":296400,"homeNotion
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:54:06,476  INFO: Websocket API连接成功
+2019-08-24 16:54:06,698  INFO: Websocket API验证授权成功
+2019-08-24 16:54:22,067  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T16:54:22.067034]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T08:54:14.668Z","symbol":"XBTUSD","side":"Sell","size":34,"price":10108.5,"tickDirection":"ZeroMinusTick","trdMatchID":"fee915c0-eece-bf14-a4fe-b25e15a4b602","grossValue":336362,"homeNotional":0.00336362,"foreignNotional":34},{"timestamp":"2019-08-24T08:54:14.668Z","symbol":"XBTUSD","side":"Sell","size":35,"price":10108,"tickDirection":"MinusTick","trdMatchID":"804a11b2-1175-809a-c64f-f2c20732696c","grossValue":346255,"homeNotional":0.00346255,"foreignNotional":35},{"timestamp":"2019-08-24T08:54:14.668Z","symbol":"XBTUSD","side":"Sell","size":50,"price":10108,"tickDirection":"ZeroMinusTick","trdMatchID":"19a209f5-8d8b-d8cd-9556-d177e4f2d728","grossValue":494650,"homeNotional":0.0049465,"foreignNotional":50},{"timestamp":"2019-08-24T08:54:14.668Z","symbol":"XBTUSD","side":"Sell","size":260,"price":10108,"tickDirection":"ZeroMinusTick","trdMatchID":"0757c6f3-e65e-3f73-c7a3-5a3e40b2ed73","grossValue":2572180,"homeNotional"
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 16:54:23,354  INFO: Websocket API连接成功
+2019-08-24 16:54:23,595  INFO: Websocket API验证授权成功
+2019-08-24 17:00:07,918  INFO: 触发异常，状态码：<class 'peewee.InterfaceError'>，信息：Error binding parameter 0 - probably unsupported type.
+[2019-08-24T17:00:07.910408]: Unhandled WebSocket Error:<class 'peewee.InterfaceError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T09:00:07.496Z","symbol":"XBTUSD","side":"Sell","size":5,"price":10120.5,"tickDirection":"MinusTick","trdMatchID":"5ce781d1-c298-c398-2b08-29ce6579fdf4","grossValue":49405,"homeNotional":0.00049405,"foreignNotional":5},{"timestamp":"2019-08-24T09:00:07.496Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10120.5,"tickDirection":"ZeroMinusTick","trdMatchID":"ce8f1040-b765-c3d0-affa-1e749f4c11f6","grossValue":474288,"homeNotional":0.00474288,"foreignNotional":48},{"timestamp":"2019-08-24T09:00:07.496Z","symbol":"XBTUSD","side":"Sell","size":48,"price":10120.5,"tickDirection":"ZeroMinusTick","trdMatchID":"8ab079be-2bfc-6fba-ecbf-f95202c74c81","grossValue":474288,"homeNotional":0.00474288,"foreignNotional":48},{"timestamp":"2019-08-24T09:00:07.496Z","symbol":"XBTUSD","side":"Sell","size":47,"price":10120.5,"tickDirection":"ZeroMinusTick","trdMatchID":"56f1faf6-8825-7935-c92c-f3891fffd562","grossValue":464407,"homeNotiona
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.InterfaceError: Error binding parameter 0 - probably unsupported type.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.InterfaceError: Error binding parameter 0 - probably unsupported type.
+close status: 31522
+2019-08-24 17:00:09,017  INFO: Websocket API连接成功
+2019-08-24 17:00:09,235  INFO: Websocket API验证授权成功
+2019-08-24 19:59:59,946  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T19:59:59.947939]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T11:59:51.265Z","symbol":"XBTUSD","side":"Sell","size":7,"price":10021,"tickDirection":"MinusTick","trdMatchID":"64ed6572-0abf-7609-53b0-ee816800f42f","grossValue":69853,"homeNotional":0.00069853,"foreignNotional":7},{"timestamp":"2019-08-24T11:59:51.265Z","symbol":"XBTUSD","side":"Sell","size":46,"price":10021,"tickDirection":"ZeroMinusTick","trdMatchID":"eec05f34-7c5e-0406-bda3-2fd503f3abe3","grossValue":459034,"homeNotional":0.00459034,"foreignNotional":46},{"timestamp":"2019-08-24T11:59:51.265Z","symbol":"XBTUSD","side":"Sell","size":45,"price":10021,"tickDirection":"ZeroMinusTick","trdMatchID":"e8ef6409-3eab-729a-44b9-0e7e48acddea","grossValue":449055,"homeNotional":0.00449055,"foreignNotional":45},{"timestamp":"2019-08-24T11:59:51.265Z","symbol":"XBTUSD","side":"Sell","size":40,"price":10021,"tickDirection":"ZeroMinusTick","trdMatchID":"62b9c0eb-f1e9-3c36-3a34-9983616e5928","grossValue":399160,"homeNotional":0.003
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 20:00:02,755  INFO: Websocket API连接成功
+2019-08-24 20:00:03,046  INFO: Websocket API验证授权成功
+2019-08-24 20:03:48,131  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T20:03:48.029084]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T12:03:42.816Z","symbol":"XBTUSD","side":"Sell","size":555,"price":10002.5,"tickDirection":"MinusTick","trdMatchID":"f7d9d70e-ace1-2307-9dc9-baa50b2d509d","grossValue":5548890,"homeNotional":0.0554889,"foreignNotional":555}]}
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex4/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 20:03:50,900  INFO: Websocket API连接成功
+2019-08-24 20:03:51,140  INFO: Websocket API验证授权成功
+2019-08-24 20:03:53,738  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T20:03:53.737668]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T12:03:47.038Z","symbol":"XBTUSD","side":"Buy","size":38,"price":10003,"tickDirection":"PlusTick","trdMatchID":"419dc77f-44fb-afcf-7048-dbe60388fa54","grossValue":379886,"homeNotional":0.00379886,"foreignNotional":38},{"timestamp":"2019-08-24T12:03:47.038Z","symbol":"XBTUSD","side":"Buy","size":373,"price":10003.5,"tickDirection":"PlusTick","trdMatchID":"d566c4fc-eb85-531c-ae37-a1dc281f031e","grossValue":3728881,"homeNotional":0.03728881,"foreignNotional":373},{"timestamp":"2019-08-24T12:03:47.038Z","symbol":"XBTUSD","side":"Buy","size":5,"price":10003.5,"tickDirection":"ZeroPlusTick","trdMatchID":"cbbbb07b-fe39-1ecc-f4c6-13de2df4ef38","grossValue":49985,"homeNotional":0.00049985,"foreignNotional":5},{"timestamp":"2019-08-24T12:03:47.038Z","symbol":"XBTUSD","side":"Buy","size":38,"price":10004,"tickDirection":"PlusTick","trdMatchID":"b4d24d47-5053-b3ae-df22-a37f92f6676c","grossValue":379848,"homeNotional":0.00379848,"fo
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex3/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 20:03:55,212  INFO: Websocket API连接成功
+2019-08-24 20:03:56,296  INFO: Websocket API验证授权成功
+2019-08-24 20:05:53,522  INFO: 触发异常，状态码：<class 'peewee.OperationalError'>，信息：database is locked
+[2019-08-24T20:05:53.517326]: Unhandled WebSocket Error:<class 'peewee.OperationalError'>
+LastSentText:
+{"op": "subscribe", "args": ["instrument", "trade", "orderBook10", "execution", "order", "position", "margin"]}
+LastReceivedText:
+{"table":"trade","action":"insert","data":[{"timestamp":"2019-08-24T12:05:44.167Z","symbol":"XBTUSD","side":"Sell","size":38,"price":9997.5,"tickDirection":"MinusTick","trdMatchID":"6b84bd79-8fc8-9578-0eeb-c989757f76d7","grossValue":380114,"homeNotional":0.00380114,"foreignNotional":38},{"timestamp":"2019-08-24T12:05:44.167Z","symbol":"XBTUSD","side":"Sell","size":50,"price":9997.5,"tickDirection":"ZeroMinusTick","trdMatchID":"1f131f0d-b296-424b-e0c8-7905632f1579","grossValue":500150,"homeNotional":0.0050015,"foreignNotional":50},{"timestamp":"2019-08-24T12:05:44.167Z","symbol":"XBTUSD","side":"Sell","size":167,"price":9997.5,"tickDirection":"ZeroMinusTick","trdMatchID":"1c18b37c-c43d-b819-dfeb-d052a6c0d205","grossValue":1670501,"homeNotional":0.01670501,"foreignNotional":167},{"timestamp":"2019-08-24T12:05:44.167Z","symbol":"XBTUSD","side":"Sell","size":47,"price":9997.5,"tickDirection":"ZeroMinusTick","trdMatchID":"a8d8d9b1-69d9-4905-51e2-449f061bdf95","grossValue":470141,"homeNotion
+Exception trace: 
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+sqlite3.OperationalError: database is locked
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/jiangyx/little_tool/vnpy/api/websocket/websocket_client.py", line 212, in _run
+    self.on_packet(data)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 551, in on_packet
+    callback(d)
+  File "/home/jiangyx/little_tool/vnpy/gateway/bitmex2/bitmex_gateway.py", line 617, in on_tick
+    t.save()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 6199, in save
+    rows = self.update(**field_dict).where(self._pk_expr()).execute()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1785, in inner
+    return method(self, database, *args, **kwargs)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 1856, in execute
+    return self._execute(database)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2320, in _execute
+    cursor = database.execute(self)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2962, in execute
+    return self.execute_sql(sql, params, commit=commit)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2956, in execute_sql
+    self.commit()
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2732, in __exit__
+    reraise(new_type, new_type(*exc_args), traceback)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 183, in reraise
+    raise value.with_traceback(tb)
+  File "/usr/local/lib/python3.6/dist-packages/peewee.py", line 2949, in execute_sql
+    cursor.execute(sql, params or ())
+peewee.OperationalError: database is locked
+close status: 31522
+2019-08-24 20:05:57,313  INFO: Websocket API连接成功
+2019-08-24 20:05:57,612  INFO: Websocket API验证授权成功
