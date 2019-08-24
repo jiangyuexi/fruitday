@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div>数据来自 OKex</div>
+       <div id="container" style="height: 100%"></div>
+       <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.min.js"></script>
+       <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.js"></script>
+
+       <script src="../static/jquery/dist/jquery.js"></script>
+       <script src="../static/jquery/dist/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+       <script type="text/javascript">
+var dom = document.getElementById("container");
+var myChart = echarts.init(dom);
+var app = {};
+option = null;
+var upColor = '#00da3c';
+var downColor = '#ec0000';
+
+
+function splitData(rawData) {
+    var categoryData = [];
+    var values = [];
+    var volumes = [];
+    for (var i = 0; i < rawData.length; i++) {
+        categoryData.push(rawData[i].splice(0, 1)[0]);
+        values.push(rawData[i]);
+        volumes.push([i, rawData[i][4], rawData[i][0] > rawData[i][1] ? 1 : -1]);
+    }
+
+    return {
+        categoryData: categoryData,
+        values: values,
+        volumes: volumes
+    };
+}
+
+function calculateMA(dayCount, data) {
+    var result = [];
+    for (var i = 0, len = data.length; i < len; i++) {
+        if (i < dayCount) {
+            result.push('-');
+            continue;
+        }
+        var sum = 0;
+        for (var j = 0; j < dayCount; j++) {
+            sum += data[i - j][1];
+        }
+        result.push(sum / dayCount);
+    }
+    return result;
+}
+
+function show__K_line() {
+
+    //获取candles
+    var user = {};
+    user.exchange = "BITMEX";
+	user.gateway_name = "BITMEX";
+	user.user_id ="jiangyuexi1992@qq.com";
+	user.symbol = "BTC/USD";
+	user.timeframe = "1h";
+	user.limit = 500;
+    $.ajax({
+        type:"POST",
+        url:"okex_fetch_history_ohlcv/",
+        dataType:"json",
+        contentType:"application/json",
+        data:JSON.stringify(user),
+        async:true,
+        success:function(data){
+            if(0 == data.lst_len)
+            {
+                 layer.msg("数据没有对齐，长度不一致");
+                return;
+            }else
+            {
+                 console.log(data.lst_len);
+            }
+
+            //debugger;
+            //  现货 数据
+            var rawData = data.spot_ohlcv_1d;
+            //console.log(rawData);
+            var dates_spot = rawData.map(function (item) {
+                return item[0];
+            });
+
+            var data_spot = rawData.map(function (item) {
+                return item[4];
+            });
+
+            var volumes_spot = rawData.map(function (item) {
+                return item[5];
+            });
+            //  季度期货 数据
+            var rawData = data.futures_ohlcv_1d;
+            //console.log(rawData);
+            var dates_futures = rawData.map(function (item) {
+                return item[0];
+            });
+
+            var data_futures = rawData.map(function (item) {
+                return item[4];
+            });
+
+            var volumes_futures = rawData.map(function (item) {
+                return item[5];
+            });
+
+            var rawData = data.futures_spot;
+            //console.log(rawData);
+            var dates_futures_spot = rawData.map(function (item) {
+                return item[0];
+            });
+
+            var futures_spot = rawData.map(function (item) {
+                return item[1];
+            });
+
+            var option = {
+                backgroundColor: '#fff',
+                animation: false,
+                legend: {
+                    bottom: 10,
+                    left: 'center',
+                    data: ['现货', '期货']
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    },
+                    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    padding: 10,
+                    textStyle: {
+                        color: '#000'
+                    },
+                    position: function (pos, params, el, elRect, size) {
+                        var obj = {top: 10};
+                        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                        return obj;
+                    }
+                    // extraCssText: 'width: 170px'
+                },
+                axisPointer: {
+                    link: {xAxisIndex: 'all'},
+                    label: {
+                        backgroundColor: '#777'
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: false
+                        },
+                        brush: {
+                            type: ['lineX', 'clear']
+                        }
+                    }
+                },
+                brush: {
+                    xAxisIndex: 'all',
+                    brushLink: 'all',
+                    outOfBrush: {
+                        colorAlpha: 0.1
+                    }
+                },
+                visualMap: {
+                    show: false,
+                    seriesIndex: 5,
+                    dimension: 2,
+                    pieces: [{
+                        value: 1,
+                        color: downColor
+                    }, {
+                        value: -1,
+                        color: upColor
+                    }]
+                },
+                grid: [
+                    {
+                        left: '10%',
+                        right: '8%',
+                        height: '50%'
+                    },
+                    {
+                        left: '10%',
+                        right: '8%',
+                        top: '63%',
+                        height: '25%'
+                    },
+                    /*{
+                        left: '10%',
+                        right: '8%',
+                        top: '60%',
+                        height: '40%'
+                    }*/
+                ],
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: dates_spot,
+                        scale: true,
+                        boundaryGap : false,
+                        axisLine: {onZero: false},
+                        splitLine: {show: false},
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax',
+                        axisPointer: {
+                            z: 100
+                        }
+                    },
+                    {
+                        type: 'category',
+                        gridIndex: 1,
+                        data: dates_futures_spot,
+                        scale: true,
+                        boundaryGap : false,
+                        axisLine: {onZero: true},
+                        axisTick: {show: false},
+                        splitLine: {show: false},
+                        axisLabel: {show: true},
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax'
+
+                    },/*
+                    {
+                        type: 'category',
+                        gridIndex: 2,
+                        data: data,
+                        scale: true,
+                        boundaryGap : false,
+                        axisLine: {onZero: false},
+                        axisTick: {show: false},
+                        splitLine: {show: false},
+                        axisLabel: {show: false},
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax'
+
+                    }*/
+                ],
+                yAxis: [
+                    {
+                        scale: true,
+                        splitArea: {
+                            show: true
+                        }
+                    },
+                    {
+                        scale: true,
+                        gridIndex: 1,
+                        splitNumber: 2,
+                        axisLabel: {show: false},
+                        axisLine: {show: false},
+                        axisTick: {show: false},
+                        splitLine: {show: false}
+                    },/*
+                    {
+                        scale: true,
+                        gridIndex: 2,
+                        splitNumber: 2,
+                        axisLabel: {show: false},
+                        axisLine: {show: false},
+                        axisTick: {show: false},
+                        splitLine: {show: false}
+                    }*/
+                ],
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0, 1],
+                        start: 50,
+                        end: 100
+                    },
+                    {
+                        show: true,
+                        xAxisIndex: [0, 1],
+                        type: 'slider',
+                        top: '85%',
+                        start: 98,
+                        end: 100
+                    }
+                ],
+                series: [
+                    {
+                        name: '现货',
+                        type: 'line',
+                        data: data_spot,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+
+                    },
+                    {
+
+                        name: '期货',
+                        type: 'line',
+                        data: data_futures,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+
+                    },
+                    {
+                        name: '(期货/现货 - 1.0)* 100  ',
+                        type: 'line',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        color: '#0f0',
+                        data: futures_spot
+                    }
+                ]
+            };
+            if (option && typeof option === "object") {
+                myChart.setOption(option, true);
+            }
+
+
+        },
+        error:function(data){
+            console.log("失败", data);
+        }
+     });
+}
+
+
+
+$(document).ready(function () {
+    show__K_line();
+
+});
+
+       </script>
+   </body>
+</html>

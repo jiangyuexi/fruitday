@@ -1,4 +1,4 @@
-﻿/*body background-color*/
+/*body background-color*/
 body{background: #fff;}
 .gx_index{background-image: url("../images/bg.jpg");background-size: cover;}
 
@@ -133,6 +133,10 @@ body .gx_layer .layui-layer-setwin .layui-layer-min:hover cite{background-color:
 .scrollBox>table{margin-top:0;}
 .scrollBox label{margin-left:5px;margin-right:5px;}
 
+/* 滑块 */
+#data-section { margin-top: 1rem;}
 
-
+#form_trade_operation {  width: 90%; margin: auto; }
+#form_trade_operation .layui-form-item { margin-top: 1rem; }
+.gx_index { padding: 1rem; }
 

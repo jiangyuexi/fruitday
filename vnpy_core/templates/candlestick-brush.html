@@ -4,6 +4,7 @@
        <meta charset="utf-8">
    </head>
    <body style="height: 100%; margin: 0">
+       <div>数据来自 bitmex</div>
        <div id="container" style="height: 100%"></div>
        <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.min.js"></script>
        <script type="text/javascript" src="../static/echarts-4.2.1/dist/echarts.js"></script>
@@ -56,60 +57,44 @@ function show__K_line() {
 
     //获取candles
     var user = {};
-    user.exchange = "BITMEX";
+    user.exchange = "BITMEX_REAL";
 	user.gateway_name = "BITMEX";
 	user.user_id ="jiangyuexi1992@qq.com";
 	user.symbol = "BTC/USD";
 	user.timeframe = "1h";
-	user.limit = 500;
+	//debugger;
+	
+	user.limit = 0;
     $.ajax({
         type:"POST",
-        url:"get_candles/",
+        url:"get_candles_founding_rates/",
         dataType:"json",
         contentType:"application/json",
         data:JSON.stringify(user),
         async:true,
         success:function(data){
-            console.log(data.return);
+            //console.log(data.candles_8hour);
             //debugger;
-            var rawData = data.return;
-            var dates = rawData.map(function (item) {
+            var rawData = data.candles_8hour;
+            var dates_candles = rawData.map(function (item) {
                 return item[0];
             });
 
-            var data = rawData.map(function (item) {
-                return [+item[1], +item[2], +item[5], +item[6]];
+            var data_candles = rawData.map(function (item) {
+                return [+item[1], +item[4], +item[3], +item[2]];
             });
 
-            var volumes = rawData.map(function (item) {
-                return item[8];
+            var volumes_candles = rawData.map(function (item) {
+                return item[5];
             });
 
             // 历史费率
-{#            var rawData = founding_rate_datas;#}
-{##}
-{#            var founding_rate_dates = rawData.map(function (item) {#}
-{#                return item[0];#}
-{#            });#}
-
-            var founding_rate_fundingRate = rawData.map(function (item) {
-                if(1100001 == item[12])
-                {
-                    return ;
-                }else
-                {
-                    return item[12];
-                }
-
+            var rawData = data.fundingrate
+            var dates_fundingRate = rawData.map(function (item) {
+                    return item[0];
             });
-            var founding_rate_fundingRateDaily = rawData.map(function (item) {
-                if(1100001 == item[13])
-                {
-                    return ;
-                }else
-                {
-                    return item[13];
-                }
+            var founding_rate_fundingRate = rawData.map(function (item) {
+                    return item[2];
             });
 
             var option = {
@@ -118,7 +103,7 @@ function show__K_line() {
                 legend: {
                     bottom: 10,
                     left: 'center',
-                    data: ['1小时', 'MA5', 'MA10', 'MA20', 'MA30']
+                    data: ['8小时', 'MA5', 'MA10', 'MA20', 'MA30']
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -196,7 +181,7 @@ function show__K_line() {
                 xAxis: [
                     {
                         type: 'category',
-                        data: dates,
+                        data: dates_candles,
                         scale: true,
                         boundaryGap : false,
                         axisLine: {onZero: false},
@@ -211,7 +196,7 @@ function show__K_line() {
                     {
                         type: 'category',
                         gridIndex: 1,
-                        data: dates,
+                        data: dates_fundingRate,
                         scale: true,
                         boundaryGap : false,
                         axisLine: {onZero: true},
@@ -283,9 +268,9 @@ function show__K_line() {
                 ],
                 series: [
                     {
-                        name: '1小时',
+                        name: '8小时',
                         type: 'candlestick',
-                        data: data,
+                        data: data_candles,
                         itemStyle: {
                             normal: {
                                 color: upColor,
@@ -299,7 +284,7 @@ function show__K_line() {
                     {
                         name: 'MA5',
                         type: 'line',
-                        data: calculateMA(5, data),
+                        data: calculateMA(5, data_candles),
                         smooth: true,
                         lineStyle: {
                             normal: {opacity: 0.5}
@@ -308,7 +293,7 @@ function show__K_line() {
                     {
                         name: 'MA10',
                         type: 'line',
-                        data: calculateMA(10, data),
+                        data: calculateMA(10, data_candles),
                         smooth: true,
                         lineStyle: {
                             normal: {opacity: 0.5}
@@ -317,7 +302,7 @@ function show__K_line() {
                     {
                         name: 'MA20',
                         type: 'line',
-                        data: calculateMA(20, data),
+                        data: calculateMA(20, data_candles),
                         smooth: true,
                         lineStyle: {
                             normal: {opacity: 0.5}
@@ -326,7 +311,7 @@ function show__K_line() {
                     {
                         name: 'MA30',
                         type: 'line',
-                        data: calculateMA(30, data),
+                        data: calculateMA(30, data_candles),
                         smooth: true,
                         lineStyle: {
                             normal: {opacity: 0.5}
@@ -334,12 +319,13 @@ function show__K_line() {
                     },
                     {
                         name: '历史费率',
-                        type: 'bar',
+                        type: 'line',
                         xAxisIndex: 1,
                         yAxisIndex: 1,
                         color: '#0f0',
                         data: founding_rate_fundingRate
-                    },
+                    }
+                    /*
                     {
                         name: '历史费率',
                         type: 'bar',
@@ -347,7 +333,7 @@ function show__K_line() {
                         yAxisIndex: 1,
                         color: '#f00',
                         data: founding_rate_fundingRateDaily
-                    }
+                    }*/
 
                 ]
             };

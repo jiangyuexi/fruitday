@@ -8,7 +8,10 @@
 """
 
 from django.conf.urls import url
+
+from vnpy_core.okex_views import OkexViews
 from .views import *
+
 
 
 urlpatterns = [
@@ -22,6 +25,7 @@ urlpatterns = [
     url(r'^login/candlestick-brush.html$', candlestick_brush_views),
     url(r'^login/candlestick_sh.html$', sub_candlestick1_views),
     url(r'^login/line-simple.html$', line_simple_views),
+    url(r'^login/spot_futures_brush.html$', spot_futures_brush_views),
 
 
 
@@ -32,16 +36,23 @@ urlpatterns = [
     url(r'^login/fetch_ohlcv/$', fetch_ohlcv_views),
     url(r'^login/fetch_ticks/$', fetch_ticks_views),
     url(r'^login/fetch_history_ohlcv/$', fetch_history_ohlcv_views),
+    url(r'^login/fetch_history_founding_rates/$', fetch_history_founding_rates_views),
     url(r'^login/fetch_my_trades/$', fetch_my_trades_views),
     url(r'^login/get_history_founding_rate/$', get_history_founding_rate_views),
     url(r'^login/candles/$', candles_views),
-    url(r'^login/get_candles/$', get_candles_views),
+    url(r'^login/get_candles_founding_rates/$', get_candles_founding_rates_views),
+
+    url(r'^login/set_stop/$', set_stop_views),
+    url(r'^login/fetch_instruments/$', fetch_instruments_views),
     url(r'^login/create_order/$', create_order_views),
     url(r'^login/create_orders/$', create_orders_views),
     url(r'^login/create_orders_close/$', create_orders_close_views),
     url(r'^login/cancel_order/$', cancel_order_views),
     url(r'^login/fetch_orders/$', fetch_orders_views),
     url(r'^login/fetch_open_orders/$', fetch_open_orders_views),
+
+    url(r'^login/okex_api_key/$', OkexViews.api_key_views),
+    url(r'^login/okex_fetch_history_ohlcv/$', OkexViews.fetch_history_ohlcv_views),
 
 
 

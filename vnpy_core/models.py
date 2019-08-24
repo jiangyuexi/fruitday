@@ -10,81 +10,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 
-class Min1Old20190720(models.Model):
-    min1_timestamp = models.FloatField(primary_key=True)
-
-    class Meta:
-        managed = False
-        db_table = '_min1_old_20190720'
-
-
-class Min1Old201907201(models.Model):
-    min1_timestamp = models.BigIntegerField(primary_key=True)
-
-    class Meta:
-        managed = False
-        db_table = '_min1_old_20190720_1'
-
-
-class Min1Old201907202(models.Model):
-    min1_timestamp = models.BigIntegerField(primary_key=True)
-    min1_open = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_high = models.TextField(blank=True, null=True)
-    min1_low = models.TextField(blank=True, null=True)
-    min1_close = models.TextField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = '_min1_old_20190720_2'
-
-
-class Min1Old201907203(models.Model):
-    min1_timestamp = models.BigIntegerField(primary_key=True)
-    min1_open = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_high = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_low = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_close = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_volume = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = '_min1_old_20190720_3'
-
-
-class Min1Old201907204(models.Model):
-    min1_timestamp = models.BigIntegerField(primary_key=True)
-    min1_open = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_high = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_low = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_close = models.TextField(blank=True, null=True)  # This field type is a guess.
-    min1_volume = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = '_min1_old_20190720_4'
-
-
-class UserOld20190726(models.Model):
-    user_name = models.TextField(primary_key=True)  # This field type is a guess.
-    user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
-
-    class Meta:
-        managed = False
-        db_table = '_user_old_20190726'
-
-
-class UserOld201907261(models.Model):
-    user_name = models.TextField(primary_key=True)  # This field type is a guess.
-    user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
-    permission = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = '_user_old_20190726_1'
-
-
 class AuthGroup(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     name = models.CharField(unique=True, max_length=80)
 
     class Meta:
@@ -93,7 +19,6 @@ class AuthGroup(models.Model):
 
 
 class AuthGroupPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
     permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
@@ -104,10 +29,9 @@ class AuthGroupPermissions(models.Model):
 
 
 class AuthPermission(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
+    name = models.CharField(max_length=255)
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
     codename = models.CharField(max_length=100)
-    name = models.CharField(max_length=255)
 
     class Meta:
         managed = False
@@ -116,17 +40,16 @@ class AuthPermission(models.Model):
 
 
 class AuthUser(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     password = models.CharField(max_length=128)
     last_login = models.DateTimeField(blank=True, null=True)
-    is_superuser = models.BooleanField()
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=30)
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
     email = models.CharField(max_length=254)
-    is_staff = models.BooleanField()
-    is_active = models.BooleanField()
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
     date_joined = models.DateTimeField()
-    username = models.CharField(unique=True, max_length=30)
 
     class Meta:
         managed = False
@@ -134,7 +57,6 @@ class AuthUser(models.Model):
 
 
 class AuthUserGroups(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
 
@@ -145,7 +67,6 @@ class AuthUserGroups(models.Model):
 
 
 class AuthUserUserPermissions(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
 
@@ -156,14 +77,13 @@ class AuthUserUserPermissions(models.Model):
 
 
 class DjangoAdminLog(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
+    action_time = models.DateTimeField()
     object_id = models.TextField(blank=True, null=True)
     object_repr = models.CharField(max_length=200)
-    action_flag = models.PositiveSmallIntegerField()
+    action_flag = models.SmallIntegerField()
     change_message = models.TextField()
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
     user = models.ForeignKey(AuthUser, models.DO_NOTHING)
-    action_time = models.DateTimeField()
 
     class Meta:
         managed = False
@@ -171,7 +91,6 @@ class DjangoAdminLog(models.Model):
 
 
 class DjangoContentType(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     app_label = models.CharField(max_length=100)
     model = models.CharField(max_length=100)
 
@@ -182,7 +101,6 @@ class DjangoContentType(models.Model):
 
 
 class DjangoMigrations(models.Model):
-    id = models.IntegerField(primary_key=True)  # AutoField?
     app = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     applied = models.DateTimeField()
@@ -202,6 +120,16 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+class User(models.Model):
+    user_name = models.CharField(primary_key=True, max_length=255)
+    user_pass_word = models.CharField(max_length=255, blank=True, null=True)
+    user_permission = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user'
+
+
 class Min1(models.Model):
     min1_timestamp = models.BigIntegerField(primary_key=True)
     min1_open = models.TextField(blank=True, null=True)  # This field type is a guess.
@@ -215,11 +143,56 @@ class Min1(models.Model):
         db_table = 'min1'
 
 
-class User(models.Model):
-    user_name = models.TextField(primary_key=True)  # This field type is a guess.
-    user_pass_word = models.TextField(blank=True, null=True)  # This field type is a guess.
-    user_permission = models.IntegerField(blank=True, null=True)
+class Money(models.Model):
+    money_user_id = models.TextField(primary_key=True)  # This field type is a guess.
+    money_balance = models.FloatField(blank=True, null=True)
+    money_available = models.FloatField(blank=True, null=True)
+    money_frozen = models.FloatField(blank=True, null=True)
+    money_accountid = models.TextField(primary_key=True)  # This field type is a guess.
 
     class Meta:
         managed = False
-        db_table = 'user'
+        db_table = 'money'
+        unique_together = (('money_user_id', 'money_accountid'),)
+
+
+class Fundingrate(models.Model):
+    timestamp = models.TextField(primary_key=True)  # This field type is a guess.
+    symbol = models.TextField(blank=True, null=True)  # This field type is a guess.
+    fundingrate = models.FloatField(db_column='fundingRate', blank=True, null=True)  # Field name made lowercase.
+    fundingratedaily = models.FloatField(db_column='fundingRateDaily', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'fundingRate'
+
+
+class Candle1Hour(models.Model):
+    timestamp = models.TextField(primary_key=True)  # This field type is a guess.
+    open = models.FloatField(blank=True, null=True)
+    high = models.FloatField(blank=True, null=True)
+    low = models.FloatField(blank=True, null=True)
+    close = models.FloatField(blank=True, null=True)
+    vol = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'candle_1hour'
+
+
+class Position(models.Model):
+    position_user_id = models.TextField(primary_key=True)  # This field type is a guess.
+    position_accountid = models.TextField(primary_key=True)  # This field type is a guess.
+    position_symbol = models.TextField(blank=True, null=True)  # This field type is a guess.
+    position_currentqty = models.FloatField(db_column='position_currentQty', blank=True, null=True)  # Field name made lowercase.
+    position_liqprice = models.FloatField(db_column='position_liqPrice', blank=True, null=True)  # Field name made lowercase.
+    position_markprice = models.FloatField(db_column='position_markPrice', blank=True, null=True)  # Field name made lowercase.
+    position_lastprice = models.FloatField(db_column='position_lastPrice', blank=True, null=True)  # Field name made lowercase.
+    position_avgentryprice = models.FloatField(db_column='position_avgEntryPrice', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'position'
+        unique_together = (('position_user_id', 'position_accountid'),)
+
+
