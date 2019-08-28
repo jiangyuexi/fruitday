@@ -20,7 +20,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import ccxt
 
-from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour, Fundingrate, Position
+from vnpy_core.models import User, DjangoSession, Min1, Candle1Hour, Fundingrate, Position, Money
 from .view_utils import g_view_utils
 
 # 存放 通道 对象
@@ -104,10 +104,12 @@ def __get_balance_postion_by_user_id(user_id):
     try:
         # 查询数据库
         position = Position.objects.filter(position_user_id=user_id)
+        money = Money.objects.filter(money_user_id=user_id)
     except DatabaseError as e:
         logging.warning(e)
         return {'return': '数据库错误'}
 
+    dict_position = {}
     if position:
         dict_position = {
             "user_id": position[0].position_user_id,
@@ -119,9 +121,16 @@ def __get_balance_postion_by_user_id(user_id):
             "lastprice": position[0].position_lastprice,
             "avgentryprice": position[0].position_avgentryprice
         }
-        print(dict_position)
 
-    return position
+    if money:
+        # 总资金
+        dict_position["balance"] = money[0].money_balance
+        # 可用资金
+        dict_position["available"] = money[0].money_available
+        # 冻结资金
+        dict_position["frozen"] = money[0].money_frozen
+
+    return dict_position
 
 
 @csrf_exempt
@@ -140,15 +149,16 @@ def balance_views(request):
         exchange = body["exchange"]
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
         gateway_name = body["gateway_name"]
-        user_id = body["user_id"]
+        user_ids = body["user_ids"]
 
         balances = []
-        for k, gateway in g_gateways.items():
-            # 现在只支持bitmex， 后面可以在此处扩展
-            if isinstance(gateway, ccxt_class_name) and k == user_id:
-                __get_balance_postion_by_user_id(user_id=user_id)
-
-        msg = {"账户": user_id, "balances": balances}
+        for user_id in user_ids:
+            for k, gateway in g_gateways.items():
+                # 现在只支持bitmex， 后面可以在此处扩展
+                if isinstance(gateway, ccxt_class_name) and k == user_id:
+                    _tmp = __get_balance_postion_by_user_id(user_id=user_id)
+                    balances.append(_tmp)
+        msg = {"return": balances}
 
         return HttpResponse(json.dumps(msg))
 
@@ -287,7 +297,7 @@ def fetch_history_ohlcv_views(request):
 @csrf_exempt
 def fetch_my_trades_views(request):
     """
-    获取现有仓位和方向
+    获取现有仓位和方向  rest api 接口
     :param request: 
     :return: 
     """
@@ -612,8 +622,8 @@ def fetch_orders_views(request):
     :return: 
     """
     # 每个用户唯一登录
-    if not g_view_utils.check_sessionid(request):
-        return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
+    # if not g_view_utils.check_sessionid(request):
+    #     return HttpResponse(json.dumps({"msg": "已经在其它地方登录"}))
 
     if "POST" == request.method:
         body = json.loads(request.body)
@@ -621,15 +631,16 @@ def fetch_orders_views(request):
         ccxt_class_name = g_view_utils.get_exchange_class(str_exchange=exchange)
         gateway_name = body["gateway_name"]
         symbol = body["symbol"]
-        user_name = body["账户"]
+        user_ids = body["user_ids"]
 
         returns = []
-        for k, gateway in g_gateways.items():
-            if isinstance(gateway, ccxt_class_name) and k == user_name:
-                ret = gateway.fetch_orders(symbol=symbol)
-                returns.append(ret)
+        for user_id in user_ids:
+            for k, gateway in g_gateways.items():
+                if isinstance(gateway, ccxt_class_name) and k == user_id:
+                    ret = gateway.fetch_open_orders(symbol=symbol)
+                    returns.append(ret)
 
-        msg = {"user_name": user_name, "现有某个品种所有订单": returns}
+        msg = {"return": returns}
         return HttpResponse(json.dumps(msg))
 
 

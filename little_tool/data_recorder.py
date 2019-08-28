@@ -50,9 +50,9 @@ def main():
     main_engine.add_gateway(BitmexGateway2)
     main_engine.add_gateway(BitmexGateway3)
     main_engine.add_gateway(BitmexGateway4)
-    # main_engine.add_gateway(BitmexGateway5)
-    # main_engine.add_gateway(BitmexGateway6)
-    # main_engine.add_gateway(BitmexGateway7)
+    main_engine.add_gateway(BitmexGateway5)
+    main_engine.add_gateway(BitmexGateway6)
+    main_engine.add_gateway(BitmexGateway7)
 
     sleep(1)
     # 把 app 保存到 apps 和 engines 里

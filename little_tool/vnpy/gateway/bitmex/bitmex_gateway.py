@@ -613,6 +613,7 @@ class BitmexWebsocketApi(WebsocketClient):
             # 如果存在记录就，填充价格
             t = Position().get(Position.position_user_id == user_id)  # 实例化表的类型
             t.position_lastprice = tick.last_price
+            print("当前价格：" + str(d["price"]))
             t.save()
         else:
             pass

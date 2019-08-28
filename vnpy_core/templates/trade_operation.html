@@ -33,6 +33,10 @@
     <div class="layui-form-item">
         <!-- 选择交易品种 -->
         <div class="layui-inline">
+            <h2 class="sign_price">当前价格: <span class="sign_price">0</span></h2>
+        </div>
+        <!-- 选择交易品种 -->
+        <div class="layui-inline">
             <label class="layui-form-label">交易品种:</label>
             <div class="layui-input-inline">
                 <select class="layui-form-select transaction_type" lay-search lay-skin="primary">
@@ -111,15 +115,6 @@
             <td>当前价格</td>
             <td colspan="9"><input class="layui-input" id="price" lay-verify="required" readonly type="text"></td>
         </tr>
-        <tr>
-            <input class="layui-input" colspan="6" id="position" lay-verify="required" readonly type="text">
-        </tr>
-        <tr>账户余额</tr>
-
-        <tr>
-            <textarea class="layui-textarea" id="balance_json" readonly style="height:20px"></textarea>
-        </tr>
-
         <tr>
             <td>市价/限价</td>
             <td>
@@ -299,6 +294,7 @@
             var json = eval('(' + str + ')');
             return json;
         }
+
         /**
          * 获取cookie 通过 key
          * @param name  key
@@ -313,6 +309,7 @@
             else
                 return null;
         }
+
         /**
          * 设置 cookie
          * @param name    key
@@ -325,6 +322,7 @@
             exp.setTime(exp.getTime() + strsec * 1);
             document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
         }
+
         // 最简单数组去重法
         /*
          * 新建一新数组，遍历传入数组，值不在新数组就push进该新数组中
@@ -355,13 +353,14 @@
             for (var i = 0; i < obj_user_ids.length; i++) {
                 tableUserData[i] = {
                     'user_id': obj_user_ids[i],
-                    'test2': '',
-                    'test3': '',
-                    'test4': '',
-                    'test5': '',
-                    'test6': '',
-                    'test7': '',
-                    'test8': ''
+                    'markprice': '',
+                    'liqprice': '',
+                    'lastprice': '',
+                    'frozen': '',
+                    'currentqty': '',
+                    'balance': '',
+                    'avgentryprice': '',
+                    'available': '',
                 }
             }
 
@@ -390,16 +389,16 @@
             console.log(cookieObj);
         }
 
-		// 初始化杠杆标识
+        // 初始化杠杆标识
         function initDataSection(elem, opt) {
             // 初始化参数
-            var  maxStep = opt.maxStep || 100
-                ,step = opt.step || 10
-                ,stepArr  = opt.stepArr || null
-                ,stepNum = Math.ceil(maxStep / step)
-                ,left = opt.left || '-3%'
-                ,initStr = ''
-                ,defaultStyle = "position: absolute; color: #fff;";
+            var maxStep = opt.maxStep || 100
+                , step = opt.step || 10
+                , stepArr = opt.stepArr || null
+                , stepNum = Math.ceil(maxStep / step)
+                , left = opt.left || '-3%'
+                , initStr = ''
+                , defaultStyle = "position: absolute; color: #fff;";
 
             if (step > maxStep) return;
 
@@ -415,49 +414,59 @@
             });
             $(elem).html(initStr);
         }
-		
-		$('.showUserDetailInfo').on('click', function () {
-			var transaction_type = $('.transaction_type').val(),
-			    exchange = $('.exchange').val(),
-				userData = init_user_info_table();
-				
-			var sendInfo = {
-				'exchange': exchange,
-				'gateway_name': transaction_type,
-				'symbol': exchange
-			};
-			
-			// 延时请求
-			sleepRequest(function (i) {
-				if (userData[i].user_id) {
-				    sendInfo.user_id = userData[i].user_id;
-					$.ajax({
-						url: "fetch_my_trades/",
-						type: "post",
-						data: JSON.stringify(sendInfo),
-						async: true,
-						success: function (res) {
-						    console.log(res);
-						},
-						error: function (res) {
-						    layer.msg("连接服务器失败");
-						}
-					})
-				}
-			}, 0, userData.length);
-		})
-		
+
 		/**
-		 * 轮训延时请求
+		 * 显示用户数据
 		 */
-		function sleepRequest(cb, num = 0, totalNum, time = 800) {
-			if (num < totalNum) {
-				setTimeout(function () { 
-					cb(num); 
-					sleepRequest(cb, ++num, totalNum, time);
-				}, time);
+        $('.showUserDetailInfo').on('click', function () {
+            var transaction_type = $('.transaction_type').val(),
+                exchange = $('.exchange').val(),
+                userData = init_user_info_table();
+			var sendUsers = [];
+            var sendInfo = {
+                'exchange': exchange,
+                'gateway_name': transaction_type,
+                'symbol': exchange,
+				'user_ids': sendUsers,
+            };
+
+			// 组合用户ids
+			for (var i = 0; i < userData.length; i++) sendUsers.push(userData[i]['user_id']);
+			
+			if (sendUsers.length > 0) {
+			    $.ajax({
+			        url: "balance/",
+			        type: "post",
+			        data: JSON.stringify(sendInfo),
+			        async: true,
+			        success: function (res) {
+			            var result = strToJson(res), data = result.return;
+			            if (Array.isArray(data) && data.length > 0) {
+			                $('span.sign_price').text(data[0].lastprice);
+			                table.reload('user-table-1', {data: data});
+                        }
+			            else {
+                            layer.msg("数据请求失败");
+                        }
+			        },
+			        error: function (res) {
+			            layer.msg("连接服务器失败");
+			        }
+			    })
 			}
-		}
+        });
+
+        /**
+         * 轮训延时请求
+         */
+        function sleepRequest(cb, num = 0, totalNum, time = 800) {
+            if (num < totalNum) {
+                setTimeout(function () {
+                    cb(num);
+                    sleepRequest(cb, ++num, totalNum, time);
+                }, time);
+            }
+        }
 
         //十五秒刷新一次
         window.get_price = function () {
@@ -484,8 +493,9 @@
             return false;
 
         };
-      //  获取一个用户的持仓信息
-      function get_position(exchange,gateway_name , user_id, symbol) {
+
+        //  获取一个用户的持仓信息
+        function get_position(exchange, gateway_name, user_id, symbol) {
             var user = {};
             //交易所
             user.exchange = exchange;
@@ -494,8 +504,7 @@
             // user id
             user.user_id = user_id
             // 交易对
-            if("XBTUSD" == symbol)
-            {
+            if ("XBTUSD" == symbol) {
                 user.symbol = "BTC/USD";
             }
 
@@ -517,19 +526,19 @@
                 }
             });
             return false;
-
-
         };
 
         //setInterval('get_price()', 2000);
         //setInterval('get_position()', 3000);
 
         $(function () {
-            getUserIds();
+            // getUserIds();
+			
+			// 初始化杠杆数字
             var opt = {
                 'stepArr': ['全仓', '1x', '2x', '3x', '5x', '10x', '25x', '50x', '100x'],
-				'maxStep': 8,
-				'step': 1
+                'maxStep': 8,
+                'step': 1
             }
             initDataSection('.data-section-show-num', opt);
         });
@@ -540,41 +549,30 @@
             , step: 1 				// 步长
             , showstep: true			// 开启间隔点
             , tips: false
-			, max: 8
-			, min: 0
+            , max: 8
+            , min: 0
             , change: function (e) {
                 console.log(e);
             }
         });
 
-        // 用户信息表
+        // 实例化用户信息基础表
         table.render({
             elem: '#user-table-1'
             , cellMinWidth: 80
             , title: '哈哈'
-            // ,toolbar: 'default'
             , cols: [[
                 {field: 'user_id', title: '备注名'}
-                , {field: 'test2', title: '仓位和方向'}
-                , {field: 'test3', title: '开仓价格'}
-                , {field: 'test4', title: '标记价格'}
-                , {field: 'test5', title: '爆仓价格'}
-                , {field: 'test6', title: '账户可用资金'}
-                , {field: 'test7', title: '冻结资金'}
-                , {field: 'test8', title: '总资金'}
-                , {field: 'test9', title: '操作', toolbar: '#rowDefaultToolCodeStr'}
+                , {field: 'currentqty', title: '仓位和方向'}
+                , {field: 'avgentryprice', title: '开仓价格'}
+                , {field: 'markprice', title: '标记价格'}
+                , {field: 'liqprice', title: '爆仓价格'}
+                , {field: 'available', title: '账户可用资金'}
+                , {field: 'frozen', title: '冻结资金'}
+                , {field: 'balance', title: '总资金'}
+                , {field: 'handle', title: '操作', toolbar: '#rowDefaultToolCodeStr', width: 180}
             ]]
-            , /* data: init_user_info_table() */
-			data: [{
-                    'user_id': 'test',
-                    'test2': '',
-                    'test3': '',
-                    'test4': '',
-                    'test5': '',
-                    'test6': '',
-                    'test7': '',
-                    'test8': ''
-                }]
+            ,  data: init_user_info_table()
         });
         // 用户信息表操作监听
         table.on('tool(user-table-1)', function (data) {
@@ -583,7 +581,6 @@
 
         //选择账户
         form.on('select(sub_config_user_ids)', function (data) {
-
             var user = {};
             user.exchange = "BITMEX";
             user.gateway_name = "BITMEX";
@@ -653,9 +650,7 @@
                 success: function (res) {
                     var __data = unescape(res.replace(/\\u/g, '%u'));
                     var obj = strToJson(__data);
-
                     var balances_text = "";
-
                     layer.msg(obj.msg);
                 },
                 error: function (res) {

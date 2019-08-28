@@ -27,8 +27,6 @@ urlpatterns = [
     url(r'^login/line-simple.html$', line_simple_views),
     url(r'^login/spot_futures_brush.html$', spot_futures_brush_views),
 
-
-
     url(r'^logout/$',logout_views),
     url(r'^login/api_key/$',api_key_views),
     url(r'^login/balance/$', balance_views),
