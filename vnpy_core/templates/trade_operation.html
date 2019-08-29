@@ -274,6 +274,53 @@
         </tr>
         </tbody>
     </table>
+
+    <!-- 仓位信息列start -->
+    <div class="layui-tab layui-tab-card trade_operation_table">
+        <ul class="layui-tab-title">
+            <li>活动委托</li>
+            <li>用户管理</li>
+            <li class="layui-this">活动委托</li>
+            <li>商品管理</li>
+            <li>订单管理</li>
+        </ul>
+        <div class="layui-tab-content" style="height: 100px;">
+            <div class="layui-tab-item">
+                1
+            </div>
+            <div class="layui-tab-item">2</div>
+            <div class="layui-tab-item layui-show">
+                <table class="layui-table" id="table-activity" lay-filter="table-activity" lay-skin="nob">
+                    <!--<thead>
+                    <tr>
+                        <th>备注名</th>
+                        <th>仓位和方向</th>
+                        <th>开仓价格</th>
+                        <th>表记价格</th>
+                        <th>账户用资金</th>
+                        <th>冻结资金</th>
+                        <th>总资金</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>123</td>
+                        <td>123</td>
+                        <td>123</td>
+                        <td>123</td>
+                        <td>123</td>
+                        <td>123</td>
+                        <td>123</td>
+                    </tr>
+                    </tbody>-->
+                </table>
+            </div>
+            <div class="layui-tab-item">4</div>
+            <div class="layui-tab-item">5</div>
+            <div class="layui-tab-item">6</div>
+        </div>
+    </div>
+    <!-- 仓位信息列stop -->
 </form>
 
 <script>
@@ -286,6 +333,54 @@
             $ = layui.jquery,
             table = layui.table,
             slider = layui.slider;
+
+        // 仓位表操作集
+        var initTable = {
+            // 初始化
+            init: function() {
+                var sendInfo = resolverReqParam();
+                this.table_activity(sendInfo);
+            },
+            // 活动委托表
+            table_activity: function (sendInfo) {
+                if (sendInfo.user_ids.length > 0) {
+                    $.ajax({
+                        url: "fetch_my_trades/",
+                        type: "post",
+                        data: JSON.stringify(sendInfo),
+                        async: true,
+                        success: function (res) {
+                            console.log(res);
+                            var result = strToJson(res), data = result.return;
+                            if (Array.isArray(data) && data.length > 0) {
+                                table.render({
+                                    elem: '#table-activity'
+                                    , cellMinWidth: 80
+                                    , cols: [[
+                                        {field: 'user_id', title: '备注名'}
+                                        , {field: 'currentqty', title: '仓位和方向'}
+                                        , {field: 'avgentryprice', title: '开仓价格'}
+                                        , {field: 'markprice', title: '标记价格'}
+                                        , {field: 'liqprice', title: '爆仓价格'}
+                                        , {field: 'available', title: '账户可用资金'}
+                                        , {field: 'frozen', title: '冻结资金'}
+                                        , {field: 'balance', title: '总资金'}
+                                        , {field: 'handle', title: '操作', toolbar: '#rowDefaultToolCodeStr', width: 180}
+                                    ]]
+                                    ,  data: data
+                                })
+                            }
+                            else {
+                                layer.msg("数据请求失败");
+                            }
+                        },
+                        error: function (res) {
+                            layer.msg("连接服务器失败");
+                        }
+                    })
+                }
+            }
+        }
 
         /**
          *  字符串转换成 json 对象
@@ -415,25 +510,32 @@
             $(elem).html(initStr);
         }
 
-		/**
-		 * 显示用户数据
-		 */
-        $('.showUserDetailInfo').on('click', function () {
+        // 解析申请参数
+        function resolverReqParam() {
             var transaction_type = $('.transaction_type').val(),
                 exchange = $('.exchange').val(),
                 userData = init_user_info_table();
-			var sendUsers = [];
+            var sendUsers = [];
             var sendInfo = {
                 'exchange': exchange,
                 'gateway_name': transaction_type,
                 'symbol': exchange,
-				'user_ids': sendUsers,
+                'user_ids': sendUsers,
             };
+            // 组合用户ids
+            for (var i = 0; i < userData.length; i++) sendUsers.push(userData[i]['user_id']);
 
-			// 组合用户ids
-			for (var i = 0; i < userData.length; i++) sendUsers.push(userData[i]['user_id']);
+            return sendInfo;
+        }
+
+		/**
+		 * 显示用户数据
+		 */
+        $('.showUserDetailInfo').on('click', function () {
+
+            var sendInfo = resolverReqParam();
 			
-			if (sendUsers.length > 0) {
+			if (sendInfo.user_ids.length > 0) {
 			    $.ajax({
 			        url: "balance/",
 			        type: "post",
@@ -533,6 +635,8 @@
 
         $(function () {
             // getUserIds();
+
+            initTable.init();
 			
 			// 初始化杠杆数字
             var opt = {

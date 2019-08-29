@@ -638,7 +638,8 @@ def fetch_orders_views(request):
             for k, gateway in g_gateways.items():
                 if isinstance(gateway, ccxt_class_name) and k == user_id:
                     ret = gateway.fetch_open_orders(symbol=symbol)
-                    returns.append(ret)
+                    __orders = {"user_id": user_id, "orders": ret}
+                    returns.append(__orders)
 
         msg = {"return": returns}
         return HttpResponse(json.dumps(msg))
